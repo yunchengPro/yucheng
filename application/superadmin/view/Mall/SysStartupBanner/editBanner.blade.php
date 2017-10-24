@@ -1,0 +1,1 @@
+{include file="/Mall/SysStartupBanner/addBanner" /}

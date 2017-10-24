@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+body {
+	background: url(../img/bg.png) no-repeat;
+	background-size:100%;
+}
+body .line{
+	margin: 2rem 2rem 0;
+ 	position: relative;
+ 	border-bottom: 1px solid #DDDDDD;
+}

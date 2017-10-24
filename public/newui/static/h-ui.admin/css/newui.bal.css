@@ -1,0 +1,264 @@
+.addOrder{
+  padding:25px
+}
+.dropdown-toggle{
+  float: left;
+  border-left: none;
+}
+.button-group .btn{
+     float: left;
+}
+/*.menu_dropdown-arrow{
+  background: url('/newui/static/h-ui.admin/images/leftbar_packup.png');
+  width: 30px;
+  height: 30px;
+  text-indent: 9999px;
+}*/
+
+
+.button-group, .button-group-y {
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+}
+.downward, .arrow {
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 4px solid;
+    display: inline-block;
+    height: 0;
+    margin-left: 2px;
+    vertical-align: middle;
+    width: 0;
+}
+.drop-menu {
+    background-clip: padding-box;
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.176);
+    display: none;
+    float: left;
+    left: 0;
+    list-style: outside none none;
+    margin: 1px 0 0;
+    min-width: 100px;
+    padding: 5px 0;
+    position: absolute;
+    top: 100%;
+    z-index: 1;
+}
+.open .drop-menu {
+    display: block;
+}
+
+.drop-menu a {
+    clear: both;
+    color: #333;
+    display: block;
+    padding: 5px 20px;
+    transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1) 0s;
+    white-space: nowrap;
+}
+
+.button {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    transition: background-color 0.1s linear 0s;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: auto;
+    padding: 4px 12px;
+}
+.btnchose{
+   background-color: #fff;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    cursor: pointer;
+    display: inline-block;
+    font-weight: 400;
+    text-align: center;
+    transition: background-color 0.1s linear 0s;
+    vertical-align: middle;
+    white-space: nowrap;
+    width: auto;
+    padding: 4px 12px;
+}
+
+.width250{width: 105px;}
+span.addbtn{
+    float: right;
+}
+.Hui-aside .menu_dropdown dd li a.clickOn{
+  color: #c79668;
+  background-color:#464855;
+}
+/*.dropDown > .dropDown-menu{
+  display: block;
+}*/
+.page-container{
+  padding: 20px 20px;
+}
+
+.page-container-add{
+    margin-top: 20px;
+}
+
+.search_bar{
+    position: relative;
+   /* height: 80px;*/
+}
+
+#divAdvancedSearch{
+    position: relative;
+}
+
+#divAdvancedSearch .search-item{
+    margin-left: 5px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+#search{
+   /* position: absolute;
+    right: 5px;
+    top: 2px;*/
+    float: left;
+    margin-left: 10px;
+}
+a {
+    color: #0a6699;
+}
+a:hover{
+    color: #06c;
+    text-decoration: underline;
+}
+.mt-20 table thead tr a {
+    color: #c79668;
+}
+.Hui-article-box{
+    overflow-x:  auto;
+}
+body{
+    color: #676767;
+    overflow-x: auto;
+}
+.incentivePolicy .article{
+    padding: 10px 0;
+}
+.button:hover{
+   color: #666;
+}
+.btn:hover{
+    color: #666;
+}
+.select{
+    height: 31px;
+}
+.agtMgt-top-item a{
+    color: #FFF;
+    background-color: #c89664;
+}
+.agentManagement{
+    padding: 20px 20px 0;
+}
+.businessConfiguration .businessItem .article{
+    padding: 20px 0;
+    border: none;
+}
+#logform .loginCode{
+    right: 0;
+    top: 0;
+}
+
+.footer_wrap{
+    border-left: #ddd 1px solid;
+    border-right: #ddd 1px solid;
+    border-bottom: #ddd 1px solid;
+    
+}
+
+.page-input{
+    width:28px;
+    height: 20px;
+}
+
+.table-add{
+    width: 55%;
+    margin-top: 20px;
+}
+.table-add tr:nth-child(even){
+  background-color: #ffffff;
+}
+
+.table-add td{
+    padding: 10px;
+}
+
+.table-add .left-td{
+    text-align: right;
+    border-right:none;
+    width: 40%;
+}
+
+.table-add .right-td{
+    text-align: left;
+    border-left:none;
+}
+
+.table-add .center-td{
+    text-align: center;
+    border-left:none;
+}
+
+.col-sm-4{
+    width:20%;
+    white-space:nowrap;
+}
+.col-xs-offset-4{
+    margin-left: 20%;
+}
+
+.add-width{
+    width: 200px;
+}
+
+.btn-primary-new{
+  background-color: #ffffff;
+  border-color: #00001c;
+}
+
+.btn-height{
+    height: 30px;
+}
+.btn-balck{
+    background-color: #393945;
+    color: #ffffff;
+}
+.Hui-tabNav, .Hui-tabNav .acrossTab li, .Hui-tabNav .acrossTab li em{
+     background-image: url("../images/acrossTab/acrossTab-21.png");
+}
+.input-text:hover,.textarea:hover{
+    border:solid 1px #e2ba92;
+}
+.input-text:focus,.textarea:focus{
+    border-color:rgba(230,192,154,0.8);
+    box-shadow: 0 1px 1px rgba(0,0,0,0.075) inset,0 0 8px rgba(196, 147, 98, 0.6)
+}
+.Hui-tabNav-more{
+    top:7px;
+}
+.footer_wrap_new{
+    background-color:#f5f5f5;
+    
+}
+/*.navbar .logo{
+    height:auto;
+    line-height:auto;
+}*/
+

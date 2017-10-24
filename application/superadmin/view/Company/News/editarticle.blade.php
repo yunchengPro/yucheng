@@ -1,0 +1,1 @@
+{include file="/Company/News/addarticle" /}

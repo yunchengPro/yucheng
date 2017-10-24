@@ -1,0 +1,138 @@
+============================Mysql==============================
+
+1、配置
+统一在application/extra/database.php配置
+
+一个库增加一个配置项
+//数据库配置
+'nnh_db'        => [
+    // 数据库类型
+    'type'        => 'mysql',
+    // 服务器地址
+    'hostname'    => '127.0.0.1',
+    // 数据库名
+    'database'    => 'thinkphp',
+    // 数据库用户名
+    'username'    => 'root',
+    // 数据库密码
+    'password'    => '',
+    // 数据库编码默认采用utf8
+    'charset'     => 'utf8',
+    // 数据库表前缀
+    'prefix'      => '',
+],
+
+
+2、表model定义
+统一放在application/model/Db/下
+文件名，驼峰方式+DB.php
+如：UserDB.php
+
+里面继承自MysqlDb
+
+参数说明
+protected $_tableName = "user"; //表名
+protected $_primary = "id"; //主键名
+protected $_db = "nnh_db"; //Db的配置项 和database.php对应
+protected $_table_prefix = ""; //表前缀
+
+
+3、使用
+
+//初始化实例
+use app\lib\Db;
+
+Db::Table("User")
+
+方法
+/*
+* 获取单条数据
+* $where 可以是字符串 也可以是数组
+*/
+public function getRow($where,$field='*',$order='',$otherstr='')
+
+/*
+* 获取多行记录
+*/
+public function getList($where,$field='*',$order='',$limit=0,$offset=0,$otherstr='')
+
+/*
+* 分页列表
+* $flag = 0 表示不返回总条数
+*/
+public function pageList($where,$field='',$order='',$flag=1)
+
+/*
+* 写入数据
+* $insertData = array() 如果ID是自增 返回生成主键ID
+*/
+public function insert($insertData)
+
+/*
+* 更新数据
+* $updateData = array()
+*/
+public function update($updateData,$where,$limit='')
+
+/*
+* replace写入数据
+* $insertData = array()
+*/
+public function replace($insertData)
+
+/*
+* 删除数据
+*/
+public function delete($where,$limit='')
+
+
+=================MongoDb=========================
+1、配置
+统一在application/extra/mongo.php配置
+
+2、表model定义
+统一放在application/model/Db/下
+文件名，驼峰方式+MG.php
+如：UserMG.php
+
+里面继承自MongoDb
+
+参数说明
+protected $db_name = "nnh"; //库名
+protected $collection_name = "user"; //表名
+protected $_db = "nnh_mongo"; //MongoDb的配置项 和mongodb.php对应
+
+3、使用
+
+//初始化实例
+use app\lib\Db;
+
+Db::Table("UserMG")
+
+
+
+
+
+
+=========================Redis===========================
+
+1、配置
+统一在application/extra/redis.php配置
+
+2、表model定义
+统一放在application/model/Db/下
+文件名，驼峰方式+RD.php
+如：UserRD.php
+
+里面继承自RedisDb
+
+参数说明
+protected $_name = "user"; //表名
+protected $_db = "nnh_redis"; //MongoDb的配置项 和mongodb.php对应
+
+3、使用
+
+//初始化实例
+use app\lib\Db;
+
+Db::Table("UserRD")

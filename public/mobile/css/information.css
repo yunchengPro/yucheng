@@ -1,0 +1,139 @@
+.information-type {
+	position: fixed;
+	width: 100%;
+	top: 0;
+	border-bottom: 1px solid #ddd;
+}
+
+.information-type .type-list {
+	width: 100%;
+	white-space: nowrap;
+	-webkit-overflow-scrolling: touch;
+	-ms-scroll-chaining: chained;
+	-webkit-transform: translateZ(0);
+	overflow-x: auto;
+	overflow-y: hidden;
+	background: #FFFFFF;
+	font-size: 0;
+	padding: 0 0px 0 10px;
+	height: 44px;
+	line-height: 44px
+}
+
+.type-list .one-type {
+	display: inline-block;
+	width: 16.667%;
+	font-size: 14px;
+	text-align: center;
+	height: 44px;
+	line-height: 44px
+}
+
+.type-list .one-type a {
+	color: #333333;
+}
+
+.type-list .one-type a.active {
+	color: #F13437;
+	border-bottom: 2px solid #f13437;
+	padding-bottom: 11px;
+}
+
+.information-list {
+	margin-top: 44px;
+	overflow: hidden;
+}
+
+.information-list .one-info {
+	padding: 15px;
+	height: 100px;
+	display: -webkit-box;
+	width: 100%;
+	border-bottom: 1px solid #E5E5E5;
+}
+
+.one-info .info-title {
+	display: -webkit-box;
+	-webkit-box-flex: 1;
+	width: 100%;
+	-webkit-box-orient: vertical;
+	padding-right: 15px;
+	-webkit-box-pack: justify;
+}
+
+.one-info .info-title .main-title {
+	font-size: 15px;
+	color: #333;
+}
+
+.one-info .info-title .sub-title {
+	font-size: 12px;
+	color: #999999;
+}
+
+.one-info .thumbnail {
+	display: -webkit-box;
+	-webkit-box-flex: 2;
+	width: 100%;
+}
+
+.one-info .thumbnail img {
+	width: 100%;
+	max-height: 70px;
+}
+
+#loading {
+	background: transparent;
+	position: fixed;
+	display: none;
+	bottom: 0;
+	text-align: center;
+	width: 100%;
+	line-height: 2rem;
+	z-index: 10000;
+}
+
+#loading p {
+	width: 100%;
+	background: url(../img/loading.gif) 36% center no-repeat;
+	color: #666;
+	font-size: 1.2rem;
+}
+
+.no-data {
+	display: none;
+	text-align: center;
+	color: #E6212A;
+	margin-top: .15rem;
+}
+/*详情*/
+
+.information-detail {
+	padding: 20px 15px;
+}
+
+.information-detail .main-title {
+	font-size: 18px;
+	color: #333333;
+	font-weight: bold;
+	margin-bottom: 10px;
+}
+
+.information-detail .date {
+	font-size: 13px;
+	color: #999999;
+	margin-bottom: 10px;
+}
+.information-detail .short-title{
+	    background: #eee;
+    font-size: 13px;
+    padding: 5px 10px;
+    color: #666;
+    line-height: 25px;
+    margin-bottom: 15px;
+}
+.information-detail .info-content p {
+	font-size: 15px;
+	color: #333333;
+	    line-height: 30px;
+}

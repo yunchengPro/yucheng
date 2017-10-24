@@ -1,0 +1,25 @@
+<?php
+$config = array (	
+		//应用ID,您的APPID。
+		'app_id' => "2017030806107244",
+
+		//商户私钥，您的原始格式RSA私钥
+		'merchant_private_key' => "MIIEpAIBAAKCAQEA48tXrT0eeRid2EbmenlUPH7UNCYpKjqrAlm0zGp9JtpvfvSjS2YyaL9nytgsx+TaZLOCQkQlR9peL6pmbJl2SrlVybPg1mAy1A1MlagcLG5H0Mk+zqCwcypGEBU7DZbctXZ8LI6buDEgvIMZBd7LYGthCHj1v9huQvrPQihUF/QnB85tck7I7eU84afcj76qS/0x3xMHdnyiX65dNB2zHQTzn9MQ3FiH6Ph1B9i1uPnlVInBHZiSGGfPgJFJrZDnYdUwKG1ZUj9tQTfrH8MTHEI79OY+v1Ejl0bDlEBOTLL+P/vJKynrU9mc8B/Q/bcWHoWepAsw+jlPftLzy0lPJQIDAQABAoIBAFduOo6xgLq16g+S1u93Fg/KFiSV6QLeVbinOa+jx7lb6aNuviY4aWyu2mWOp1Fp0zEHfR12DmEPvUrKOlnAZRi1Heo28jsV3SxqllRym62p/kJym3qvTkpFlXKi03GZz8iOW4a2jaoaoRf5sWcBZknxrOKVmq0xotBud5JK7EvsnpEoXGhE4yha+6dYlJfCHh8rflbMFUjhslEYTngVZcDFVnSgm8AU4iWjs3E4bfgfgX5k7nQaDC+0vrxyyLiaTn5UXeM9/wsfk4zVmGrAC1TKn/TF6Km2paD4fxaP/yL/NBhfk11D4KwmWtAYECd35884o9JieA3XY6OMwrKCB5kCgYEA9TYDRrkKS/Cpddc++Wgv2YWiUK14Ga8RhY/YOzmC9TqGT6j5JE9OTGh2TtwMjozc/ZvIyeP853Ndv/M2Afwh9LMLRs5kupkePmiaTqs3Fa7wHWjI/KkUqkK1a/VbyMPLGAw85TTjNCbg38W5RFLSl6MpItg1vMDeBAWH2TqTA/8CgYEA7dEnMwLwJQD/Z9a6GlUasZQVQGOsWf6haA4IqEZTMmnH3Sk9DBK+NKMc37bhwew+1xfONTwq61/3c77syIYRTjs6EDE5TismXdc9gRhbKIzKGigndihmSf1JLz8nY7xrgEVBBSwUyUp+6CEw/nRh3ZEyezx5KWW3CdITfhDrHNsCgYEA1OQvFgDjWqk4R1I4n4sAOCeYk9j3s7zWRpJrlofJFiXYpGK84/Ris13ikXblBAJyf1D4k6f4U+5Kj7OVyUVhKbUk7jWVKJh1tJNWnURzT8URPUdTcGFPyr6eCnv8UyMCOf+uAwXW2NmEVWOyBQqvQe3rchArH5SHbRBsMIJ1T3sCgYAYErXvGfsJI+K2tiu8gqTjGORV0kEeEwJvsAv8TLIbRk3u+z+suzD5zxEbLD4KDUoHJ+e9x8tobBx2YPtDCR8zVhd4kCMG4KNPmHwnVznTDv1eTHZCJbDFCJih6bipBeez4k7EoUOxZJMYGFQHTeyiKxJ7GxIAuMUgf11tw3SpRQKBgQCoo3UHYLkmpOhdiPcIb4JNtCXpNEB5nHfrzihgSgI8lPIe7Is/f5A4wmM71bZY90o7l875h/+3p6zBb/zFpPJ+gy3wm9dQVUCL9s+T2bGTU1Ad8CAO/fVKK2Krv9wgu7+61H05KMXIjh74u2AEZBruvELQgFvwerEUG8rrhuQDgg==",
+		
+		//异步通知地址
+		'notify_url' => "http://www.niuniuhuiapp.net:82/Payment/Noity/aliWebNotifyUrl",
+		
+		//同步跳转
+		'return_url' => "",
+
+		//编码格式
+		'charset' => "UTF-8",
+
+		//支付宝网关
+		'gatewayUrl' => "https://openapi.alipay.com/gateway.do",
+
+		//支付宝公钥
+		'alipay_public_key' => "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAiLHttoHmXC+9xjW4vi1nBBuMNxW+WST5Af/3DLy9NpWTxBg7VaShFga2q0ez9vnaRMH3tWDkfx9hq4HfZ9fH1uYr+LalFIqZk8QxQGE66JFU7o3Qy1mav6TgED8+QZAEJ1WU0nODx4jC5wxgZh7+Ohk8gCtsca8/A2ysWHUKYf7bgRDWrlF8tJJC9hleFVn8gu255qZ06cpAiubdoBUx4QsyUfKuWXzG7QK7HVDKmP5+Va2Seat1u4EybnWWpBVjaNOjn27fo1SshHtX8ApTeWouKDs3v0eunoL+luQ3Q+tZK3LC4I6EY548CtqBjoKU2Cm2tuJ/EsGFoDMQdrwTJwIDAQAB",
+		
+	
+);

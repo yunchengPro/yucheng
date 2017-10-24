@@ -1,0 +1,599 @@
+/*
+ 个人中心 设置
+ 	
+ 个人设置、账户安全
+ * */
+.page-header{
+	background: #F9F9F9;
+	border-bottom: 1px solid #CCCCCC;
+}
+.page-header .page-bar{
+	    text-align: center;
+    height: 44px;
+    font-size: 14px;
+    color: #333;
+    position: relative;
+    line-height: 44px;
+}
+.page-header .page-bar a{
+	
+}
+
+.page-header .page-bar .back-ico{
+	    width: 10px;
+    height: 17px;
+    background: url(../img/icon/back@2x.png) no-repeat;
+    background-size: 100%;
+    display: block;
+    position: absolute;
+    top: 50%;
+    margin-top: -8.5px;
+    left: 10px;
+}
+.page-header .page-bar .bar-title{
+	font-size: 16px;
+
+	width: 100%;
+	text-align: center;
+}
+
+.config-wrap{margin-top: 9px;}
+.config-wrap .config-item{
+	height: 44px;
+	line-height: 44px;
+	border-bottom: 1px solid #DDDDDD;
+	padding: 0 12px;
+	
+	position: relative;
+}
+.config-wrap .config-item .config-tip{
+	font-size: 14px;
+	color: #333333;
+	float: left;
+}
+.config-wrap .config-item i{
+	 background: url(../img/icon/ic-right.png) no-repeat;
+	    background-size: 100%;
+	    height: 22px;
+	    width: 22px;
+	    position: absolute;
+	    top: 50%;
+	    right: 5px;
+	    margin-top: -12px;
+}
+.sign-out-wrap{
+	margin-top: 40px;
+	padding: 0 12px;
+}
+.sign-out-wrap .sign-out{
+	background: #CCCCCC;
+	width: 100%;
+	height: 44px;
+	border-radius: 4px;
+	font-size: 16px;
+	color: #666666;
+}
+
+/*我的资料*/
+.config-wrap .config-item .config-val{
+	float: right;
+    margin-right: 12px;
+    font-size: 13px;
+    color: #999;
+}
+.config-wrap .config-item .config-val.yes{
+	color: #42b47d;
+}
+.config-wrap .config-item .config-val.no{
+	color: #F13437;
+}
+.config-wrap .config-item.avatar{
+	height: 70px;
+	line-height: 70px;
+}
+.config-wrap .config-item.avatar .config-val{
+	height: 70px;
+}
+.config-wrap .config-item.avatar img{
+	height: 56px;
+	width: 56px;
+	border-radius: 50%;
+	border: 4px  solid #EEEEEE;
+	margin-top: 7px;
+}
+
+
+/*修改手机  昵称*/
+.modify-phone input{
+	height: 30px;
+	width: 100%;
+	outline: 0;
+}
+.modify-phone .get-vercode{
+	width: 85px;
+	height: 30px;
+	position: absolute;
+	right: 12px;
+	top: 7px;
+	font-size: 12px;
+	color: #FFFFFF;
+	background: #F13437;
+	border-radius: 4px;
+}
+.modify-phone .get-vercode:disabled{
+	background: #CCCCCC;
+}
+.modify-wrap{
+	margin-top: 40px;
+	padding: 0 12px;
+}
+.modify-wrap .sure-btn:disabled{
+	background: #CCCCCC;
+	
+}
+.modify-wrap .sure-btn{
+	background: #F13437;
+	width: 100%;
+	height: 44px;
+	border-radius: 4px;
+	font-size: 16px;
+	color: #FFFFFF;
+}
+.modify-tip{
+	padding: 0 12px;
+	margin-top: 5px;
+	color: #666;
+	font-size: 10px;
+}
+
+.modify-nick-name input{
+	    width: 100%;
+    height: 35px;
+}
+
+/*设置支付密码*/
+.set-pay-password input[type=tel]{
+		
+		 width: 100%;  
+        height: 30px;  
+        color: transparent; 
+      position: absolute; 
+        top: 7px;  
+        left: 0;  
+        border: none;  
+        font-size: 14px;  
+       opacity: 0;
+        z-index: 10;  
+		letter-spacing: 5px; 
+		 padding-left: 6px;
+		 
+	}
+	.set-pay-password .showBox{
+		  width: 100%;
+	    height: 30px;
+	   font-size: 14px;
+	   	position: relative;
+	    z-index: 1;
+	    letter-spacing: 2px; 
+	   
+	}
+   .set-pay-password .eye-half{
+		z-index: 20;
+		position: absolute;
+		top: 8px;
+		right: 10px;
+		height: 30px;
+		width: 30px;
+		background: url(../img/icon/eye-half.png) center no-repeat;
+		background-size:100% ;
+	}
+	
+ .set-pay-password .eye{
+		z-index: 20;
+		position: absolute;
+		top: 8px;
+		right: 10px;
+		height: 30px;
+		width: 30px;
+		background: url(../img/icon/eye.png) center no-repeat;
+		background-size:100% ;
+	}
+	
+/*管理收货地址*/
+.address-list .one-address{
+			margin-bottom: 9px;
+			padding-top: 10px;
+		}
+		.address-list .one-address .base{
+			font-size: 16px;
+			color: #333;
+			display: -webkit-box;
+			-webkit-box-pack: justify;
+			margin-bottom: 10px;
+			padding: 0 12px;
+		}
+		.address-list .one-address .address{
+			font-size: 14px;
+			color: #333333;
+			padding: 0 12px 10px 12px;
+			border-bottom: 0.5px solid #E5E5E5;
+			
+		}
+		.address-list .one-address .operator{
+			padding: 16px;
+			font-size: 14px;
+		}
+		.address-list .one-address .operator label{
+			float: left;
+		}
+		.address-list .one-address .operator label.active{
+			color: #E64B4B;
+		}
+	    .address-list .one-address .operator input[type=radio]{
+	    	-webkit-appearance: none;
+	    	background: url(../img/icon/check_none@2x.png) no-repeat;
+	    	background-size:100% ;
+	    	height: 14px;
+	    	width: 14px;
+	    	vertical-align: middle;
+	    	margin-right: 5px;
+	    	margin-top: -3px;
+	    }
+	     .address-list .one-address .operator input[type=radio]:checked{
+	     	background: url(../img/icon/checked@2x.png) no-repeat;
+	    	background-size:100% ;
+	     }
+	    .operator .edit{
+	    	float: right;
+	    	background: url(../img/icon/edit@2x.png) left center no-repeat;
+	    	background-size:14px 14px ;
+	    	padding-left: 16px;
+	    	margin-right: 8px;
+	    	
+	    }
+	    .operator .remove{
+	    	float: right;
+	    	background: url(../img/icon/remove@2x.png) left center no-repeat;
+	    	background-size:14px 14px ;
+	    	padding-left: 16px;
+	    	
+	    	
+	    }
+	   
+	    .add-address{
+	    	height: 40px;
+	    	background: #e64b4b;
+	    	line-height: 40px;
+	    	text-align: center;
+	    	color: #FFFFFF;
+	    	font-size: 18px;
+	    	position: fixed;
+	    	bottom: 0;
+	    	width: 100%;
+	    }
+	     .add-address a{color: #FFFFFF;}
+	     
+/*添加新地址*/
+			
+	    	.new-address .address-item{
+	    		height: 40px;
+	    		line-height: 40px;
+	    		border-bottom: 0.5px solid #E5E5E5;
+	    		padding: 0 12px;
+	    		font-size: 16px;
+	    		position: relative;
+	    	}
+	    	.new-address .address-item .item-tip{
+	    		position: absolute;
+	    		width: 70px;
+	    		left: 12px;
+	    	}
+	    	.new-address .address-item i{
+	    		background: url(../img/icon/ic-right.png) no-repeat;
+			    background-size: 100%;
+			    height: 22px;
+			    width: 22px;
+			    position: absolute;
+			    right: 8px;
+			    top: 9px;
+	    	}
+	    	.new-address .address-item input{
+	    		width: 100%;
+	    		padding-left: 70px;
+	    		outline: 0;
+	    		height: 35px;
+	    		line-height: 35px;
+	    		font-size: 16px;
+	    	}
+	    	.new-address .address-item input.area{
+	    		text-align: right;
+	    		padding-right: 8px;
+	    		margin-top: -4px;
+	    	}
+	    	.new-address .address-item:last-child{
+	    		height: 72px;
+	    	}
+	    	.new-address .address-item:last-child textarea{
+	    		    height: 70px;
+			    width: 100%;
+			    resize: none;
+			    padding: 5px;
+			    outline: 0;
+			    font-size: 11px;
+			    line-height: 20px;
+	    	}
+	    	
+	    	.set-default{
+	    		    margin-top: 9px;
+			    height: 42px;
+			    line-height: 40px;
+			    position: relative;
+			    padding: 0 12px;
+			    font-size: 12px;
+			}
+			.set-default .tl-toggle{
+				    right: 12px;
+			    top: 5px;
+			}
+	    	
+	    	.oper-address{
+	    		margin-top: 40px;
+	    		padding:  0 12px;
+	    	}
+	    	.oper-address .save-btn{
+	    		background: #F13437;
+	    		color: #FFFFFF;
+	    		font-size: 17px;
+	    		height: 44px;
+	    		width: 100%;
+	    		border-radius: 4px;
+	    	}
+	    	
+
+.share-code-bg{
+				background: url(../img/bg.png) no-repeat;
+				background-size:100% ;
+				
+			}
+			.share-code-wrap{
+			    background: url(../img/code_bg.png)no-repeat;
+			    background-size: 100%;
+			    position: fixed;
+			    top: 50%;
+			    left: 50%;
+			    width: 290px;
+			        min-height: 400px;
+			        margin-top: -225px;
+			  /* height: 60%;*/
+			    margin-left: -145px;
+			    border-radius: 1rem;
+			}
+			.share-code-wrap .erweima{
+				  padding: 3rem 4.5rem;
+
+			}
+			.share-code-wrap .niu-name{
+				    text-align: center;
+				    margin-top: 3rem;
+				    color: #333;
+				   
+				    font-size: 1.6rem;
+			}
+			.share-code-bg .line{
+				    margin: 2rem 2rem 0;
+   					 position: relative;
+   					 border-bottom: 1px solid #DDDDDD;
+			}
+			.share-code-wrap .niu-desc{
+				    position: absolute;
+				    top: -10px;
+				    left: 50%;
+				    text-align: center;
+				    background: #fff;
+				    margin-left: -57px;
+				    z-index: 11;
+				    padding: 0 8px;
+				    font-size: 14px;
+				    color: #333;
+			   
+			}
+			.share-code-wrap .share-oper{
+				padding:4rem 2rem 0;
+				text-align: center;
+			}
+			.share-code-wrap .share-oper .share-btn{
+				width: 120px;
+				background: #F13437;
+				color: #FFFFFF;
+				height: 35px;
+				border-radius: 4px;
+				font-size: 14px;
+			}
+			
+			.share-to-wrap{
+				position: fixed;
+			    width: 100%;
+			    bottom: 0;
+			    z-index: 100;
+			   padding-top: 20px;
+			    text-align: center;
+			    display: none;
+			    font-size: 14px;
+			}
+			.share-to{
+				padding: 20px;
+				border-bottom: 1px solid #DDDDDD;
+			}
+			.show{
+				display: block;
+			}
+			.share-cancle{
+				height: 40px;
+				line-height: 40px;
+			}
+			.share-to a{
+					width: 60px;
+				height: 60px;
+				display: inline-block;
+				margin: 0 10px;
+			}
+			.share-to .weixin span{
+				background:url(../img/icon/ic_share_wechat@2x.png) no-repeat ;
+				background-size:100% ;
+				width: 60px;
+				height: 60px !important;
+				display: inline-block;
+			}
+			.share-to .qq span{
+				background:url(../img/icon/ic_share_QQ@2x.png) no-repeat ;
+				background-size:100% ;
+				width: 60px;
+				height: 60px !important;
+				display: inline-block;
+			}
+			.share-to .qq-zone span{
+				background:url(../img/icon/ic_share_Qzone@2x.png) no-repeat ;
+				background-size:100% ;
+				width: 60px;
+				height: 60px !important;
+				display: inline-block;
+			}
+			.share-to .sina span{
+				background:url(../img/icon/ic_share_sina@2x.png) no-repeat ;
+				background-size:100% ;
+				width: 60px;
+				height: 60px !important;
+				display: inline-block;
+			}
+			
+
+
+/*我的银行卡*/
+.bank-cards-wrap{
+	background: #F4F4F4;
+	padding: 10px 12px;
+	margin-bottom: 44px;
+}
+.bank-cards-wrap .bank-card-item{
+	
+	border-radius: 10px;
+	height: 117px;
+	color: #FFFFFF;
+	margin-bottom: 10px;
+}
+.bank-cards-wrap .bank-card-item.zhangshang{
+	background: -webkit-linear-gradient(left, #FF7A8D , #F27BA8);
+}
+.bank-cards-wrap .bank-card-item.gongshang{
+	background: -webkit-linear-gradient(left, #FF8683 , #FB9077);
+}
+.bank-cards-wrap .bank-card-item.nongye{
+	background: -webkit-linear-gradient(left, #7FD0BE , #85BFD2);
+}
+.bank-cards-wrap .bank-card-item.jianshe{
+	background: -webkit-linear-gradient(left, #85B9E4 , #9FA5D9);
+}
+
+
+.bank-card-item .one-card{
+	padding: 15px;
+	position: relative;
+	
+}
+.bank-card-item .one-card img{
+	width: 50px;
+	height: 50px;
+	float: left;
+}
+.bank-card-item .one-card .bank-name{
+	font-size: 16px;
+/*	margin-left: 20px;*/
+	margin-bottom: 5px;
+	
+}
+.bank-card-item .one-card .card-type{
+	font-size: 12px;
+	/*margin-left: 20px;*/
+	margin-bottom: 18px;
+}
+.bank-card-item .one-card .card-num{
+	text-align: right;
+	font-size: 20px;
+}
+.bank-card-item .one-card input[type=radio]{
+	    position: absolute;
+    right: 10px;
+    top: 15px;
+    -webkit-appearance: none;
+    background: url(../img/icon/ic_bank_card_not_check@2x.png) no-repeat;
+    background-size:100% ;
+    width: 22px;
+    height: 22px;
+    margin: 0;
+}
+.bank-card-item .one-card input[type=radio]:checked{
+
+    background: url(../img/icon/ic_bank_card_check@2x.png) no-repeat;
+    background-size:100% ;
+ 
+}
+.mgr{
+	    position: absolute;
+    right: 12px;
+    font-size: 12px;
+    color: #666;
+    bottom: 10px;
+}
+
+.add-card{
+	height: 40px;
+    background: #e64b4b;
+    line-height: 40px;
+    text-align: center;
+    color: #FFFFFF;
+    font-size: 16px;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+.add-card a{color: #FFFFFF;}
+	  		
+/*添加银行卡*/
+
+.add-bank-card{background: #F4F4F4;}
+.account-type{
+	margin: 9px 0;
+}
+.account-info{margin-top: 9px;}
+.add-bank-card .card-item{
+	position: relative;
+	padding: 0 12px;
+	background: #FFFFFF;
+	height: 44px;
+	line-height: 44px;
+	border-bottom: 1px solid #DDDDDD;
+}
+.add-bank-card .card-item select{
+	margin-top: 10px;
+}
+.add-bank-card .card-item .item-tip{
+	font-size: 12px;
+	display: block;
+	position: absolute;
+	width: 100px;
+}
+.add-bank-card .card-item input{
+	width: 100%;
+	padding-left: 70px;
+	height: 35px;
+	
+}
+.add-card-oper{margin-top: 40px;padding: 0 20px;}
+.add-card-oper button{
+	height: 44px;
+	width: 100%;
+	background: #F13437;
+	color: #FFFFFF;
+	font-size: 16px;
+	border-radius: 4px;
+}

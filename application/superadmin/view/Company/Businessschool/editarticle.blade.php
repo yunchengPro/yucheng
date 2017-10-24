@@ -1,0 +1,1 @@
+{include file="/Company/Businessschool/addarticle" /}

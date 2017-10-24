@@ -1,0 +1,1 @@
+{include file="Product/Attribute/addAttribute" /}

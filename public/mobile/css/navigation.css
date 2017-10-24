@@ -1,0 +1,71 @@
+.nav-wrap {
+	height: 50px;
+	border-top: 0.5px solid #DDDDDD;
+	position: fixed;
+	width: 100%;
+	bottom: 0;
+	display: -webkit-box;
+	background: #FFFFFF;
+}
+
+.nav-wrap .nav-item {
+	display: -webkit-box;
+	-webkit-box-flex: 1;
+	text-align: center;
+	-webkit-box-pack: center;
+	-webkit-box-align: center;
+	width: 100%;
+}
+
+.nav-wrap .nav-item p {
+	font-size: 12px;
+	color: #999
+}
+
+.nav-wrap .nav-item.active p {
+	color: #cd9951;
+}
+
+.nav-wrap .nav-item span {
+	height: 30px;
+	width: 30px;
+	display: block;
+}
+
+.nav-wrap .nav-item .mall {
+	background: url(../img/icon/ic_store_tab@2x.png) no-repeat;
+	background-size: 100%;
+}
+
+.nav-wrap .nav-item.active .mall {
+	background: url(../img/icon/ic_store_pressed_tab@2x.png) no-repeat;
+	background-size: 100%;
+}
+
+.nav-wrap .nav-item .cart {
+	background: url(../img/icon/ic_cart_tab@2x.png) no-repeat;
+	background-size: 100%;
+}
+
+.nav-wrap .nav-item.active .cart {
+	background: url(../img/icon/ic_cart_pressed_tab@2x.png) no-repeat;
+	background-size: 100%;
+}
+
+.nav-wrap .nav-item .niu {
+	background: url(../img/icon/ic_mine_tab@2x.png) no-repeat;
+	background-size: 100%;
+}
+
+.nav-wrap .nav-item.active .niu {
+	background: url(../img/icon/ic_mine_pressed_tab@2x.png) no-repeat;
+	background-size: 100%;
+}
+
+.nav-wrap .nav-item .logo {
+	width: 55px;
+	position: absolute;
+	left: 50%;
+	margin-left: -26.5px;
+	bottom: 3px;
+}

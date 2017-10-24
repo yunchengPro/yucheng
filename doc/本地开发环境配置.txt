@@ -1,0 +1,46 @@
+﻿1、wanmp环境
+qq群
+wampserver3.0.6_x64_apache2.4.23_mysql5.7.14_php5.6.25-7.0.10.exe
+vc_redist.x64.exe
+
+先安装
+vc_redist.x64.exe
+再安装
+wampserver3.0.6_x64_apache2.4.23_mysql5.7.14_php5.6.25-7.0.10.exe
+
+切换php版本到7.0
+
+2、伪静态配置
+1）修改http.conf
+wamp\bin\apache\apache2.4.23\conf\http.conf
+
+
+在底部添加
+Include conf/vhost/*.conf
+
+修改：
+<Directory />
+    AllowOverride none
+    Require all denied
+</Directory>
+成： 
+<Directory />
+    AllowOverride none
+    Order deny,allow
+    Allow from all
+</Directory>
+
+
+
+新建文件conf/vhost/api.conf
+<VirtualHost *:80>
+    ServerAdmin webmaster@nnh.com
+    DocumentRoot "D:\wamp\www\niu\api\public"
+    ServerName api.nnh.com
+    ServerAlias api.nnh.com 
+    ErrorLog "logs/nnh-error_log"
+</VirtualHost>
+
+2）修改host
+增加
+127.0.0.1 api.nnh.com

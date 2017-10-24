@@ -1,0 +1,114 @@
+/*
+ * verson: 1.0;	--本人不才，待优化^_^……
+ * author talon
+ * time:  2016-6-13 15:04:53
+ *	desc: 手机移动端样式（手机web、微信） 
+ * 
+ * */
+
+@charset "utf-8";
+
+/*base
+============================================================================*/
+/*定义盒子模型
+ * 参考：http://www.runoob.com/css3/css3-box-sizing.html
+ */
+*,
+*:before,
+*:after {
+   -moz-box-sizing: border-box;
+   -webkit-box-sizing: border-box;
+   box-sizing: border-box;
+}
+
+html,body,h1,h2,h3,h4,h5,h6,div,dl,dt,dd,
+ul,ol,li,p,blockquote,pre,hr,figure,table,
+caption,th,td,form,fieldset,legend,input,
+button,textarea,menu,a,span 
+{
+	margin: 0;
+	text-decoration: none;
+	padding: 0;
+	list-style: none;
+	font-family: "Microsoft Yahei","Hiragino Sans GB","Helvetica Neue",Helvetica,tahoma,arial,"WenQuanYi Micro Hei",Verdana,sans-serif,"\5B8B\4F53";
+}
+/*
+ * 浏览器的基准字号设置为 62.5%，也就是 16px*62.5%=10px，现在 1rem = 10px —— 为了计算方便。
+ * 然后在 body 上应用了 font-size: 1.6rem;，将页面字号设置为 16px。
+ */
+/*
+ * @media screen and (min-width:320px){html{font-size: 62.5%}}
+@media screen and (min-width:360px){html{font-size:68.18%}}
+@media screen and (min-width:375px){html{font-size:71.02%}}
+@media screen and (min-width:384px){html{font-size:73.86%}}
+@media screen and (min-width:414px){html{font-size:78.41%}}
+*/
+
+/*字体抗锯齿属性:-webkit-font-smoothing
+	 它有三个属性值：
+	none ------ 对低像素的文本比较好
+	subpixel-antialiased------默认值
+	antialiased ------抗锯齿很好
+ * */
+html {
+  font-size: 62.5%;
+  -webkit-font-smoothing: antialiased; /*chrome、safari*/
+}
+html{
+	 overflow-x: hidden;
+}
+body {
+  background: #F2F2F2;
+  font-size: 1.4rem;
+  overflow-x: hidden;
+  margin: 0 auto;
+}
+
+a,
+a:visited, /*指已经访问过的链接*/
+a:hover,/*指鼠标在链接*/
+a:active/* 指正在点的链接*/
+{
+	text-decoration: none;
+	
+}
+li{list-style: none;}
+a{color: #666;}
+section{background: #fff;}
+.clear{clear: both;}
+img{/*width: 100%;*/border: 0;}
+.tl-circle {border-radius: 50%;}
+.tl-fl,.tl-left{float: left;}
+.tl-fr,.tl-right{float: right;}
+.body-bg{background: #F2F2F2;}
+
+/**/
+/*定义弹性盒子*/
+.flex-box,
+.flex-wrap,
+.flex-container{ display: -webkit-flex; display: flex; }
+
+/*方向*/
+.diretion-l{ direction: left; }
+.diretion-r{ direction: right; }
+.diretion-u{ direction: up; }
+.diretion-d{ direction: down;}
+.diretion-ltr{ direction: ltr;}
+.diretion-rtl{direction: rtl;}
+
+.flex-direction-column{flex-direction: column;}
+
+
+
+/*设置弹性盒子的子元素如何分配空间*/
+.flex,
+.flex-1{ -webkit-flex: 1; flex:1;}
+.flex-2{ -webkit-flex: 2; flex:2;}
+.flex-3{ -webkit-flex: 3; flex:3;}
+.flex-4{ -webkit-flex: 4; flex:4;}
+.flex-5{ -webkit-flex: 5; flex:5;}
+
+.flex-row{
+	-webkit-flex:1 100%;
+	flex:1 100%;
+}

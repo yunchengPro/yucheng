@@ -1,0 +1,1 @@
+{include file="/System/Sysbountyuser/addmallbounty" /}
