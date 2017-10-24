@@ -7,7 +7,7 @@ use app\model\Sys\CommonModel;
 class IndexController extends ActionController
 {
 	/**
-     * 固定不变1
+     * 固定不变11
      */
     public function __construct(){
         parent::__construct();
