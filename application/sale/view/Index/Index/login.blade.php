@@ -3,8 +3,8 @@
 	<div class="login-wrap">
 		<div class="login-main">
 			<div class="login-item logo">
-				<img src="<?=$publicDomain?>/mobile/img/icon/login_icon@2x.png" class=""/>
-				<p>牛牛汇商家版</p>
+				<!-- <img src="<?=$publicDomain?>/mobile/img/icon/login_icon@2x.png" class=""/> -->
+				<p>鱼呈一品</p>
 			</div>
 			<div class="login-item">
 				<input type="tel" placeholder="请输入您的手机号"  maxlength="11" v-model.trim="mobile"/>
