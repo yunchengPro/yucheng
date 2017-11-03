@@ -1342,4 +1342,21 @@ class ProductModel{
         ];
         return $ret = Model::ins('ProProductAlterlog')->insert($insert);
     }
+
+    /**
+     * [categorylist 获取分类信息]
+     * @return [type] [description]
+     */
+    public function categorylist(){
+        $category = Model::ins('ProCategory')->getList(['parent_id'=>0]);
+        foreach ($category as $key => $value) {
+            $category[$key]['category_icon'] = Img::url($value['category_icon']);
+            $soncate = Model::ins('ProCategory')->getList(['parent_id'=>$value['id']]);
+            foreach ($soncate as $sk => $sv) {
+                $soncate[$sk]['category_icon'] = Img::url($sv['category_icon']);
+            }
+            $category[$key]['child'] = $soncate;
+        }
+        return  $category;
+    }
 }

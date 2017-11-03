@@ -6,3 +6,4 @@
 <link rel="stylesheet" type="text/css" href="<?=$publicDomain?>/mobile/css/navigation.css" />
 <link rel="stylesheet" type="text/css" href="<?=$publicDomain?>/mobile/css/swiper.min.css"/>
 <link rel="stylesheet" type="text/css" href="<?=$publicDomain?>/mobile/css/mall_wap.css"/>
+<link rel="stylesheet" type="text/css" href="<?=$publicDomain?>/mobile/css/my-app.css">

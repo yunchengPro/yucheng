@@ -3,6 +3,7 @@ namespace app\sale\controller\Index;
 use app\sale\ActionController;
 use app\lib\Model;
 use app\model\Sys\CommonModel;
+use app\model\Product\ProductModel;
 
 class IndexController extends ActionController
 {
@@ -178,6 +179,6 @@ class IndexController extends ActionController
 
     }
 
-
+    
 
 }

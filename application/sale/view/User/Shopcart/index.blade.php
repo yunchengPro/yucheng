@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>购物车</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+	    <meta name="renderer" content="webkit">
+	    <meta name="author" content="talon">
+	    <meta name="application-name" content="niuniuhui-wap">
+	    <meta http-equiv="Cache-Control" content="no-siteapp" />
+	    <meta name="format-detection" content="telephone=no" />
+	    
+	    <link rel="stylesheet" type="text/css" href="/mobile/css/talon_3g.css"/>
+	    
+	   	<link rel="stylesheet" href="/mobile/css/usercenter.css" />
+	    <script type="text/javascript" src="/mobile/js/jquery.min.js" ></script>
+	    <script type="text/javascript" src="/mobile/js/vue.min.js" ></script>
+	    
+	    
+	    <style>
+	    	body{background: #FFFFFF;}
+	    	.shopping-cart-list{margin-bottom: 50px;}
+	    	.shopping-cart-list>.shopping-goods{/*margin-bottom: 9px;*/}
+	    	.shopping-cart-list>.shopping-goods>.shop-bar{display: -webkit-box;-webkit-box-pack: justify;height: 44px;-webkit-box-align: center;padding: 0 12px;}
+	    	.shopping-cart-list i.checkbox{-webkit-appearance: none;width: 14px;height: 14px;background: url(/mobile/img/icon/check_none@2x.png) no-repeat;background-size:100% ;position: relative;    display: -webkit-inline-box;}
+	    	.shopping-cart-list i.checked{-webkit-appearance: none;width: 14px;height: 14px;background: url(/mobile/img/icon/checked@2x.png) no-repeat;background-size:100% ;position: relative;}
+	    	.shop-bar  i.checkbox{top: 2px;}
+	    	.shop-bar i.ico{background: url(/mobile/img/icon/more.png) no-repeat; background-size:100% ;width: 6px;height: 10px;display: inline-block;margin-left: 8px;}
+	    	.shopping-cart-list>.shopping-goods>.goods-info-box{background: #eee;padding:8px 12px;display: -webkit-box;/*height: 85px;*/position: relative;}
+	    	.shopping-cart-list>.shopping-goods>.goods-info-box{border-bottom: 1px solid #FFFFFF;}
+	    	.shopping-cart-list>.shopping-goods>.goods-info-box:last-child{border-bottom: none;}
+	    	.goods-info-box>.input-box{width: 20px;display: -webkit-box;-webkit-box-align: center;}
+	    	.goods-info-box>.goods-img{display: -webkit-box;-webkit-box-flex: 3;width: 100%;}
+	    	.goods-info-box>.goods-img img{width: 70px;}
+	    	.goods-info-box>.goods-info{display: -webkit-box;-webkit-box-flex: 1;width: 100%;-webkit-box-orient: vertical;padding-left: 10px;-webkit-box-pack: justify;}
+	    	.goods-info-box>.goods-info .good-name{font-size: 14px;}
+	    	.goods-info-box>.goods-info .sepcifi{font-size: 12px;}
+	    	
+	    	.cart-footer{position: fixed;bottom: 0;width: 100%;height: 50px;line-height: 50px;display: -webkit-box;background: #FFFFFF;-webkit-box-pack: justify;border-top: 0.5px solid #E5E5E5;}
+	    	.cart-footer i.checkbox{-webkit-appearance: none;width: 14px;height: 14px;background: url(/mobile/img/icon/check_none@2x.png) no-repeat;background-size:100% ;position: relative;top: 3px;margin-right: 5px;    display: -webkit-inline-box;}
+	    	.cart-footer i.checked{-webkit-appearance: none;width: 14px;height: 14px;background: url(/mobile/img/icon/checked@2x.png) no-repeat;background-size:100% ;position: relative;}
+	    	.cart-footer .cart-l{margin-left: 12px;}
+	    	.cart-footer .cart-r{display: -webkit-box;}
+	    	.cart-footer .settlement{
+	    		width: 80px;
+			    text-align: center;
+			    background: #f13437;
+			    color: #fff;
+			    font-size: 14px;
+			    line-height: 18px;
+			    padding-top: 10px;
+			    margin-left: 10px;
+	    	}
+	    	.cart-footer .settlement a{color: #FFFFFF;}
+	    	.cart-footer .settlement .fee{font-size: 10px;}
+	    	
+	    	.rechoice{
+	    		    margin-right: 55px;
+			    display: -webkit-box;
+			    -webkit-box-flex: 2;
+			    width: 100%;
+			    -webkit-box-orient: vertical;
+			    padding-left: 10px;
+	    	}
+	    	.goods-info-box .delete{
+	    		width: 60px;
+		    position: absolute;
+		    right: 0;
+		    height: 100%;
+		    top: 0;
+		    /* margin-left: 60px; */
+		    display: -webkit-box;
+		    -webkit-box-pack: center;
+		    -webkit-box-align: center;
+		    background: #f13437;
+		    color: #fff;
+		    font-size: 14px;
+	    	}
+	    	.pieces{
+	    		height: 35px;
+			    line-height: 35px;
+			    
+			    font-size: 17px;
+			    border-bottom: 1px solid #ddd;
+			    display: -webkit-box;
+			    -webkit-box-pack: justify;
+	    	}
+	    	.pieces .mins{height: 33px;width: 33px;background: url(/mobile/img/icon/mins@2x.png) 50% no-repeat;background-size:20px ;}
+	    	.pieces .plus{height: 33px;width: 33px;background: url(/mobile/img/icon/plus@2x.png) 50% no-repeat;background-size:20px ;}
+	    	.pieces .num{    border-left: 1px solid #DDDDDD;
+    border-right: 1px solid #DDDDDD;
+    width: 100%;
+    display: -webkit-box;
+    -webkit-box-flex: 1;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
+    margin-bottom: 5px;
+    }
+    .norm{padding: 10px 15px 0 0px;position: relative;}
+    .norm i {
+    	width: 14px;
+    	height: 7px;
+    	display: block;
+    	position: absolute;
+    	right: 0;
+    	background: url(/mobile/img/icon/down@2x.png) no-repeat;
+    	background-size:100% ;
+    }
+    
+    .norm-box{background: #fff;position: fixed;width: 100%;z-index: 200;height: 400px;bottom: 0;}
+     .norm-box img.good-img{width: 100px;position: absolute;top: -20px;left: 25px;}
+     .norm-box .norm-btn{background: #F13437;width: 100%;height: 44px;color: #fff;position: fixed;bottom: 0;}
+      .norm-box .norm-good-info{margin-left: 150px;margin-top: 20px;line-height: 30px;font-size: 14px;}
+      .norm-list{margin-top: 20px;}
+		.norm-list .norm-item{border-bottom: 1px solid #DDDDDD;padding-left: 25px;padding-top: 5px;}
+		.norm-list .norm-item:last-child{border-bottom: none;}
+		.norm-list .norm-item .norms{line-height:35px;}     
+		.norm-list .norm-item span{background: #EEEEEE;padding: 5px; border-radius: 4px;margin-right:10px ;font-size: 10px;}
+		.norm-list .norm-item span.active{background: #F13437;color: #FFFFFF;} 
+	    </style>
+	</head>
+	<body>
+		<div id="app">
+			<header class="page-header">
+					
+					<div class="page-bar">
+					
+					<a href="#">
+						<img src="/mobile/img/icon/back@2x.png" class="back-ico">
+					</a>
+					
+					<div class="bar-title">购物车({{goodsSum}})</div>
+					
+				</div>
+			</header>
+			
+			
+			<div class="shopping-cart-list">
+				<section class="shopping-goods" v-for="(item,index) in carts">
+					<div class="shop-bar">
+						<div>
+							<i  v-bind:class="{'checkbox':true,'checked':item.isChecked}" @click="selectShopGoods(item)"></i>
+							<a href="#"><span>{{item.shopName}}</span><i class="ico"></i></a></div>
+						<div @click="edit(item)" v-show="item.isShow==void 0">编辑</div>
+						<div @click="complete(item)" v-show="item.isShow">完成</div>
+					</div>
+					
+					
+					<div class="goods-info-box" v-for="(good,idx) in item.goods">
+						<div class="input-box">
+							<i  v-bind:class="{'checkbox':true,'checked':good.isChecked}" @click="selectGood(item,good)"></i>
+						</div>
+						
+						<a class="goods-img" :href="'../mall/mallGoodDetail.html?gid='+good.gid">
+							<img :src="good.img" />
+						</a>
+						<a class="goods-info" v-show="item.isShow==void 0">
+							<div>
+								<div class="tl-ellipsis-2 good-name">{{good.goodName}}</div>
+								<div class="c-999 sepcifi">{{good.norm}}</div>
+							</div>
+							<div>
+								<div class="text-r">X{{good.goodsNum}}</div>
+								<div class="price"><span class="red">{{good.price}}</span>元</div>
+							</div>
+						</a>
+							
+						<div class="rechoice"  v-show="item.isShow">
+							
+							<div class="pieces">
+								<div class="mins" @click="minsGoods(good)"></div>
+								<div class="num">{{good.goodsNum}}</div>
+								<div class="plus" @click="plusGoods(good)"></div>
+							</div>
+							<div class="norm"><a href="#" class="tl-ellipsis-2	">{{good.norm}}</a><i @click="showNorms(good.gid)"></i></div>
+							
+							
+						</div>
+						<div class="delete" @click="deleteGoods(item,good)" v-show="item.isShow">删除</div>
+					</div>
+					
+				</section>
+				
+				
+			</div>
+			
+			<footer class="cart-footer">
+				<div class="cart-l">
+					<label @click="selectAll"><i v-bind:class="{'checkbox':true,'checked':isSelectAll}" ></i>全选</label>
+				</div>
+				<div class="cart-r">
+					<div>
+						合计：<span class="red">{{totalPrice}}</span>元
+					</div>
+					<div class="settlement">
+						<a href="/order/index/showorder">
+							<div>结算(<span id="settleNum">{{checkNum}}</span>)</div>
+							<div class="fee">不含邮费</div>
+						</a>
+					</div>
+				</div>
+				
+			</footer>
+			
+			
+			<div class="tl-select-mask" v-show="normMaks" @click="closeNorms"></div>
+			<div class="norm-box"  v-show="normMaks">
+				<div v-if="goodNorm">
+					<div>
+						<img :src="goodNorm.good_img" class="good-img" />
+					</div>
+					<div class="norm-good-info">
+						<div class="red">{{goodNorm.price}}</div>
+						<div >剩余：<span>{{goodNorm.lave}}</span>件</div>
+					</div>
+					<div class="norm-list">
+						<div class="norm-item" v-for="(item,index) in goodNorm.norms">
+							<div>{{item.name}}</div>
+							<div class="norms">
+								<span v-for="(oneval,idx) in item.vals" :class="{'active':item.check==idx}"  @click="chioceNorm(item,idx)">{{oneval}}</span>
+							</div>
+						</div>
+						<!--<div class="norm-item">
+							<div>规格</div>
+							<div class="norms"><span>红色</span><span>白色</span></div>
+						</div>
+						<div class="norm-item">
+							<div>尺码</div>
+							<div class="norms"><span>L</span><span>XL</span><span>XXL</span></div>
+						</div>-->
+					</div>
+				</div>
+				<button class="norm-btn" @click="sureNrom">确定</button>
+				
+			</div>
+			
+		</div>
+		
+		
+		<script type="text/javascript">
+			/*
+			 * talon 2017-10-19 15:55:58
+			 * 购物车vue 基本交互
+			 */
+			var vm = new Vue({
+				el: '#app',
+				data: {
+					goodsSum:3,
+					isSelectAll:false,
+					carts:[],
+					goodNorm:{},
+					normMaks:false
+					
+				},
+				mounted: function() {
+					
+					this.carts=[
+						{
+							"shopName":"魅族旗舰店",
+							"shopId":2,
+							"goods":[
+								{	"gid":1,
+									"img":"/mobile/img/food1.png",
+									"goodName":"魅族NOTE5 4G+64gb全网魅族NOTE5 4G+64gb全网通魅族NOTE5 4G+64gb全网通通",
+									"price":"10000",
+									"norm":"星空灰",
+									"goodsNum":1
+								}
+							]
+						},
+						{
+							"shopName":"纵贯线休闲户外用品",
+							"shopId":3,
+							"goods":[
+								{	
+									"gid":12,
+									"img":"/mobile/img/food2.png",
+									"goodName":"爱奇屋 水杯 1500ml",
+									"price":"67.80",
+									"norm":"型号：22",
+									"goodsNum":2
+								},
+								{	
+									"gid":13,
+									"img":"/mobile/img/food3.png",
+									"goodName":"爱奇屋 水杯 152200ml",
+									"price":"67.00",
+									"norm":"型号：2222",
+									"goodsNum":2
+								}
+							]
+						},
+					];
+					
+				},
+				
+				computed:{
+					//合计总价
+					totalPrice:function(){
+						var total = 0;
+						
+						this.carts.forEach(function(shop){
+							
+							shop.goods.forEach(function(good){
+								if(good.isChecked){
+									total += good.price * good.goodsNum;
+								}	
+							});
+	
+						});
+						return total;
+					},
+					//结算商品数量
+					checkNum:function(){
+						var num = 0;
+						
+						this.carts.forEach(function(shop){
+							
+							shop.goods.forEach(function(good){
+								if(good.isChecked){
+									num+=good.goodsNum;
+								}	
+							});
+	
+						});
+						return num;
+					}
+				},
+				methods: {
+					
+					//单个商品选择
+					selectGood:function(shop,goodObj,gIdx){
+						if(goodObj.isChecked == void 0){
+							this.$set(goodObj,"isChecked",true)
+						} else {
+							goodObj.isChecked = !goodObj.isChecked;
+						}
+						this.isAllShopGoods(shop,goodObj);
+						this.isCheckAll();
+					},
+					//选择单个商品是否是商店商品全部
+					isAllShopGoods:function(shop,goodObj){
+						var flag = true;
+						shop.goods.forEach(function(good){
+							if(!good.isChecked){
+								flag = false;
+							}
+						});
+						if(!flag){
+							shop.isChecked = false;
+						} else {
+							shop.isChecked = true;
+						}
+					},
+					//选择店铺下的所有商品
+					selectShopGoods:function(shop){
+
+						if(shop.isChecked == void 0){
+							this.$set(shop,"isChecked",true)
+						} else {
+							shop.isChecked = !shop.isChecked;
+						}
+						
+						shop.goods.forEach(function(good){
+							if(shop.isChecked){
+								//good.isChecked = true;
+								vm.$set(good,"isChecked",true)
+							}else{
+								good.isChecked = false;
+							}
+							
+						});
+						
+						this.isCheckAll();
+					},
+					//检测是否已全选
+					isCheckAll:function(){
+						var flag = true;
+						this.carts.forEach(function(shop){
+							shop.goods.forEach(function(good){
+								if(!good.isChecked){
+									flag = false;
+								}
+							});
+							
+						});
+						if(!flag){
+							this.isSelectAll = false;
+						} else {
+							this.isSelectAll = true;
+						}
+					},
+					//全选
+					selectAll:function(){
+						
+						this.isSelectAll = !this.isSelectAll;
+						this.carts.forEach(function(shop){
+							if(vm.isSelectAll){
+								if(shop.isChecked == void 0||shop.isChecked==false){
+									vm.$set(shop,"isChecked",true)
+								}
+								//shop.isChecked=true;
+							}else{
+								shop.isChecked=false;
+							}
+							
+							shop.goods.forEach(function(good){
+								if(vm.isSelectAll){
+									//good.isChecked = true;
+									vm.$set(good,"isChecked",true)
+								}else{
+									good.isChecked = false;
+								}
+								
+							});
+							
+						});
+					},
+					//编辑
+					edit:function(shop){
+						if(shop.isShow==void 0){
+							this.$set(shop,"isShow",true);
+						}
+					},
+					//完成
+					complete:function(shop){
+						if(shop.isShow){
+							this.$set(shop,"isShow",void 0);
+						}
+						//数据提交操作
+					},
+					//加商品
+					plusGoods:function(goodObj){
+						goodObj.goodsNum++;
+					},
+					//减少商品
+					minsGoods:function(goodObj){
+						if(goodObj.goodsNum>1){
+							goodObj.goodsNum--;
+						}
+						
+					},
+					//删除商品
+					deleteGoods:function(shop,good){
+						shop.goods.splice(good,1);
+						//如果该店铺下没商品，连同店铺删除
+						if(shop.goods.length==0){
+							this.carts.splice(shop,1);
+						}
+					},
+					showNorms:function(gid){
+						this.normMaks=true;
+						//根据gid 查信息
+						this.goodNorm={
+							"good_img":"/mobile/img/food2.png",
+							"lave":1520,
+							"price":170,
+							"norms":[
+								{"name":"尺码","vals":["红色","蓝色"]},
+								{"name":"规格","vals":["S","L"]}
+							]
+						}
+					},
+					sureNrom:function(){
+						this.normMaks=false;
+					},
+					closeNorms:function(){
+						this.normMaks=false;
+						//清空
+						this.goodNorm={};
+					},
+					chioceNorm:function(obj,idx){
+//						if(obj.check==void 0){
+//							
+//							vm.$set(obj,"check",idx)
+//						}
+						vm.$set(obj,"check",idx)
+					}
+
+				}
+			});
+			
+		</script>
+	</body>
+</html>

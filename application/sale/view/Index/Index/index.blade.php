@@ -1,28 +1,4 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>牛牛汇首页</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        <meta name="renderer" content="webkit">
-        <meta name="author" content="talon">
-        <meta name="application-name" content="niuniuhui-wap">
-        <meta http-equiv="Cache-Control" content="no-siteapp" />
-        <meta name="format-detection" content="telephone=no" />
-        
-        <link rel="stylesheet" href="/mobile/css/amazeui.min.css" />
-        <link rel="stylesheet" type="text/css" href="/mobile/css/talon_3g.css"/>
-        <link rel="stylesheet" type="text/css" href="/mobile/css/swiper.min.css"/>
-       <link rel="stylesheet" type="text/css" href="/mobile/css/mall_wap.css"/>
-       <link rel="stylesheet" type="text/css" href="/mobile/css/navigation.css"/>
-        <script type="text/javascript" src="/mobile/js/jquery.min.js" ></script>
-        <script type="text/javascript" src="/mobile/js/vue.min.js" ></script>
-        <style>
-            
-       </style>
-    </head>
-    <body>
-        <div id="app">
+{include file="Pub/header" /}
             
             <!--mall-banner-->
             <section class="mall-banner">
@@ -42,23 +18,53 @@
             <!--/end mall-banner-->
             
             <section class="mall-sort">
-                <div class="mall-bar">推荐分类</div>
+                
                 <div class="tl-grid sort-list">
-                    <div class="tl-grid-1-3">
-                        <a href="#">
+                    <div class="tl-grid-1-4 am-text-center" >
+                        <a href="/product/index/categorylist">
                             <img src="/mobile/img/food1.png" class="sort-img"/>
                             <p class="sort-name">服装</p>
                         </a>
                     </div>
-                    <div class="tl-grid-1-3">
-                        <a href="#">
+                    <div class="tl-grid-1-4 am-text-center">
+                        <a href="/product/index/categorylist">
                             <img src="/mobile/img/food2.png" class="sort-img"/>
                             
                             <p class="sort-name">美肤</p>
                         </a>
                     </div>
-                    <div class="tl-grid-1-3">
-                        <a href="#">
+                    <div class="tl-grid-1-4 am-text-center">
+                        <a href="/product/index/categorylist">
+                            <img src="/mobile/img/food3.png" class="sort-img"/>
+                            <p class="sort-name">数码</p>
+                        </a>
+                    </div>
+                    <div class="tl-grid-1-4 am-text-center">
+                        <a href="/product/index/categorylist">
+                            <img src="/mobile/img/food3.png" class="sort-img"/>
+                            <p class="sort-name">数码</p>
+                        </a>
+                    </div>
+                    <div class="tl-grid-1-4 am-text-center">
+                        <a href="/product/index/categorylist">
+                            <img src="/mobile/img/food3.png" class="sort-img"/>
+                            <p class="sort-name">数码</p>
+                        </a>
+                    </div>
+                    <div class="tl-grid-1-4 am-text-center">
+                        <a href="/product/index/categorylist">
+                            <img src="/mobile/img/food3.png" class="sort-img"/>
+                            <p class="sort-name">数码</p>
+                        </a>
+                    </div>
+                    <div class="tl-grid-1-4 am-text-center">
+                        <a href="/product/index/categorylist">
+                            <img src="/mobile/img/food3.png" class="sort-img"/>
+                            <p class="sort-name">数码</p>
+                        </a>
+                    </div>
+                    <div class="tl-grid-1-4 am-text-center">
+                        <a href="/product/index/categorylist">
                             <img src="/mobile/img/food3.png" class="sort-img"/>
                             <p class="sort-name">数码</p>
                         </a>
@@ -68,8 +74,8 @@
             
             <div class="mall-recom">
                 
-                <a class="recom-good">
-                    <img src="/mobile/img/mall/banner-5.png" />
+                <a class="recom-good" href="/product/index/goodsdetail">
+                    <img src="/mobile/img/mall/banner-6.png" />
                     <div class="tl-ellipsis-2 good-name">DW 手表 百达翡丽iPone X Ipnone8 iPhone7 iPhone6S iPhone6 iPhone5  买不起啊</div>
                     <div class="tl-flex base-info">
                         <div class="tl-flex-3 price">
@@ -85,7 +91,7 @@
                     </div>
                 </a>
                 
-                <a class="recom-good">
+                <a class="recom-good" href="/product/index/goodsdetail">
                     <img src="/mobile/img/mall/banner-6.png" />
                     <div class="tl-ellipsis-2 good-name">DW 手表 百达翡丽iPone X Ipnone8 iPhone7 iPhone6S iPhone6 iPhone5  买不起啊</div>
                     <div class="tl-flex base-info">
@@ -113,16 +119,16 @@
                 </div>-->
                 
                 <div class="mall-goods-list">
-                    <a href="#">
+                    <a href="#" v-for="goods in goodslist">
                         <div class="one-good">
                             <div class="good-img">
-                                <img src="/mobile/img/food1.png" />
-                                
+                                <img :src="goods.thumb" />
+                                  
                             </div>
                             <div class="good-desc">
-                                <div class="tl-ellipsis-2 good-name">iPhone x那么贵，卖肾都买不起了，还是买个200块的诺基亚玩玩算了</div>
+                                <div class="tl-ellipsis-2 good-name" v-html="goods.productname"></div>
                                 <div class="good-price">
-                                    <span class="orange">￥66.00</span>
+                                <span class="orange">￥<span v-html="goods.prouctprice"></span></span>
                                 </div>
                             </div>
                         
@@ -220,32 +226,81 @@
                 </a>
             </div>  
         </nav>
-        
+{include file="Pub/tail" /}
         
         <!--/end 底部导航-->
         
-        <script type="text/javascript" src="/mobile/js/swiper.min.js" ></script>
-          <!-- Initialize Swiper -->
-        <script>
-       
-        
-           new Vue({
-            el:'#app',
-            data:{
-            
-            },
-            mounted:function(){
-                
-                //banner 轮播
-                var bannerSwiper = new Swiper('.banner-swiper', {
-                    pagination: '.swiper-pagination',
-                   // autoplay : 3000,
-                    paginationClickable: true
-                    
-                });
+<script type="text/javascript" src="/mobile/js/swiper.min.js" ></script>
+  <!-- Initialize Swiper -->
+<script>
 
-            }
-          });
-    </script>
-    </body>
-</html>
+
+   new Vue({
+    el:'#app',
+    data:{
+        goodslist:[],
+        page:1,
+        switchShow:false, 
+    },
+
+    methods:{
+        getgoodslist:function(){
+            
+            var _this=this;
+
+            _this.$http.post('/product/index/goodslist',{
+                page:_this.page,
+            }).then(
+                function (res) {
+                    var _this=this;
+                    data = eval("("+res.body+")");
+                    //data = cl(res);
+                    if(data.code=='200'){
+                            
+                        if(_this.page > 1){
+                            _this.goodslist = _this.buyconlist.concat(data.data.list);
+                        }else{
+                            _this.goodslist = data.data.list;
+                        }
+                        _this.maxPage = data.data.maxPage;
+                        _this.switchShow = !_this.switchShow; 
+
+
+                        
+                    }else{
+
+                        layer.open({
+                            content: data.msg,
+                            skin: 'msg',
+                            time: 2 
+                        });
+                        return false;
+
+                    }
+                    //$("#city").val('');
+                },function (res) {
+                    // 处理失败的结果
+                    //console.log(res);
+                    layer.open({
+                        content: '加载数据错误！请重新请求',
+                        skin: 'msg',
+                        time: 2 
+                    });
+                }
+            );
+        },
+    },
+    mounted:function(){
+        
+        //banner 轮播
+        var bannerSwiper = new Swiper('.banner-swiper', {
+            pagination: '.swiper-pagination',
+           // autoplay : 3000,
+            paginationClickable: true
+            
+        });
+        var _this = this;
+        _this.getgoodslist();
+    }
+  });
+</script>
