@@ -12,9 +12,9 @@
     <link rel="stylesheet" href="/mobile/css/amazeui.min.css">
     <link rel="stylesheet" href="/mobile/css/talon_3g.css" />
     <link rel="stylesheet" href="/mobile/css/my-app.css">
-    <script src="/mobile/js/jquery.min.js"></script>
-<script src="/mobile/js/amazeui.min.js"></script>
-
+    <link rel="stylesheet" type="text/css" href="<?=$publicDomain?>/mobile/css/swiper.min.css"/>
+    {include file="Pub/assetjs" /}
+        
 
 <style>
 
@@ -178,45 +178,40 @@
             <a href="#title-link">商品详情</a>
         </h1>
     </header>-->
+    <div id="app">
     <div class="pro-detail-container">
     	 <div class="pro-detail-bar">
-        	<a href="#" class="back"></a>
-        	<a href="#" class="buycard"></a>
+        	<a href="/index/index/index" class="back"></a>
+        	<a href="/user/shopcart/index" class="buycard"></a>
         </div>
         <div class="pro-detail-item">
-        	<div data-am-widget="slider" class="am-slider am-slider-default" data-am-slider='{&quot;directionNav&quot;:false}'>
-                <ul class="am-slides">
-                   
-                        <li>
-                            <img src="/mobile/img/pro-banner.png" />
-                          
-                        </li>
-                          <li>
-                            <img src="/mobile/img/pro-banner.png" />
-                          
-                        </li>
-                   
-                </ul>
-               <div class="reward-bar tl-flex">
-               		<div class="tl-flex-1"><span class="sp-tip">赠送牛粮</span><span class="sp-val">100.00</span></div>
-               		<div class="tl-flex-1"><span class="sp-tip">牛豆</span><span class="sp-val">50.00</span></div>
-               </div>
-            </div>
-          
-            <div class="am-g pro-txt">
-                <div class="am-u-sm-12">Galanz/格兰仕P70F2ocN3L-HP3(S0)微波炉家用智能按键平板正品</div>
-               
-            </div>
-            <div class="am-g">
-                <div class="am-u-sm-12">
-                    <span class="red price">399.00</span>元 + <span class="red price">99</span>牛豆
+        	   <div class="swiper-container">
+                    <div class="swiper-wrapper" >
+
+                        <div class="swiper-slide" v-for="banner in banners">
+                            <img :src="banner.productpic"/>
+                        </div>
+                       
+                    </div>
+                    <!-- Add Pagination -->
+                    <div class="swiper-pagination"></div>
                 </div>
-            </div>
-            <div class="am-g gray express">
-                <div class="am-u-sm-4">快递：0元</div>
-                <div class="am-u-sm-4 text-center">月销：29笔</div>
-                <div class="am-u-sm-4 text-right">广东深圳</div>
-            </div>
+          
+              
+                <div class="am-g pro-txt">
+                    <div class="am-u-sm-12" v-html="goodsDetail.productname" ></div>
+                   
+                </div>
+                <div class="am-g">
+                    <div class="am-u-sm-12">
+                        <span class="red price" v-html="goodsDetail.prouctprice"></span>元
+                    </div>
+                </div>
+                <div class="am-g gray express">
+                  <!--   <div class="am-u-sm-4">快递：0元</div>
+                    <div class="am-u-sm-4 text-center">月销：29笔</div>
+                    <div class="am-u-sm-4 text-right">广东深圳</div> -->
+                </div>
         </div>
         <div class="pro-detail-item" id="chooseSec">
             <div class="choose-nav am-g">
@@ -236,7 +231,7 @@
             </div>
         </div>-->
         <div class="pro-detail-item">
-            <div class="pro-store-img">
+        <!--     <div class="pro-store-img">
                 <img src="/mobile/img/icon/LOGO2.png" />
                 <div class="store-title">
                     &nbsp;&nbsp;格兰仕官方旗舰店
@@ -254,14 +249,14 @@
             </div>
             <div class="am-g flex-center text-center store-btns">
                 <!--<div class="am-u-sm-2"></div>-->
-                <div class="am-u-sm-6">
+              <!--   <div class="am-u-sm-6">
                     <a href="login.html" class="getmore">查看分类</a>
                 </div>
                 <div class="am-u-sm-6">
                     <a href="index.html" class="getmore">进店逛逛</a>
                 </div>
                 
-            </div>
+            </div> --> 
         </div>
     </div>
 	
@@ -278,12 +273,12 @@
                 </a>
             </li>
         </ul>
-        <div class="am-tabs-bd" style="touch-action: pan-y; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+        <div class="am-tabs-bd" >
             <div data-tab-panel-0="" class="am-tab-panel am-active">
                <div id="productView">
-                    <div style="margin:0 auto;font-size:14px;padding-right: 10px; padding-left: 10px;overflow: hidden;">
-                          
-                        <p><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882591sy917.jpg" src="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882591sy917.jpg" style="display: inline;"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882447js488.jpg" src="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882447js488.jpg" style="display: inline;"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882447cc510.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882454vt464.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882454ux874.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882599ja918.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882603sq796.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882459cg500.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882459nd814.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882467ph555.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882467it713.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882612yk703.gif" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882473nw276.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882618yn240.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882473dc364.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882623um113.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882478ze725.gif" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882478md700.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882486wt399.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882486ll224.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><br>&nbsp;<img width="100%" class="lazy" data-original="https://nnhtest.oss-cn-shenzhen.aliyuncs.com//NNH/images/2017-07-24/1500882500ag179.jpg" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAANSURBVBhXYzh8+PB/AAffA0nNPuCLAAAAAElFTkSuQmCC"><br>&nbsp;</p>                    </div>
+                    <div v-html="goodsDetail.description">
+                              
+                        </div>
                 </div>
            
             </div>
@@ -309,47 +304,45 @@
     <div class="am-modal-actions" id="my-actions">
         <div class="am-modal-actions-group">
             <ul class="am-list">
-                <li class="am-modal-actions-header">
-                    <div class="sec-choose">
-                        <div id="showBox">
-                            <img src="/mobile/img/food1.png" />
-                        </div>
-                        <div>
-                            <div><span class="red">399</span><small>元</small>+<span class="red">99</span><small>牛豆</small></div>
-                            <div>库存235件</div>
-                            <div>请选择颜色</div>
-                        </div>
+                    <?php foreach($sku_data['sku'] as $key => $value){ ?>
+
+                        <li <?php if($key == 0 ){ ?> style="display: block;" <?php }else{ ?> style="display: none;" <?php }  ?>  class="am-modal-actions-header " _data="<?=$value['f_productspec']?>" _skuid="<?=$value['id']?>">
+                            <div class="sec-choose">
+                                <div id="showBox">
+                                    <img src="<?=$value['productimage']?>" />
+                                </div>
+                                <div>
+                                    <div><span class="red"><?=$value['prouctprice']?></span><small>元</small></div>
+                                    <div>库存<?=$value['productstorage']?>件</div>
+                                 <!--    <div>请选择颜色</div> -->
+                                </div>
+                            </div>
+                        </li>
+                      <?php } ?>
+
+                    <?php foreach($sku_data['spec'] as $sku){ ?>
+                            <li class="sec-items">
+                                <div><?=$sku['spec_name']?></div>
+                                <div>
+                                    <?php foreach($sku['value'] as $spk => $spec){ ?>
+                                        <span <?php if($spk == 0) { ?> class="active" <?php } ?> _data="<?=$spec['id']?>" ><?=$spec['spec_value']?></span>
+                                    <?php }?>
+                                   
+                                </div>
+                            </li>
+                    <?php }?>
+                   
+                    <li class="sec-items-amount">
+                    <div class="sec-amount">
+                        <div>购买数量<label class="gray"></label></div>
+                        <div class="sec-add-plus"><span class="plus">-</span><span id="amount">1</span><span class="add">+</span></div>
                     </div>
-              </li>
-              <li class="sec-items">
-                <div>颜色分类</div>
-                <div>
-                    <span class="active" data-img="/mobile/img/food2.png">黑色</span>
-                    <span data-img="/mobile/img/food2.png">红色</span>
-                    <span data-img="/mobile/img/food2.png">白色</span>
-                    <span data-img="/mobile/img/food2.png">灰色</span>
-                </div>
-              </li>
-              <li class="sec-items">
-                <div>其他分类</div>
-                <div>
-                    <span>黑色</span>
-                    <span class="active">红色</span>
-                    <span>白色</span>
-                    <span>灰色</span>
-                </div>
-              </li>
-              <li class="sec-items-amount">
-                <div class="sec-amount">
-                    <div>购买数量<label class="gray">（每人限购24件）</label></div>
-                    <div class="sec-add-plus"><span class="plus">-</span><span id="amount">2</span><span class="add">+</span></div>
-                </div>
-              </li>
-              <li class="sec-items-blank"></li>
+                    </li>
+                    <li class="sec-items-blank"></li>
             </ul>
         </div>
         <div class="am-modal-actions-group">
-            <a href="/user/shopcart/index" class="am-btn am-btn-secondary am-btn-block">确 定</a>
+            <a href="#" class="am-btn am-btn-secondary am-btn-block" v-on:click="addshopcart()">确 定</a>
         </div>
     </div>
 	
@@ -377,11 +370,11 @@
 		</div>
 		
 		<div class="tl-flex-3 tl-flex">
-			<div class="tl-flex-1 join-btn">加入购物车</div>
+			<div class="tl-flex-1 join-btn" >加入购物车</div>
 			<div class="tl-flex-1 buy-btn">立即购买</div>
 		</div>
 	</footer>
-
+    </div>
    <!--<div class="download-bar">
     	<div class="close-box">
     		<a href="javascript:void(0)">
@@ -432,32 +425,190 @@
 			
     	});
     </script>
+    <script type="text/javascript" src="<?=$publicDomain?>/mobile/js/swiper.min.js"></script>
+    <script>
+           new Vue({
+            el:'#app',
+            
+            data:{
+                goods_id:"<?=$goods_id?>",
+                goodsDetail:[],
+                banners:[]
+            },
+            created:function(){
+                
+                var _this=this;
+                
+                _this.getGoodsDetail();
+            },
+            methods:{
+               
+                getGoodsDetail:function(){
+                    var _this = this;
+
+                    _this.$http.post('/Product/Index/goodsDetailData',{
+                        
+                        goods_id:_this.goods_id
+                    }).then(
+                        function (res) {
+                            // 处理成功的结果
+                            //console.log(res);
+                            //console.log("=============");
+                            data = eval("("+res.body+")");
+                            
+                            if(data.code=='200'){
+                               
+                                _this.goodsDetail = data.data;
+                                _this.banners = data.data.bannerimg;
+
+                            }else{
+                                 
+                                layer.open({
+                                    content: data.msg,
+                                    skin: 'msg',
+                                    time: 2 
+                                });
+                                return false;
+                            }
+                            //$("#city").val('');
+                        },function (res) {
+                            // 处理失败的结果
+                             
+                            layer.open({
+                                content: '加载数据错误！请重新请求',
+                                skin: 'msg',
+                                time: 2 
+                            });
+                        }
+                    );
+                },
+                addshopcart:function(){
+                  
+                    var obj = $(".sec-items").find('span.active');
+                   
+                    var sku_arr =  $(".am-modal-actions-group .am-list").find('li.am-modal-actions-header ');
+                  
+                    var skuid = sku_arr.attr('_skuid');
+                    var productid = "<?=$goods_id?>";
+                    var productnum = parseInt($("#amount").text());
+
+                    var _this = this;
+
+                    _this.$http.post('/user/shopcart/addgoods',{
+                        
+                        skuid:skuid,
+                        productid:productid,
+                        productnum:productnum
+                    }).then(
+                        function (res) {
+                            // 处理成功的结果
+                            //console.log(res);
+                            //console.log("=============");
+                            data = eval("("+res.body+")");
+                            
+                            if(data.code=='200'){
+                               
+                               window.location.href = "/user/shopcart/index";
+
+                            }else{
+                                 
+                                layer.open({
+                                    content: data.msg,
+                                    skin: 'msg',
+                                    time: 2 
+                                });
+                                return false;
+                            }
+                            //$("#city").val('');
+                        },function (res) {
+                            // 处理失败的结果
+                             
+                            layer.open({
+                                content: '加载数据错误！请重新请求',
+                                skin: 'msg',
+                                time: 2 
+                            });
+                        }
+                    );
+
+                }
+               
+            },
+            mounted:function(){
+                var specs = '';
+                var spec = '';
+                //选择规格
+                $(".sec-items").on("click","span",function(){
+                   
+                    $(this).addClass('active').siblings().removeClass('active');
+                   
+
+                    $(this).parent().parent().parent().find("li.sec-items").each(function(){
+                        spec = $(this).find('span.active').attr('_data');
+                      
+                        specs += spec + ',';
+                       
+                      
+                    });
+
+                    $('ul.am-list').find("li.am-modal-actions-header ").each(function(){
+            
+                        var chosspec = $(this).attr('_data') + ',';
+                       
+                        if(chosspec == specs){
+                     
+                            $('.am-modal-actions-header').hide(); 
+                           
+                            $(this).show();
+                        }
+
+                    });
+                    spec = '';
+                    specs = '';
+
+                });
+
+                //添加数量
+                $(".sec-amount span").on("click",function(){
+                    var num = parseInt($("#amount").text());
+                    if($(this).hasClass('plus')){
+                        if(num>1){
+                            num--;
+                        }
+                    }
+                    if($(this).hasClass('add')){
+                        num++;
+                    }
+                    $("#amount").html(num);
+                });
+
+                $("#chooseSec,.join-btn,.buy-btn").on("click",function(e){
+                    $("#my-actions").modal('toggle');
+                });
+
+              
+            },
+            watch:{
+                banners:function(){
+                        this.$nextTick(function () {
+                             var swiper = new Swiper('.swiper-container', {
+                                pagination: '.swiper-pagination',
+                                autoplay : 3000,
+                                paginationClickable: true
+                             });
+
+                        });
+                    }
+                    
+            },
+            directives: { // 自定义指令
+              
+            }
+          });
+    </script>
 </body>
 
-<!-- <script src="http://cdn.amazeui.org/amazeui/2.7.2/js/amazeui.min.js"></script> -->
-<script>
-    $("#chooseSec,.join-btn,.buy-btn").on("click",function(e){
-        $("#my-actions").modal('toggle');
-    });
+   
 
-    //选择规格
-    $(".sec-items").on("click","span",function(){
-        $(this).addClass('active').siblings().removeClass('active');
-       $("#showBox img")[0].src= $(this).data("img");
-    });
 
-    //添加数量
-    $(".sec-amount span").on("click",function(){
-        var num = parseInt($("#amount").text());
-        if($(this).hasClass('plus')){
-            if(num>1){
-                num--;
-            }
-        }
-        if($(this).hasClass('add')){
-            num++;
-        }
-        $("#amount").html(num);
-    });
-</script>
 </html>

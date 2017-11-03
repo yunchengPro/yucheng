@@ -3,15 +3,15 @@
 	<div class="login-wrap">
 		<div class="login-main">
 			<div class="login-item logo">
-				<!-- <img src="<?=$publicDomain?>/mobile/img/icon/login_icon@2x.png" class=""/> -->
-				<p>鱼呈一品</p>
+				<img src="<?=$publicDomain?>/mobile/img/icon/login_icon.png" class=""/>
+				<p>牛牛汇商家版</p>
 			</div>
 			<div class="login-item">
 				<input type="tel" placeholder="请输入您的手机号"  maxlength="11" v-model.trim="mobile"/>
 			</div>
 			<div class="login-item">
 				<input type="tel" placeholder="请输入验证码" maxlength="6" v-model.trim="valicode" />
-				<button class="get-code" @click="sendValicode(event)" v-bind:disabled="valicodeDis">获取验证码</button>
+				<button class="get-code" @click="sendValicode($event)" v-bind:disabled="valicodeDis">获取验证码</button>
 			</div>
 			<!--
 			<div class="login-item" v-show="register">
@@ -22,7 +22,10 @@
 				<button class="login-btn" @click="login">登录/注册</button>
 			</div>
 			<div class="login-item">
-				<div class="register-pact"><input type="checkbox" v-model="registerCheck" @click="updateCheck" checked="checked" value="" />我已阅读并同意<a href="#">《用户注册协议》</a></div>
+				<div class="register-pact"><input type="checkbox" v-model="registerCheck" @click="updateCheck" checked="checked" value="" />我已阅读并同意<a href="/Introduction/Index/registDeal">《牛牛汇商家版用户注册协议》</a></div>
+			</div>
+			<div class="login-item">
+				<div class="tab-login"><a :href="'/index/index/loginbypwd?recommendid='+recommendid+'&checkcode='+checkcode" class="c-333">使用密码登录</a></div>
 			</div>
 		</div>
 	</div>
@@ -59,10 +62,11 @@
 	.login-main .login-item.logo{display: -webkit-box;-webkit-box-pack: center;-webkit-box-align: center;-webkit-box-orient: vertical;}
 	.login-main .login-item.logo img{width: 60px;margin-bottom: 5px;}
 	.login-main .login-item.logo p{font-size: 13px;color: #bf9148;}
-	.login-main .login-item input{width: 100%;height: 40px;padding-left: 20px;border-radius: 4px;font-size: 14px;border: 1px solid #DDDDDD;}
+	.login-main .login-item input{width: 100%;height: 40px;padding-left: 20px;border-radius: 4px;font-size: 14px;border: 0.5px solid #DDDDDD;}
 	.login-main .login-item .get-code{width: 100px;font-size: 12px;height: 40px;position: absolute;top: 0px;right: 0;border-radius: 0 4px 4px 0;color: #FFFFFF;background:#CEA15A ;}
 	.login-main .login-item .get-code:disabled{background: #CCCCCC;}
 	.login-main .login-item .login-btn{width: 100%;height: 40px;border-radius: 4px;background: #CEA15A;font-size: 16px;color: #fff;}
+	.login-main .login-item .login-btn:disabled{background: #CCCCCC;}
 	.register-a{font-size: 13px;color: #9c640b !important;bottom: 15px;position:absolute;left: 50%;margin-left: -26px;text-decoration: underline;}
 	
 	.register-pact{display: -webkit-box;-webkit-box-pack: center;margin-top: -10px;}
@@ -87,6 +91,59 @@
     
     }
 	.register-pact a{color: #925e0a;}
+	.tab-login{
+		    display: -webkit-box;
+			-webkit-box-pack: center;
+	}
+	.tab-login a{text-decoration: underline;}
+	.eye-half{
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		width: 22px;
+		height: 22px;
+		display: block;
+		background: url(../../mobile/img/icon/ic_login_close_eyes@2x.png) no-repeat;
+		background-size:100% ;
+		z-index: 20;
+	}
+	.eye{
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		width: 22px;
+		height: 22px;
+		display: block;
+		background: url(../../mobile/img/icon/ic_login_open_eyes@2x.png) no-repeat;
+		background-size:100% ;
+	}
+	.forget-box{
+		    height: 30px;
+		    line-height: 30px;
+		    text-align: right;
+	}
+	#pwd-input{
+		    width: 100%;
+		    height: 30px;
+		    color: transparent;
+		    position: absolute;
+		    top: 7px;
+		    left: 0;
+		    border: none;
+		    font-size: 14px;
+		    opacity: 0;
+		    z-index: 10;
+		    letter-spacing: 5px;
+		    padding-left: 6px;
+	}
+	.showBox {
+	    width: 100%;
+	    height: 30px;
+	    font-size: 14px;
+	    position: relative;
+	    z-index: 1;
+	    letter-spacing: 2px;
+    }
 </style>
 <script>
 	var Vm = new Vue({
@@ -96,7 +153,6 @@
 			sendValicodeUrl:"/index/index/sendValicode",
 			title:'<?=$title?>',
 			redirectUri:'<?=$redirect_uri?>',
-			sendType:'<?=$sendType?>',
 			checkcode:'<?=$checkcode?>',
 			recommendid:'<?=$recommendid?>',
 			valicodeDis:true,
@@ -106,6 +162,7 @@
 			timeouts:{},
 			// register:true,
 			recommendMobile:'',
+			flag:true,
 			registerCheck:true
 		},
 		mounted:function(){
@@ -116,6 +173,7 @@
 		methods:{
 			login:function() {
 				var _this = this;
+			
 				if(_this.mobile == "") {
 					toast("手机号码不能为空");
 					return false;
@@ -129,25 +187,58 @@
 					toast("请同意注册协议");
 					return false;
 				}
-				_this.$http.post(_this.apiUrl,{
-					mobile:_this.mobile,valicode:_this.valicode
-					
-				}).then(
-					function(res) {
-						data = cl(res);
-						if(data.code == "200") {
-							// 登录成功，页面跳转
-							LinkTo(data.data);
-						} else if(data.code == "305") {
-							// 重定向跳转，到绑定页
-							LinkTo(data.data);
-						} else {
-							toast(data.msg);
+				// loadtip({content:'登录注册中...'});
+				if(_this.flag){
+					_this.flag=false;
+					_this.checktoken = '<?=$checktoken?>';
+					_this.$http.post(_this.apiUrl,{
+						mobile:_this.mobile,valicode:_this.valicode,redirectUri:_this.redirectUri,checkcode:_this.checkcode,recommendid:_this.recommendid,checktoken:_this.checktoken,
+						logintype:1
+						// ,recommendMobile:_this.recommendMobile
+					}).then(
+						function(res) {
+							
+							data = cl(res);
+							if(data.code == "200") {
+								// 登录成功，页面跳转
+								var url = data.data.url;
+								if(data.data.isloginpwd == 0) {
+									var url = "/index/index/updateloginnumber?recommendid=&checkcode=&mobile="+_this.mobile+"&encrypt="+data.data.encrypt+"&returnType=2";
+								}
+
+								LinkTo(data.data.url);
+								// loadtip({
+	       //                          close:true,
+	       //                          alert:'登录成功',
+	       //                          urlto:'/user/index/index'
+	       //                      });
+							} else if(data.code == "305") {
+								// 重定向跳转，到绑定页
+								LinkTo(data.data.url);
+								// loadtip({
+	       //                          close:true,
+	       //                          alert:'操作成功',
+	       //                          urlto:data.data
+	       //                      });
+							} else {
+								_this.flag = true;
+								toast(data.msg);
+								// loadtip({
+	       //                          close:true,
+	       //                          alert:data.msg
+	       //                      });
+							}
+						}, function(res) {
+							_this.flag=true;
+							toast('操作异常');
+							// return false;
+							// loadtip({
+	      //                       close:true,
+	      //                       alert:'操作异常'
+	      //                   });
 						}
-					}, function(res) {
-						toast("操作异常");
-					}
-				);
+					);
+				}
 			},
 			sendValicode:function(e) {
 				var _this = this;
@@ -160,7 +251,7 @@
 					return false;
 				}
 				_this.$http.post(_this.sendValicodeUrl,{
-					mobile:_this.mobile,sendType:_this.sendType
+					mobile:_this.mobile
 				}).then(
 					function(res) {
 						data = cl(res);
@@ -178,7 +269,7 @@
 			},
 
 			updateCheck:function() {
-				this.registerCheck != this.registerCheck;
+				this.registerCheck = !this.registerCheck;
 			},
 
 			wait:function(e) {

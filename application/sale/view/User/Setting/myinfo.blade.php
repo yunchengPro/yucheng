@@ -16,7 +16,7 @@
 
 	<header class="page-header">	
 		<div class="page-bar">	
-			<a href="javascript:history.go(-1)">
+			<a href="/user/index/index">
 				<span class="back-ico"></span>
 			</a>
 			<span class="bar-title">我的资料</span>
@@ -31,15 +31,9 @@
 				<div class="config-val"  id="uploadfiles_photos">
 					<img id="photos" name="photos" :src="headerpic" style="margin-top:-7px; ">
 				</div>
-					
-
-	                
                     <div  id="photos_upload" name="photos_upload" >
                         <input  name="file" class="upload" multiple="" type="file">
-                        
                     </div>
-
-	                
 				<i></i>
 			</a>
 		</div>
@@ -124,20 +118,20 @@
         data:{
             apiUrl:"/user/index/getIndexData",
             headerpic:"/mobile/img/icon/ic_center_head@2x.png",
-            role:"<?=$role?>",
+            checktoken:'<?=$checktoken?>',
             nickname:'',
-            sex:'',
+            sex:0,
             isnameauth:'',
             banknumber:'未设置',
             logisticsDec:'',
             sexArr:["未设置","男","女"],
             isShowSex:false,
-            chosesex:1
+            chosesex:0
         },
         mounted:function(){
             // 初始化方法
             this.getIndexData();
-            var filepath = fileupload('photos','{"url":"\/uploadfile\<?=$publicDomain?>/mobile/jQueryFileUpload.php","domain":"\/\/nnhtest.oss-cn-shenzhen.aliyuncs.com\/","maxFileSize":4194304,"maxNumberOfFiles":5,"savefileurl":"\/Sys\/upload\/getfile","getParamUrl":"\/Sys\/upload\/policy","server_type":"NNH\/images","formData":{"server_type":"NNH\/images"},returnUrl:true,imgid:"photos",uploadfunc:"Vm.updateheaderpic"}');
+            var filepath = fileupload('photos','{"url":"\/uploadfile\<?=$publicDomain?>/mobile/jQueryFileUpload.php","domain":"\/\/nnhcoupon.oss-cn-shenzhen.aliyuncs.com\/","maxFileSize":4194304,"maxNumberOfFiles":5,"savefileurl":"\/Sys\/upload\/getfile","getParamUrl":"\/Sys\/upload\/policy","server_type":"NNH\/images","formData":{"server_type":"NNH\/images"},returnUrl:true,imgid:"photos",uploadfunc:"Vm.updateheaderpic"}');
             
         },
         methods:{
@@ -146,20 +140,21 @@
                 var nameauthArr = ["未认证","已认证"];
                 var logisticsArr = ["未设置","已设置"];
                 _this.$http.post(_this.apiUrl,{
-                    role:_this.role
+                	customerid:_this.customerid
                 }).then(
                     function(res){
                         data = cl(res);
+                        // console.log(data);
                         if(data.code == "200") {
-                        	_this.headerpic = data.data.userinfo.headerpic != '' ? data.data.userinfo.headerpic : _this.headerpic;
-                        	_this.nickname = data.data.userinfo.nickname;
-                        	_this.sex = data.data.userinfo.sex;
-                        	_this.isnameauth = nameauthArr[data.data.userinfo.isnameauth];
-                        	_this.banknumber = data.data.userinfo.banknumber;
+                        	_this.headerpic = data.data.userInfo.headerpic != '' ? data.data.userInfo.headerpic : _this.headerpic;
+                        	_this.nickname = data.data.userInfo.nickname;
+                        	_this.sex = data.data.userInfo.sex;
+                        	_this.isnameauth = nameauthArr[data.data.userInfo.isnameauth];
+                        	_this.banknumber = data.data.userInfo.banknumber;
                         	if(_this.banknumber==0){
                         		_this.banknumber='未设置';
                         	}
-                        	_this.logisticsDec = logisticsArr[data.data.userinfo.logisticsDec];
+                        	_this.logisticsDec = logisticsArr[data.data.userInfo.logisticsDec];
                         } else {
                             toast(data.msg);
                         }
@@ -214,12 +209,12 @@
 
 		  	updateSexData:function() {
 		  		var _this = this;
-		  		var apiUrl = "/user/setting/updateInfo";
+		  		var apiUrl = "/user/setting/updateinfo";
 
 		  		_this.hideSexSelect();
 		  		loadtip({content:'提交中'});
 		  		_this.$http.post(apiUrl,{
-            		sex:_this.sex,checkcode:_this.checkcode
+            		sex:_this.sex,customerid:_this.customerid
             	}).then(
             		function(res) {
             			// 处理成功的结果
@@ -249,16 +244,8 @@
         watch:{
         	chosesex:{
 		  	 	handler:function(val,oldVal){
-		  	//  		//提交数据
-		  	//  		// toast("修改成功");
-		  	 		// if(val=="1"){
-		  	 		// 	this.sex="男";
-		  	 		// }else{
-		  	 		// 	this.sex="女";
-		  	 		// }
 		  	 		this.sex = val;
 		  	 		this.updateSexData();
-		  	 		// this.hideSexSelect();
 		  	 	}
 		  	}
         }

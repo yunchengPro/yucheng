@@ -70,6 +70,8 @@ class WithdrawalsController extends ActionController{
         $status_arr = $this->status_arr;
         //$list = Model::ins("CusWithdrawals")->pageList($where,'*','id desc');
         $list = Model::ins("CusWithdrawals")->pageList($where, '*', 'id desc');
+        
+        $withdrawals_config = Config::get("withdrawals");
 
         //var_dump($list); exit();
         foreach($list['list'] as $key => $val){
@@ -77,6 +79,8 @@ class WithdrawalsController extends ActionController{
             $list['list'][$key]['cashamount']    = DePrice($val['cashamount']);
             $list['list'][$key]['comamount']    = DePrice($val['comamount']);
             $list['list'][$key]['pay_money'] = DePrice($val['pay_money']);
+            $list['list'][$key]['poundage'] = DePrice($val['amount'] * $withdrawals_config['service_proportion']);
+            $list['list'][$key]['need_money'] = DePrice($val['amount'] * $withdrawals_config['withdrawals_proportion']);
             
             $customerId = $val['customerid'];
             $customer   = Model::ins("CusCustomer")->getById($customerId);

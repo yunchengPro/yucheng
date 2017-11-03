@@ -10,25 +10,15 @@
             <span class="bar-title" v-html="title"></span>
         </div>
     </header>
-    
-    
     <section class="config-wrap">
-        
         <div class="config-item">
-            
             <input type="tel" maxlength="11" v-bind:placeholder="holderrealname" v-model.trim="realname"/>
-            
         </div>
-        
     </section>
     <section class="config-wrap modify-phone">
-        
         <div class="config-item">
-            
-            <input type="tel" maxlength="11" v-bind:placeholder="holderidnumber" v-model.trim="idnumber"/>
-            
+            <input type="tel" maxlength="20" v-bind:placeholder="holderidnumber" v-model.trim="idnumber"/>
         </div>
-        
     </section>
     <div class="modify-wrap" v-if="isnameauth!=1">
         <button type="button" class="sure-btn" v-bind:disabled="dis" v-on:click="authUser">确定</button>
@@ -39,7 +29,8 @@
     var Vm = new Vue({
         el:'#app',
         data:{
-            checkcode:"<?=$checkcode?>",
+            // checkcode:"<?=$checkcode?>",
+            checktoken:'<?=$checktoken?>',
             title:"<?=$title?>",
             holderrealname:"",
             holderidnumber:"",
@@ -56,15 +47,16 @@
                 var _this = this;
                 var apiUrl = "/user/index/getIndexData";
                 _this.$http.post(apiUrl,{
-                    role:_this.role
+                	// customerid:_this.customerid
+                    // role:_this.role
                 }).then(
                     function(res) {
                         // 处理成功的结果
                         data = cl(res);
                         if(data.code == "200") {
-                            _this.holderrealname = data.data.userinfo.realname;
-                            _this.holderidnumber = data.data.userinfo.idnumber;
-                            _this.isnameauth = data.data.userinfo.isnameauth;
+                            _this.holderrealname = data.data.userInfo.realname;
+                            _this.holderidnumber = data.data.userInfo.idnumber;
+                            _this.isnameauth = data.data.userInfo.isnameauth;
                         } else {
                             toast(data.msg);
                         }
@@ -75,11 +67,11 @@
             },
             authUser:function() {
                 var _this = this;
-                var updateUrl = "/user/setting/updateAuthData";
+                var updateUrl = "/user/setting/updateauthdata";
 
                 loadtip({content:'提交中'});
                 _this.$http.post(updateUrl,{
-                    realname:_this.realname,idnumber:_this.idnumber,checkcode:_this.checkcode
+                    realname:_this.realname,idnumber:_this.idnumber,checktoken:_this.checktoken
                 }).then(
                     function(res) {
                         // 处理成功的结果

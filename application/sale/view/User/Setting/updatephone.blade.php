@@ -32,7 +32,8 @@
     var Vm = new Vue({
         el:'#app',
         data:{
-            checkcode:"<?=$checkcode?>",
+        	checktoken:'<?=$checktoken?>',
+            // checkcode:"<?=$checkcode?>",
             mobile:"",
             valicode:"",
             disvalicode:true,
@@ -62,10 +63,10 @@
         	},
         	updatePhone:function() {
                 var _this = this;
-                var updateUrl = '/user/setting/updatePhoneValicode';
+                var updateUrl = '/user/setting/updatephonevalicode';
                 loadtip({content:'修改中'});
                 _this.$http.post(updateUrl,{
-                    mobile:_this.mobile,valicode:_this.valicode,checkcode:_this.checkcode
+                    mobile:_this.mobile,valicode:_this.valicode,checktoken:_this.checktoken
                 }).then(
                     function(res) {
                         var data = cl(res);

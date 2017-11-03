@@ -16,6 +16,8 @@ use think\Config;
 
 use app\lib\Model;
 
+use \think\Cookie;
+
 class WeixinController extends ActionController{
 
     /**
@@ -76,9 +78,12 @@ class WeixinController extends ActionController{
 
         // echo "openid:".$openid."<br>";
         if(!empty($openid)){
-            $urlto.=strpos($urlto,"?")!==false?"&openid=".$openid:"?openid=".$openid."&version=".rand(1000,9999);
+            //$urlto.=strpos($urlto,"?")!==false?"&openid=".$openid:"?openid=".$openid."&version=".rand(1000,9999);
 
+            Cookie::set('openid',$openid,3600*24*300);
             // echo "urlto:".$urlto;
+            // 
+            $urlto = $urlto==''?"/":$urlto;
 
             header('Location:'.$urlto);
         }else{
@@ -169,12 +174,23 @@ class WeixinController extends ActionController{
 
             Model::new("User.Open")->addUserOpenInfo($userinfo_arr);
 
+            $openItem = Model::ins("CusCustomerOpen")->getRow(["openid"=>$userinfo_arr['openid']],"customerid");
+
+            if($openItem['customerid']>0)
+                Model::new("User.User")->cusLogin([
+                    "customerid"=>$openItem['customerid']
+                ]);
+
             // $userinfoparam = "&openuserinfo=".urlencode($userinfo);
+            
+            Cookie::set('openid',$userinfo_arr['openid'],3600*24*300);
         }
 
-        $urlto.=strpos($urlto,"?")!==false?"&openid=".$openid.$userinfoparam:"?openid=".$openid.$userinfoparam;
+        //$urlto.=strpos($urlto,"?")!==false?"&openid=".$openid.$userinfoparam:"?openid=".$openid.$userinfoparam;
 
         // echo "urlto:".$urlto;
+        // 
+        $urlto = $urlto==''?"/":$urlto;
 
         header('Location:'.$urlto);
 

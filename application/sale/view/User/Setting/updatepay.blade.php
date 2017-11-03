@@ -34,7 +34,7 @@
             payDec:"<?=$payDec?>",
             mobile:"<?=$mobile?>",
             completemobile:"<?=$completemobile?>",
-            checkcode:"<?=$checkcode?>",
+            checktoken:"<?=$checktoken?>",
             valicode:"",
             dis:false,
             nextDis:true
@@ -45,7 +45,7 @@
         methods:{
         	send:function() {
         		var _this = this;
-        		var sendUrl = "/user/setting/sendPay";
+        		var sendUrl = "/user/setting/sendpay";
         		_this.$http.post(sendUrl,{
         			completemobile:_this.completemobile
         		}).then(
@@ -63,11 +63,11 @@
         	},
         	next:function() {
         		var _this = this;
-        		var nextUrl = "/user/setting/validPhonePay";
+        		var nextUrl = "/user/setting/validphonepay";
 
                 loadtip({content:'校验中'});
         		_this.$http.post(nextUrl,{
-        			mtoken:_this.mtoken,valicode:_this.valicode
+        			checktoken:_this.checktoken,valicode:_this.valicode
         		}).then(
         			function(res) {
         				var data = cl(res);

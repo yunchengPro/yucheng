@@ -43,7 +43,7 @@
 						data = cl(res);
 						if(data.code == "200") {
 							// console.log(data);
-							this.codeUrl = data.data;
+							this.codeUrl = data.data.htmlUrl;
 						} else {
 							toast(data.msg);
 						}

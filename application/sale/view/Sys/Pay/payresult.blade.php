@@ -14,13 +14,58 @@
         {include file="Pub/assetjs" /}
           
         <style>
-            .pay-success-wrap>.suc-header{padding-top: 40px;display: -webkit-box;-webkit-box-align: center;-webkit-box-orient: vertical;}
-            .pay-success-wrap>.suc-header img{width: 100px;margin-bottom: 10px;}
-            .pay-success-wrap>.suc-body>.suc-item{display: -webkit-box;-webkit-box-pack: justify;height: 44px;line-height:44px;padding: 0 12px;font-size: 14px;border-bottom: 0.5px solid #DDDDDD;}
-            .pay-success-wrap>.suc-body>.suc-item .c-666{font-size: 13px;}
-            .pay-success-wrap>.suc-body>.suc-item .orange{color: #CEA15A;font-size: 16px;}
-            .suc-footer{padding: 0 12px;margin-top: 40px;}
-            .suc-footer>.suc-btn{background: #CEA15A;height: 44px;line-height: 44px;color: #FFFFFF;display: inline-block;width: 100%;text-align: center;font-size: 16px;border-radius: 4px;}
+           .pay-result{padding-top: 45px;}
+            .pay-result .result-item{
+                display: -webkit-box;
+                -webkit-box-pack: center;
+                
+            }
+            
+            .pay-result .result-item .txt{font-size: 17px;margin-bottom: 5px;}
+            .pay-result .result-item img{width: 90px;margin-bottom: 20px;}
+            .pay-result .result-item .goon-btn{
+                height: 30px;
+                line-height: 30px;
+                text-align: center;
+                width: 80px;
+                font-size: 13px;
+                background: #CEA15A;
+                color: #fff;
+                border: 1px solid #CEA15A;
+                display: inline-block;
+                border-radius: 4px;
+                margin-bottom: 30px;
+                margin-top: 10px;
+
+                margin-right: 5px;
+                
+            }
+            .pay-result .result-item .back-btn{
+                height: 30px;
+                line-height: 30px;
+                text-align: center;
+                width: 80px;
+                font-size: 13px;
+                border: 1px solid #CEA15A;
+                color: #CEA15A;
+                display: inline-block;
+                border-radius: 4px;
+                margin-bottom: 30px;
+                margin-top: 10px;
+
+                
+            }
+            .pay-result .deal-order {padding: 0 15px;}
+            .pay-result .deal-order .order-item:first-child{border-top:  0.5px solid #E5E5E5;}
+            .pay-result .deal-order .order-item {
+                display: -webkit-box;
+                -webkit-box-pack: justify;
+                height: 44px;
+                -webkit-box-align: center;
+                font-size: 14px;
+                border-bottom:  0.5px solid #E5E5E5;
+            }
+            
        </style>
     </head>
     <body>
@@ -29,7 +74,7 @@
                         
                         <div class="page-bar">
                         
-                        <a href="javascript:history.go(-1)">
+                        <a href="/conn/Conn/buycon">
                             <img src="<?=$publicDomain?>/mobile/img/icon/back@2x.png" class="back-ico">
                         </a>
                         
@@ -39,25 +84,28 @@
                 </header>
                 
                 
-                    <section class="pay-success-wrap">
-                        <div class="suc-header">
-                        <img src="<?=$publicDomain?>/mobile/img/icon/success.png" />
-                            <h2 >支付成功</h2>
-                        </div>
-                        <div class="suc-body">
+            <section class="pay-result">
+                <div>
+                    <div class="result-item"><img src="/mobile/img/icon/success.png" /></div>
+                    <div class="result-item"><div class="txt">支付成功</div></div>
+                    <div class="result-item"><div class="txt" v-html="item.payamount"></div></div>
+                    <div class="result-item">
+                        <a href="/conn/Conn/buycon" class="goon-btn">继续充值</a>
+                        <a href="/index/index/index" class="back-btn">返回首页</a>
+                    </div>
+                    <div class="deal-order">
+                        <div class="order-item">
+                        <div>订单编号</div>
+                        <div v-html="item.orderno"></div>
+                    </div>
+                    <div class="order-item">
+                        <div>交易时间</div>
+                        <div v-html="item.addtime">2017-10-24 16:31:19</div>
+                    </div>
+                    </div>
+                </div>
+            </section>
 
-                            <div class="suc-item" v-for="val in item">
-                                <div v-html="val.key"></div>
-                                <div class="c-666" v-html="val.value"></div>
-                            </div>
-                            
-                        </div>
-                        
-                    
-                    </section>
-                        <div class="suc-footer">
-                            <a href="#" class="suc-btn">完成</a>
-                        </div>
                     
         </div>
         <script type="text/javascript">
@@ -82,8 +130,8 @@
                                 data = eval("("+res.body+")");
                                 //data = cl(res);
                                 if(data.code=='200'){
-                                    
-                                    _this.item = data.data.item;
+                                   
+                                    _this.item = data.data;
                                 }else{
                                     toast(data.msg);
                                 }

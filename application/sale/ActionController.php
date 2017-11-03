@@ -108,9 +108,9 @@ class ActionController extends ComController
                 Cookie::set('mtoken',$this->mtoken,3600*24*300);
             }
         }
-
+        $path = strtolower($this->getPath(true));
         // 如果当前是微信打开的，就先走授权再继续
-        if($this->is_weixin && empty($this->openid) && strtolower($this->getPath(true))!=$this->weixin_path && strtolower($this->getPath(true))!='/sys/weixin/urlto'  && strtolower($this->getPath(true))!='/sys/weixin/infourlto'){
+        if($this->is_weixin && empty($this->openid) && $path!=$this->weixin_path && $path!='/sys/weixin/urlto'  && $path!='/sys/weixin/infourlto' && $path!=$this->login_path && $path!="/index/index/sendvalicode" && $path!="/index/index/dologin" && $path!="/index/index/bindmobile"  && $path!="/index/index/bindrecomend"){
             /*$redirect_uri = $this->getPath(true)."?".$this->ParaParam($this->params);
 
             header('Location:'.$this->weixin_path."?redirect_uri=".urlencode($redirect_uri));
@@ -654,25 +654,25 @@ class ActionController extends ComController
 
         if($this->isPost()){
 
-            // $ApiRequestRedis = Model::Redis("ApiRequest");
+            $ApiRequestRedis = Model::Redis("ApiRequest");
             
-            // // 判断重复提交
-            // if(strpos($path,"policy")===false){
+            // 判断重复提交
+            if(strpos($path,"policy")===false){
                 
-            //     $check_key = $this->returnKey($path);
-            //     if($ApiRequestRedis->exists($check_key)){
-            //         // 已存在
-            //         $lasttime = $ApiRequestRedis->get($check_key);
-            //         if((microtime(true)-$lasttime)<1){
-            //             // 1秒内的请求 都视为重复提交
-            //             //$this->showError("不能重复操作");
-            //             exit("不能重复操作");
-            //         }
-            //     }
+                $check_key = $this->returnKey($path);
+                if($ApiRequestRedis->exists($check_key)){
+                    // 已存在
+                    $lasttime = $ApiRequestRedis->get($check_key);
+                    if((microtime(true)-$lasttime)<1){
+                        // 1秒内的请求 都视为重复提交
+                        //$this->showError("不能重复操作");
+                        exit("不能重复操作");
+                    }
+                }
 
-            //     $ApiRequestRedis->set($check_key,microtime(true),10);
+                $ApiRequestRedis->set($check_key,microtime(true),10);
                 
-            // }
+            }
 
         }
     }
@@ -730,7 +730,7 @@ class ActionController extends ComController
     }
 
     /**
-     * 添加校验机制--正对提交页面做一层校验机制
+     * 添加校验机制--针对提交页面做一层校验机制
      * @Author   zhuangqm
      * @DateTime 2017-09-07T14:23:38+0800
      * @return   [type]                   [description]
@@ -745,7 +745,7 @@ class ActionController extends ComController
             
         // 生成校验值
             
-        $check_key = "checktoken:".$this->checktoken;
+        $check_key = "checktoken:".$this->visitor_code.":".$this->checktoken;
         
         $ApiRequestRedis->set($check_key,md5($check_key.getConfigKey()),1800);
     }
@@ -759,7 +759,7 @@ class ActionController extends ComController
     public function checktokenHandle(){
         if(!empty($this->params['checktoken'])){
             $ApiRequestRedis = Model::Redis("ApiRequest");
-            $check_key = "checktoken:".$this->params['checktoken'];
+            $check_key = "checktoken:".$this->visitor_code.":".$this->params['checktoken'];
             if($ApiRequestRedis->exists($check_key)){
                 //校验是否合法
                 $checktoken_value = $ApiRequestRedis->get($check_key);
@@ -767,11 +767,21 @@ class ActionController extends ComController
                 if(!empty($checktoken_value) && $checktoken_value==md5($check_key.getConfigKey())){
                     $ApiRequestRedis->del($check_key);
                 }else{
+                    header('Content-type: application/json; charset=utf-8');
                     exit($this->json("408",[],"请求无效，请重新刷新页面"));
                 }
             }else{
+                header('Content-type: application/json; charset=utf-8');
                 exit($this->json("408",[],"请求无效，请重新刷新页面"));
             }
+        }else{
+            header('Content-type: application/json; charset=utf-8');
+            exit($this->json("408",[],"请求无效，请重新刷新页面"));
         }
+    }
+
+    public function errorReturn($msg=''){
+        $msg = $msg!=""?$msg:"操作有误";
+        exit("<script>alert('".$msg."'); history.go(-1)</script>");
     }
 }

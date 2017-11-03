@@ -3,7 +3,7 @@
 <!-- content -->
 	<header class="page-header">	
 		<div class="page-bar">	
-			<a href="javascript:history.go(-1)">
+			<a href="/user/setting/mybanklist">
 				<span class="back-ico"></span>
 			</a>
 			<span class="bar-title">添加银行卡</span>

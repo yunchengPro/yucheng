@@ -21,12 +21,16 @@
 				<div class="c-666" v-html="buycon.mobile"></div>
 			</div> -->
 			<div class="record-item">
-				<div>金牛数量</div>
+				<div>消费券金额</div>
+				<div class="c-666" v-html="buycon.concount" ></div>
+			</div>
+			<div class="record-item">
+				<div>购买总面值</div>
 				<div class="c-666" v-html="buycon.count" ></div>
 			</div>
 			
 			<div class="record-item">
-				<div>购买金额</div>
+				<div>支付金额</div>
 				<div class="c-666" ><span v-html="buycon.totalamount"></span>元</div>
 			</div>
 			<div class="record-item">
@@ -82,8 +86,8 @@
                 }).then(
                     function (res) {
                        	var _this=this;
-                        data = eval("("+res.body+")");
-                        //data = cl(res);
+                       	//data = eval("("+res.body+")");
+                        data = cl(res);
                         if(data.code=='200'){
                         		
                     		if(_this.page > 1){

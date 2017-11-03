@@ -29,7 +29,7 @@
 	var vm=new Vue({
 		el:"#app",
 		data:{
-			checkcode:"<?=$checkcode?>",
+			checktoken:"<?=$checktoken?>",
 			dis:true,
 			inputNumber:"",
 			payNumber:"",
@@ -48,10 +48,10 @@
 			},
 			submitSet:function(){
 				var _this = this;
-				var setUrl = "/user/setting/submitPay";
+				var setUrl = "/user/setting/submitpay";
 				loadtip({content:'设置中'});
 				_this.$http.post(setUrl,{
-					paypwd:_this.payNumber,checkcode:_this.checkcode
+					paypwd:_this.payNumber,checktoken:_this.checktoken
 				}).then(
 					function(res) {
 						data = cl(res);
@@ -61,17 +61,13 @@
                                 alert:'设置成功',
                                 urlto:'/user/setting/safeindex'
                             });
-							// toast("设置成功");
-							// LinkTo("/user/setting/safeindex");
 						} else {
 							loadtip({
                                 close:true,
                                 alert:data.msg
                             });
-							// toast(data.msg);
 						}
 					}, function(res) {
-						// toast("操作有异");
 						loadtip({
                             close:true,
                             alert:'操作有异'

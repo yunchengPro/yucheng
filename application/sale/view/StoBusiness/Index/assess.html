@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+	<title>评价 </title>
+	<meta content="width=device-width; initial-scale=1; maximum-scale=1" name="viewport">
+	<meta name="renderer" content="webkit">
+	<meta name="format-detection" content="telephone=no" />
+	<meta http-equiv="Cache-Control" content="no-siteapp" />
+	<link rel="stylesheet" href="css/amazeui.min.css">
+	<link rel="stylesheet" href="css/my-app.css">
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<!--amazeui.js 会影响星级评价（主要是手机上点，反应满，。。。这里不引入了）-->
+	<script type="text/javascript" src="js/jquery.raty.min.js"></script>
+<!--<script src="js/amazeui.min.js"></script>-->
+<style>
+	.assess-container{ padding: 1.2rem; }
+	.assess-box{ padding:   1rem ;}
+	.star-bar{ margin: 0.5rem 0 1rem; }
+	.star-bar .target-demo { display: inline-block; vertical-align: middle;}
+	.hint{ font-size: 2.4rem; color: #f13437;}
+	.fen{ margin-left: .2rem;color: #333333;font-size: 2rem;}
+	.target-demo img{width: auto;}
+	.conten-box {position: relative;}
+	.conten-box p{
+		position: absolute;
+		bottom: 1rem;
+		right: 1rem;
+		color: #999;
+	}
+	.assess-cont{
+	    width: 100%;
+   	    resize: none;
+        height: 15rem;
+    	margin-bottom: 2.4rem;
+    	background: #EEEEEE;
+    	padding: .5rem;
+   	 	outline: 0;
+       -webkit-tap-highlight-color: transparent;
+       -webkit-appearance: none;
+	}
+</style>
+</head>
+<body class="am-with-fixed-header">
+	    <header data-am-widget="header" class="am-header am-header-default am-header-fixed">
+        <div class="am-header-left am-header-nav">
+            <a href="store-intro.html">
+                <i class="am-icon-angle-left am-icon-md gray"></i>
+            </a>
+        </div>
+        <h1 class="am-header-title">
+            <a href="#title-link">评价</a>
+        </h1>
+    </header>
+    <div class="assess-container">
+    	
+		
+		<div class="star-bar">
+		    <p id="function-demo1" class="target-demo"></p>
+		    <span id="function-hint1" class="hint"></span><span class="fen">分</span>
+		 </div>
+		<div class="conten-box">
+			<textarea class="assess-cont" maxlength="100"></textarea>
+			<p>还能输入<span id="count">100</span>个字</p>
+		</div>
+      
+        <button href="" type="button" class="am-btn am-btn-danger am-btn-block">提交</button>
+       
+    </div>
+	<script type="text/javascript">
+	    $(function() {
+	      $.fn.raty.defaults.path = 'img';
+	    
+		  $('#function-demo1').raty({
+		  	number: 5,//多少个星星设置
+			score: 0,//初始值是设置
+			targetType: 'number',//类型选择，number是数字值，hint，是设置的数组值
+	        path      : 'img',
+	        cancelOff : 'cancel-off.png',
+	        cancelOn  : 'cancel-on.png',
+	        size      : 34,
+	         starHalf  : 'ic_store_star_half.png',
+	        starOff   : 'ic_store_star_grey.png',
+	        starOn    : 'ic_store_star_red.png',
+	        target    : '#function-hint1',
+	        cancel    : false,
+	        targetKeep: true,
+	        precision : false,//是否包含小数
+	        click: function(score, evt) {
+	          //alert('ID: ' + $(this).attr('id') + "\nscore: " + score + "\nevent: " + evt.type);
+	        }
+	      });  
+	      
+	      //说明
+	     //页面生成一个隐藏域<input type="hidden" name="score" value="4">可用于提交
+	     
+	     
+	     
+	     $(".assess-cont").on("keyup",function(){
+	     	 var len=$(this).val().length;
+	     	 $("#count").html(100-len);
+	     });
+	      
+	    });
+	
+	  
+	</script>
+</body>
+</html>
+ 

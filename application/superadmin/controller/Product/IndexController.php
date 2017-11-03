@@ -705,7 +705,7 @@ class IndexController extends ActionController{
         $updateDatas = [
             'enable' => 2,
         ];
-        Model::Es("ProProduct")->update($updateDatas,['id'=>$goodsid]);
+        //Model::Es("ProProduct")->update($updateDatas,['id'=>$goodsid]);
         $Alterlog = [
                 'customerid' => $this->customerid,
                 'username'   => $this->username,
@@ -768,7 +768,7 @@ class IndexController extends ActionController{
                 ];
 
                 Model::ins('ProProduct')->update($updateData,['id'=>$goodsid]);
-                Model::Es("ProProduct")->update($updateData,['id'=>$goodsid]);
+               // Model::Es("ProProduct")->update($updateData,['id'=>$goodsid]);
                 $Alterlog = [
                         'customerid' => $this->customerid,
                         'username'   => $this->username."",
@@ -814,6 +814,172 @@ class IndexController extends ActionController{
             echo json_encode(['done' => false]);
         }
         exit();
+    }
+
+
+      /**
+     * [addProductAction 添加产品第二部]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-16T17:33:20+0800
+     */
+    public function addProductSteponeAction(){
+        
+        $moduleid=$this->getParam('moduleid');
+
+        if(!empty($moduleid)&&$moduleid!=0)
+        {
+            // return "<script>window.close();parent.parent.goto2('/product/index/addproduct?moduleid={$moduleid}')</script>";
+            return "<script>parent.parent.goto2('/product/index/addProductSetptwo?moduleid={$moduleid}');parent.parent.layer.close(parent.parent.layer.getFrameIndex(parent.window.name));</script>";
+            //$this->showSuccessPage("进入添加产品下一步","/product/index/addproduct?moduleid=".$moduleid);
+        }
+
+        
+
+        $moduleData = Model::ins('ProModule')->getList(['isdelete'=>[">=",0]]); //,'businessid'=>$this->businessid
+        $moduleid = [];
+        foreach ($moduleData as $key => $value) {
+            $moduleid[$value['id']] = $value['modulename'];
+        }
+        $action = '/Product/Index/addProductStepone';
+        $viewData = [
+            "moduleid"=>$moduleid,
+            'action'=>$action,
+            'title'=>'选择商品属性'
+        ];
+        return $this->view($viewData);
+    }
+
+
+     /**
+     * [addProductSetptwoAction 添加产品第二步]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-16T17:35:12+0800
+     */
+    public function addProductSetptwoAction(){
+    
+
+
+        $res=array();
+        $moduleid=$this->getParam('moduleid');
+        if(!isset($moduleid)||empty($moduleid))
+        {
+            return json_encode('产品添加需要先选好商品类型');
+        }
+        //查询上一步选中的类型
+        $mo_where['id']=$moduleid;
+        $moduleData=Model::ins("ProModule")->getRow($mo_where);
+
+        //$res['module']=$moduleData;
+
+        //查询关联的规格
+        //$mor_sp_where['type']=1;
+        $mor_sp_where['module_id']=$moduleid;
+        $spec=array();
+        $attribute=array();
+        $specCount=0;
+        $moduleRelationData=Model::ins("ProModuleRelation")->getList($mor_sp_where);
+     
+
+        foreach ($moduleRelationData as $key => $value) {
+            if($value['type']==1)
+            {
+                $specData=Model::ins("ProSpec")->getRow(array('id'=>$value['obj_id']));
+                if(!empty($specData))
+                {
+                    $specData['itemValue']=Model::ins("ProSpecValue")->getList(array('spec_id'=>$value['obj_id']));
+                    $specData['_id'] = $specData['id'];
+                    $spec[$specData['id']]=$specData;
+                }
+                
+            }else if($value['type']==2){
+                //关联属性
+                $attributeData=Model::ins("ProAttribute")->getRow(array('id'=>$value['obj_id']));
+                if(!empty($attributeData))
+                {
+                    $attributeData['itemValue']=Model::ins("ProAttributeValue")->getList(array('attr_id'=>$value['obj_id']));
+                    $attribute[]=$attributeData;
+                }
+            }else if($value['type']==3){
+                $cateData = Model::ins('BusBusinessCategory')->getRow(['id'=>$value['obj_id']]);
+                $categoryData[] = $cateData;
+            }
+            
+        }
+     
+
+        $proCategorydata =  ProductModel::getCategoryData();
+        $proCategorydata = $proCategorydata['data'];
+        $proCategorydata = BusinessCategoryModel::tree($proCategorydata,'name');
+      
+        foreach ($proCategorydata as $key => $value) {
+            $optionProCate[$value['id']] = $value['_name'];
+        }
+       
+        $categoryData = Model::ins('BusBusinessCategory')->getList(['businessid'=>$this->businessid,'is_delete'=>0]);
+
+        $categoryData = BusinessCategoryModel::tree($categoryData,'category_name');
+
+        foreach ($categoryData as $key => $value) {
+            $optionCate[$value['id']] = $value['_category_name'];
+        }
+
+        //品牌
+        $brandArr=array();
+        $brandData=Model::ins("ProBrand")->getList(['isdelete'=>0],"id,brandname","sort desc");
+        $brandArr[0] = '其他';
+        foreach ($brandData as $key => $value) {
+            $brandArr[$value['id']]=$value['brandname'];
+        } 
+        
+        //form验证token
+        $formtoken = $this->Btoken('Product-Index-addProductSetptwo');
+        
+        $specname = [];
+        foreach ($spec as $key => $value) {
+            $specname[$key]['specname'] = $value['spec_name'];
+        }
+
+        $business = Model::ins('BusBusinessInfo')->getList([],'id,businessname');
+        $business_arr = [];
+        foreach ($business as $key => $value) {
+            $business_arr[$value['id']] = $value['businessname'];
+        }
+        $res['business']=$business_arr;
+       
+        //print_r($specname);
+        $res['specname']=$specname;
+
+        $res['optionCate']= $optionCate;
+        $res['optionProCate']= $optionProCate;
+        $res['sign_i']=count($spec);
+        $res['module']=$moduleData;
+        $res['spec']=$spec;
+        $res['attribute']=$attribute;
+        $res['brand']=$brandArr;
+        $res['formtoken']=$formtoken;
+
+        $price_type = Model::ins("BusBusiness")->getRow(['id'=>$this->businessid],'price_type,customerid');
+        $customer_row = Model::ins('CusCustomer')->getRow(['id'=>$price_type['customerid']],'mobile');
+       
+        $hasbull = 0;
+        if($customer_row['mobile'] == '13902948736'){
+            $hasbull = 1;
+        }
+        
+        $type_arr = explode(',', $price_type['price_type']);
+        $res['type_arr'] = $type_arr;
+        $res['hasbull'] = $hasbull;
+
+        $transport_list = [];
+        $transport = Model::ins('OrdTransport')->getList(['business_id'=>$this->businessid],'id,title');
+      
+        foreach ($transport as $key => $value) {
+            $transport_list[$value['id']] = $value['title'];
+        }
+        $res['transport_list'] = $transport_list;
+
+        return $this->view($res);
+
     }
 
 
@@ -1029,6 +1195,7 @@ class IndexController extends ActionController{
        
 
         $proCategorydata =  ProductModel::getCategoryData();
+        $proCategorydata = $proCategorydata['data'];
         $proCategorydata = BusinessCategoryModel::tree($proCategorydata,'name');
       
         foreach ($proCategorydata as $key => $value) {
@@ -1058,6 +1225,12 @@ class IndexController extends ActionController{
       
         $parent_cate_id = Model::ins('ProCategory')->getRow(['id'=>$productinfo['categoryid']],'parent_id')['parent_id'];
        
+        $business = Model::ins('BusBusinessInfo')->getList([],'id,businessname');
+        $business_arr = [];
+        foreach ($business as $key => $value) {
+            $business_arr[$value['id']] = $value['businessname'];
+        }
+        $res['business']=$business_arr;
 
         $res['parent_cate_id'] = $parent_cate_id;
         $res['optionCate']= $optionCate;
@@ -1116,14 +1289,14 @@ class IndexController extends ActionController{
             $post = $this->params;
 
             $this->businessid = (int) $post['businessid'];
-            
+            $this->businessid = 1;
             if($this->businessid < 0)
                 $this->showError('商家信息错误','/login');
 
            
-
+            $post['businesscategoryid'] = 0;
            
-            $post['categoryid'] = $post['categoryid_son'];
+            //$post['categoryid'] = $post['categoryid_son'];
 
             $post['brandid'] = empty($post['brandid']) ? 0 : $post['brandid'];
 
@@ -1233,6 +1406,7 @@ class IndexController extends ActionController{
             $ProProductAdd = new ProProductAdd();
             $ProProductSpecValueAdd = new ProProductSpecValueAdd();
             $ProProductSpecAdd = new ProProductSpecAdd();
+          
             // var_dump(gettype($this->businessid));
             //  var_dump(gettype($post['enable']));
             // if($post['freight'] == 1){
@@ -1244,19 +1418,19 @@ class IndexController extends ActionController{
                
                 $procategoryname = $ProCategory->getRow(['id'=>$post['categoryid']],'name')['name'];
                 $buscategoryname = $BusBusinessCategory->getRow(['id'=>$post['businesscategoryid']],'category_name')['category_name'];
+               
 
                 $addProData = [
                     'spu'=>$ProProduct->getSPuNo(),
                     'businessid' =>$this->businessid,
                     'categoryid'=>$post['categoryid'],
                     'categoryname' => $procategoryname,
-                    'businesscategoryid'=>$post['businesscategoryid'],
+                    //'businesscategoryid'=>$post['businesscategoryid'],
                     'productname' => $post['productname'],
                     'prouctprice' => (int)  $prouctprice,
                     'supplyprice' => (int)  $supplyprice,
-                    'bullamount' => (int)  $bullamount,
+                    //'bullamount' => (int)  $bullamount,
                     'saleprice' => (int) $saleprice,
-                    'saletype' => (int)  $saletype,
                     'discount' => (int)  $discount,
                     //'productstorage' => $post['productstorage'],
                     'thumb' => $post['thumb'],
@@ -1266,14 +1440,12 @@ class IndexController extends ActionController{
                     'moduleid' => $post['moduleid'],
                     'brandid' => $post['brandid'],
                     'enable' => $post['enable'],
-                    'freight' => empty($post['g_freight']) ? 0 : $post['g_freight'],
-                    'transportid' => empty($post['transportid']) ? 0 : $post['transportid'],
+                   
                     'checksatus' => 0,
                     'addtime'=>date('Y-m-d H:i:s'),
                     'enabletime'=>date('Y-m-d H:i:s'),
-                    'serialnumber' => $post['serialnumber'],
-                    'barcode' => $post['barcode'],
-                    'isabroad'=>$post['isabroad']
+                    
+                   
                 ]; 
                 
                 if(!$ProProductAdd->isValid($addProData)){//验证是否正确 
@@ -1331,13 +1503,12 @@ class IndexController extends ActionController{
                     'businessid' =>$this->businessid,
                     'categoryid'=>$post['categoryid'],
                     'categoryname' => $procategoryname,
-                    'businesscategoryid'=>$post['businesscategoryid'],
+                    //'businesscategoryid'=>$post['businesscategoryid'],
                     'productname' => $post['productname'],
                     'prouctprice' => (int)  $prouctprice,
                     'supplyprice' => (int)  $supplyprice,
-                    'bullamount' => (int)  $bullamount,
+                    //'bullamount' => (int)  $bullamount,
                     'saleprice' => (int) $saleprice,
-                    'saletype' => (int)  $saletype,
                     'discount' => (int)  $discount,
                     //'productstorage' => $post['productstorage'],
                     'thumb' => $post['thumb'],
@@ -1347,12 +1518,8 @@ class IndexController extends ActionController{
                     'moduleid' => $post['moduleid'],
                     'brandid' => $post['brandid'],
                     'enable' => $post['enable'],
-                    'freight' => empty($post['g_freight']) ? 0 : $post['g_freight'],
-                    'transportid' => empty($post['transportid']) ? 0 : $post['transportid'],
                     'checksatus' => 0,
-                    'serialnumber' => $post['serialnumber'],
-                    'barcode' => $post['barcode'],
-                    'isabroad'=>$post['isabroad']
+                  
                 ]; 
 
                 if(empty($rowPro['addtime']))
@@ -1499,7 +1666,7 @@ class IndexController extends ActionController{
                                 'productname'=>$post['productname'],
                                 'prouctprice' =>  $specprouctprice,
                                 'supplyprice' => $specsupplyprice,
-                                'bullamount' =>  $specbullamount,
+                                //'bullamount' =>  $specbullamount,
                                 'saleprice' => $specsaleprice,
                                 'saletype' => $specsaletype,
                                 'discount' => $specdiscount,
@@ -1626,7 +1793,7 @@ class IndexController extends ActionController{
                                 'productname'=>$post['productname'],
                                 'prouctprice' =>  $specprouctprice,
                                 'supplyprice' => $specsupplyprice,
-                                'bullamount' => $specbullamount,
+                                //'bullamount' => $specbullamount,
                                 'saleprice' =>$specsaleprice,
                                 'saletype' =>  $specsaletype,
                                 'discount' =>  $specdiscount,
@@ -1704,23 +1871,23 @@ class IndexController extends ActionController{
             
 
             $ProProduct->update($proDatas,['id'=>$pid]);
-
+            
             //写入ES
-            $row = Model::ins("ProProduct")->getRow(["id"=>$pid]);
+            // $row = Model::ins("ProProduct")->getRow(["id"=>$pid]);
             
            
 
-            Model::Es("ProProduct")->delete(["id"=>$pid]);
+            // Model::Es("ProProduct")->delete(["id"=>$pid]);
             
-            if($row['checksatus'] != 1){
-                $row['enable'] = 0;
-            }
+            // if($row['checksatus'] != 1){
+            //     $row['enable'] = 0;
+            // }
 
-            Model::Es("ProProduct")->insert($row);
+            // Model::Es("ProProduct")->insert($row);
             
-            $gooCountData = Model::ins('ProProduct')->getRow(['businessid'=>$this->businessid],'count(*) as count');
+            // $gooCountData = Model::ins('ProProduct')->getRow(['businessid'=>$this->businessid],'count(*) as count');
 
-            Model::ins('BusBusinessInfo')->update(['goodscount'=>$gooCountData['count']],['id'=>$this->businessid]);
+            // Model::ins('BusBusinessInfo')->update(['goodscount'=>$gooCountData['count']],['id'=>$this->businessid]);
             $Alterlog = [
                     'customerid' => $this->customerid,
                     'username'   => $this->username,
@@ -1728,6 +1895,7 @@ class IndexController extends ActionController{
                     'content'    => '修改了该商品'
             ]; 
             ProductModel::addProductAlterlog($Alterlog);
+           
             $this->showSuccess('操作成功');//,'/Product/Index/list'
     }
 

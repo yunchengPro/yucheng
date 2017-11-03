@@ -44,14 +44,24 @@ class ConnController extends ActionController {
      */
     public function getbuyconlistAction(){
         
-        $myuserinfo = UserInfoModel::userBaseInfo(['customerid'=>$this->userid]);
+        
        
         $where['customerid'] = $this->userid;
-       
+        $where['pay_voucher'] = 1;
+        $where['orderstatus'] = ['in','1,2'];
         $list = Model::ins("ConOrder")->pageList($where,"*","addtime desc");
         foreach ($list['list'] as $key => $value) {
+            // if($value['totalamount'] >0){
+            //     $num = substr($value['totalamount'], 0,1);
+            // }else{
+            //     $num = substr($value['totalamount'], -1,1);
+            // }
+
+            $list['list'][$key]['concount'] = DePrice($value['confacecount']);
+
             $list['list'][$key]['count'] = DePrice($value['count']);
             $list['list'][$key]['totalamount'] = DePrice($value['totalamount']);
+
         }
         $maxPage = ceil($list['total']/20);
         $list['maxPage'] = $maxPage;
@@ -87,7 +97,7 @@ class ConnController extends ActionController {
         $con_config = Config::get("conn");
         $viewData = [
             'userinfo' => $userinfo['data'],
-            'title'    => '购买金牛',
+            'title'    => '购物充值',
             'role'     => $role,
             //'mobile'   => $myuserinfo['data']['mobile'],
             'businessid'=>$topuser['parentid'],
@@ -101,6 +111,8 @@ class ConnController extends ActionController {
 
         ];
 
+        $this->addcheck();
+
         return $this->view($viewData);
     }
     
@@ -111,12 +123,23 @@ class ConnController extends ActionController {
      * @return   [type]                   [description]
      */
     public function buyconSubAction() {
+
+        $this->checktokenHandle();
+
         $con_config = Config::get("conn");
         $amount = $this->params['amount'];
         $userid = $this->userid;
         $pay_voucher = $this->params['pay_voucher']; // 转账购买
         //$mobile = $this->params['mobile']; // 这个参数暂时没有用
         $businessid = $this->params['businessid'];
+        $concount = $this->params['concount'];
+        $confacecount = $this->params['confacecount'];
+
+        if(empty($concount) || !is_numeric($concount))
+             return $this->json("404",[],"参数有误");
+         
+        if(empty($confacecount) || !is_numeric($confacecount))
+             return $this->json("404",[],"参数有误");
 
         // 金额判断
         if(!is_numeric($amount))
@@ -125,12 +148,16 @@ class ConnController extends ActionController {
         // if($amount< $con_config['con_minamout'] )
         //     return $this->json("404",[],"最低购买".$con_config['con_minamout']);
 
-        $saleamount = Model::new("Amount.Amount")->getUserAmount($userid,'saleamount');
+        //$saleamount = Model::new("Amount.Amount")->getUserAmount($userid,'saleamount');
+     
+        $mincout = Model::ins('ConOrder')->getRow(['customerid'=>$userid,'orderstatus'=>1],'max(totalamount) as totalamount');
+       
+        $con_minamout = DePrice($mincout['totalamount']);
+        if($con_minamout > $amount)
+            return $this->json("00000",[],"购买金额不能低于".$con_minamout);
 
-        
-
-        if($con_config['con_maxamout'] - DePrice($saleamount) < $amount)
-            return $this->json("30020",[],"每人最高只能购买".$con_config['con_maxamout']);
+        if($con_config['con_maxamout'] < $amount)
+            return $this->json("30020",[],"每次最高只能购买".$con_config['con_maxamout']);
 
         // if($mobile!=''){
 
@@ -159,7 +186,9 @@ class ConnController extends ActionController {
             //"mobile"=>$mobile,
             //"mobile_userid"=>$mobile_userid,
             "pay_voucher"=>$pay_voucher,
-            "businessid"=>$businessid
+            "businessid"=>$businessid,
+            "concount" => $concount,
+            "confacecount" => $confacecount
         ]);
 
         return $this->json($result['code'],$result['orderno'],$result['msg']);
@@ -306,6 +335,7 @@ class ConnController extends ActionController {
             return $this->json(404,'','参数错误');
         $con_config = Config::get("conn");
         $viewData = [
+            'title' => '核对订单',
             'orderno' => $orderno,
             'con_config'=>$con_config
         ];
@@ -327,6 +357,17 @@ class ConnController extends ActionController {
 
         $order = Model::ins('ConOrder')->getRow(['orderno'=>$orderno]);
 
+        // if($order['customerid'] != $this->userid)
+        //     return $this->json("406",'','无权限操作');
+
+        // if($order['totalamount'] >0){
+        //     $num = substr($order['totalamount'], 0,1);
+        // }else{
+        //     $num = substr($order['totalamount'], -1,1);
+        // }
+
+        $order['num'] = $order['concount'];
+        $order['comamount']  = DePrice($order['confacecount']);
         $order['count'] = DePrice($order['count']);
         $order['totalamount'] = DePrice($order['totalamount']);
 
@@ -356,11 +397,18 @@ class ConnController extends ActionController {
         // if($amount < $con_config['con_minamout'] )
         //     return $this->json("404",[],"最低购买".$con_config['con_minamout']);
 
-        $saleamount = Model::new("Amount.Amount")->getUserAmount($customerid,'saleamount');
+        //$saleamount = Model::new("Amount.Amount")->getUserAmount($customerid,'saleamount');
+        
+        $mincout = Model::ins('ConOrder')->getRow(['customerid'=>$customerid,'orderstatus'=>1],'max(totalamount) as totalamount');
        
+        $con_minamout = DePrice($mincout['totalamount']);
+        if($con_minamout > $amount)
+            return $this->json("00000",[],"购买金额不能低于".$con_minamout);
 
-        if($con_config['con_maxamout'] - DePrice($saleamount) < $amount)
-            return $this->json("30020",[],"每人最高只能购买".$con_config['con_maxamout']);
+        if($con_config['con_maxamout'] < $amount)
+            return $this->json("30020",[],"每人每笔最高只能购买".$con_config['con_maxamout']);
+
+       
 
         return $this->json("200");
     }

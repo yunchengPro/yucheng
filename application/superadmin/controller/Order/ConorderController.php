@@ -41,6 +41,7 @@ class ConorderController extends ActionController{
         foreach ($list['list'] as $key => $value) {
             $list['list'][$key]['totalamount'] = DePrice($value['totalamount']);
             $list['list'][$key]['count'] = DePrice($value['count']);
+            $list['list'][$key]['payamount'] = DePrice($value['payamount']);
         }
 
         $viewData = array(
@@ -93,11 +94,11 @@ class ConorderController extends ActionController{
 
             $update = [
                 'orderstatus' => $status,
-                "paytime"=>date("Y-m-d H:i:s"),
-                "payamount"=>$conorder_row['totalamount'],
+                "paytime"=>date("Y-m-d H:i:s")
             ];
             $ret = Model::ins("ConOrder")->update($update,['id'=>$id]);
             if($status == 1){
+                Model::ins("ConOrder")->update(['payamount'=> $conorder_row['totalamount']],['id'=>$id]);
                 $flowid = Model::new("Amount.Flow")->getFlowId($conorder_row['orderno']);
 
                 // 增加钻石
@@ -112,6 +113,10 @@ class ConorderController extends ActionController{
                                                 "flowid"=>$flowid,
                                             ]);
 
+                // 增加销售额
+                Model::ins("AmoAmount")->AddSaleAmount($conorder_row['customerid'],$conorder_row['totalamount']);
+            
+
                 //进行分润
                 Model::new("Amount.Profit")->add_con_profit([
                     "userid"=>$conorder_row['customerid'],
@@ -119,6 +124,7 @@ class ConorderController extends ActionController{
                     "orderno"=>$conorder_row['orderno'],
                     "flowid"=>$flowid,
                 ]);
+
 
                 // 提交事务
                 $amountModel->commit();  
@@ -163,6 +169,7 @@ class ConorderController extends ActionController{
         foreach ($list['list'] as $key => $value) {
             $list['list'][$key]['totalamount'] = DePrice($value['totalamount']);
             $list['list'][$key]['count'] = DePrice($value['count']);
+            $list['list'][$key]['payamount'] = DePrice($value['payamount']);
         }
 
         $viewData = array(
@@ -194,6 +201,7 @@ class ConorderController extends ActionController{
         foreach ($list['list'] as $key => $value) {
             $list['list'][$key]['totalamount'] = DePrice($value['totalamount']);
             $list['list'][$key]['count'] = DePrice($value['count']);
+            $list['list'][$key]['payamount'] = DePrice($value['payamount']);
         }
 
         $viewData = array(

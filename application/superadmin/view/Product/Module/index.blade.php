@@ -1,6 +1,5 @@
 <?php
 use app\lib\Db;
-use app\lib\Model;
 
 	$title = $title;
 	/*
@@ -17,8 +16,7 @@ use app\lib\Model;
     */
     $list_set = array(
         "checkbox"=>array("name"=>"选择"),
-        "modulename"=>array("name"=>"商品类型名称"),
-        "businessid"=>array("name"=>"所属商家"),
+        "modulename"=>array("name"=>"商品属性名称"),
         "sort"=>array("name"=>"排序"),
         "act"=>array("name"=>"操作"),
     );
@@ -28,14 +26,21 @@ use app\lib\Model;
     也可以在controller中处理
     */
     foreach($pagelist as $key=>$row){
-        $pagelist[$key]['businessid'] = Model::ins('BusBusiness')->getRow(['id'=>$row['businessid']],'businessname')['businessname'];
-        $pagelist[$key]['act'][]= array("type"=>"newpage","name"=>"button","value"=>"查看","_width"=>"500","_height"=>"400","_title"=>"查看<font color='green'>".$row['modulename']."</font>","_url"=>"/Product/Module/editModule?id=".Encode($row['id']));
 
-        // $pagelist[$key]['act'][]= array("type"=>"confirm","name"=>"button","value"=>"删除","_width"=>"500","_height"=>"200","_title"=>'是否确定删除该记录?',"_url"=>"/Product/Module/delModule?ids=".Encode($row['id']));
+        $pagelist[$key]['act'][]= array("type"=>"newpage","name"=>"button","value"=>"编辑","_width"=>"500","_height"=>"400","_title"=>"编辑<font color='green'>".$row['modulename']."</font>","_url"=>"/Product/Module/editModule?id=".Encode($row['id']));
+
+        $pagelist[$key]['act'][]= array("type"=>"confirm","name"=>"button","value"=>"删除","_width"=>"500","_height"=>"200","_title"=>'是否确定删除该记录?',"_url"=>"/Product/Module/delModule?ids=".Encode($row['id']));
 
         $pagelist[$key]['act'] = Html::Htmlact($pagelist[$key]['act']);
 	}
 
+       //自动生成按钮
+    $button = array(
+            "bt1"=>array("type"=>"newpage","name"=>"button","value"=>"添加属性","_width"=>"500","_height"=>"300","_title"=>'添加商品属性',"_url"=>"/Product/Module/addModule"),
+
+            "bt2"=>array("type"=>"confirm_all","name"=>"button","value"=>"批量删除","_width"=>"500","_height"=>"200","_title"=>'删除选中项?',"_url"=>"/Product/Module/delModule?rel=delete")
+        );
+    
     /*
     设置搜索项
     "keyword"=>array("type"=>"text","name"=>"商品名称/关键字","value"=>$this->_request->getParam("keyword")),
@@ -53,12 +58,7 @@ use app\lib\Model;
        "modulename"=>array("type"=>"text","name"=>"分类名称/关键字","value"=>"")
     );
 
-    // //自动生成按钮
-    // $button = array(
-    //         "bt1"=>array("type"=>"newpage","name"=>"button","value"=>"添加类型","_width"=>"500","_height"=>"300","_title"=>'添加商品类型',"_url"=>"/Product/Module/addModule"),
-
-    //         "bt2"=>array("type"=>"confirm_all","name"=>"button","value"=>"批量删除","_width"=>"500","_height"=>"200","_title"=>'删除选中项?',"_url"=>"/Product/Module/delModule?rel=delete")
-    //     );
+ 
 
 ?> 
 <?php if ($full_page){?>

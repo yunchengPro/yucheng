@@ -97,7 +97,7 @@ $(function(){
                             alert('已选的属性：'+product_name);
                             return false;
                         }else{
-                            itemHtml += '<div class="type-item"><a>'+ product_name + '</a>' + '<input type="hidden" name="attr_type[]" value="'+id+',2" />' + '<img class="deleteItem" src="/newui/static/h-ui.admin/images/ic_close.png"></div>';
+                            itemHtml += '<div class="type-item"><a>'+ product_name + '</a>' + '<input type="hidden" name="attr_type[]" value="'+id+'" />' + '<img class="deleteItem" src="/newui/static/h-ui.admin/images/ic_close.png"></div>';
                         }
                     });
                 }else{

@@ -69,6 +69,7 @@
             "area"=>array("type"=>"data","name"=>"所在地区","validator"=>"required:true","data"=>$apply_manager['area']),
             "address"=>array("type"=>"data","name"=>"详细地址","validator"=>"required:true","data"=>$apply_manager['address']),
             "join_type"=>array("type"=>"data","name"=>"加盟方式","validator"=>"required:true","data"=>$apply_manager['join_type']),
+            "is_pay"=>array("type"=>'radio',"name"=>"是否支付佣金","terms"=>['1'=>'是','2'=>'否'],"value"=>1),
             "remark"=>array("type"=>"textarea","name"=>"审核说明","validator"=>"required:true","value"=>$apply_manager['remark']),
             "id"=>array("type"=>"hidden","value"=>$id),
             "status"=>array("type"=>"hidden","value"=>$status),

@@ -108,6 +108,7 @@ class UploadController extends ActionController{
       $str_arr = array('a','b','c','d','e','f','g','h','i','j','k','l','n','m','o','p','q','r','s','t','u','v','w','x','y','z');
       $fileName = time().$str_arr[rand(0,25)].$str_arr[rand(0,25)].rand(100,999);
       return $fileName; 
+      
     }
 
     //保存图片记录

@@ -8,7 +8,7 @@
 // | @DateTime 2017-03-13
 // +----------------------------------------------------------------------
 
-namespace app\mobile\controller\Sys;
+namespace app\sale\controller\Sys;
 use app\sale\ActionController;
 
 use \think\Config;

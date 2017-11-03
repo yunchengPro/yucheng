@@ -86,11 +86,11 @@ $(function(){
                             alert('已选的规格：'+product_name);
                             return false;
                         }else{
-                            itemHtml += '<div class="type-item"><a>'+ product_name + '</a>' + '<input type="hidden" name="spec_type[]" value="'+id+',1" />' + '<img class="deleteItem" src="/newui/static/h-ui.admin/images/ic_close.png"></div>';
+                            itemHtml += '<div class="type-item"><a>'+ product_name + '</a>' + '<input type="hidden" name="spec_type[]" value="'+id+'" />' + '<img class="deleteItem" src="/newui/static/h-ui.admin/images/ic_close.png"></div>';
                         }
                     });
                 }else{
-                    itemHtml += '<div class="type-item"><a>'+ product_name + '</a>' + '<input type="hidden" name="spec_type[]" value="'+id+',1" />' + '<img class="deleteItem" src="/newui/static/h-ui.admin/images/ic_close.png"></div>';
+                    itemHtml += '<div class="type-item"><a>'+ product_name + '</a>' + '<input type="hidden" name="spec_type[]" value="'+id+'" />' + '<img class="deleteItem" src="/newui/static/h-ui.admin/images/ic_close.png"></div>';
                 }
             }
                
@@ -110,7 +110,7 @@ $(function(){
         var close = true;
         //商品名称 
         var product_name = $.trim($(this).parent().parent().find("td").eq(1).text());
-        var itemHtml = '<div class="type-item"><a>'+ product_name + '</a>' + '<input type="hidden" name="spec_type[]" value="'+id+',1" />'  + '<img class="deleteItem" src="/newui/static/h-ui.admin/images/ic_close.png"></div>';
+        var itemHtml = '<div class="type-item"><a>'+ product_name + '</a>' + '<input type="hidden" name="spec_type[]" value="'+id+'" />'  + '<img class="deleteItem" src="/newui/static/h-ui.admin/images/ic_close.png"></div>';
        
         if(parent.$("input[name='spec_type[]']").length > 0){
             parent.$("input[name='spec_type[]']").each(function(){

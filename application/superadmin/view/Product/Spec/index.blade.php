@@ -31,13 +31,20 @@ use app\lib\Db;
 
         $pagelist[$key]['act'][]= array("type"=>"newpage","name"=>"button","value"=>"规格值","_width"=>"550","_height"=>"450","_title"=>"<font color='green'>".$row['specname']."</font>的规格值","_url"=>"/Product/Spec/specValue?specid=".Encode($row['id']));
 
-        // $pagelist[$key]['act'][]= array("type"=>"popup_listpage","name"=>"button","value"=>"编辑","_width"=>"550","_height"=>"450","_title"=>"编辑","_url"=>"/Product/Spec/editSpec?id=".Encode($row['id']));
+        $pagelist[$key]['act'][]= array("type"=>"popup_listpage","name"=>"button","value"=>"编辑","_width"=>"550","_height"=>"450","_title"=>"编辑","_url"=>"/Product/Spec/editSpec?id=".Encode($row['id']));
 
-        // $pagelist[$key]['act'][]= array("type"=>"confirm","name"=>"button","value"=>"删除","_width"=>"500","_height"=>"200","_title"=>'是否确定删除该记录?',"_url"=>"/Product/Spec/delSpec?ids=".Encode($row['id']));
+        $pagelist[$key]['act'][]= array("type"=>"confirm","name"=>"button","value"=>"删除","_width"=>"500","_height"=>"200","_title"=>'是否确定删除该记录?',"_url"=>"/Product/Spec/delSpec?ids=".Encode($row['id']));
 
         $pagelist[$key]['act'] = Html::Htmlact($pagelist[$key]['act']);
 	}
 
+     //自动生成按钮
+    $button = array(
+            "bt1"=>array("type"=>"popup_listpage","name"=>"button","value"=>"添加规格","_width"=>"550","_height"=>"450","_title"=>'添加规格',"_url"=>"/Product/Spec/addSpec"),
+
+            "bt2"=>array("type"=>"confirm_all","name"=>"button","value"=>"批量删除","_width"=>"500","_height"=>"200","_title"=>'删除选中项?',"_url"=>"/Product/Spec/delSpec?rel=delete")
+        );
+    
     /*
     设置搜索项
     "keyword"=>array("type"=>"text","name"=>"商品名称/关键字","value"=>$this->_request->getParam("keyword")),
@@ -52,15 +59,10 @@ use app\lib\Db;
           显示的值  自动获取 
     */
  	$search = array(
-        "specname"=>array("type"=>"text","name"=>"关键字","value"=>"")
+        "specname"=>array("type"=>"text","name"=>"分类名称/关键字","value"=>"")
     );
 
-    //自动生成按钮
-    // $button = array(
-    //         "bt1"=>array("type"=>"popup_listpage","name"=>"button","value"=>"添加规格","_width"=>"550","_height"=>"450","_title"=>'添加规格',"_url"=>"/Product/Spec/addSpec"),
-
-    //         "bt2"=>array("type"=>"confirm_all","name"=>"button","value"=>"批量删除","_width"=>"500","_height"=>"200","_title"=>'删除选中项?',"_url"=>"/Product/Spec/delSpec?rel=delete")
-    //     );
+   
 
 ?> 
 <?php if ($full_page){?>

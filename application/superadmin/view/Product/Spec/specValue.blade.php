@@ -33,13 +33,20 @@ use app\lib\Db;
         
         $pagelist[$key]['businessid'] = Db::Model("BusBusiness")->getRow(['id'=>$row['businessid']],'businessname')['businessname'];
 
-        // $pagelist[$key]['act'][]= array("type"=>"popup_listpage","name"=>"button","value"=>"编辑","_width"=>"550","_height"=>"450","_title"=>"编辑","_url"=>"/Product/Spec/editSpecValue?id=".Encode($row['id'])."&specid=".$specId);
+        $pagelist[$key]['act'][]= array("type"=>"popup_listpage","name"=>"button","value"=>"编辑","_width"=>"550","_height"=>"450","_title"=>"编辑","_url"=>"/Product/Spec/editSpecValue?id=".Encode($row['id'])."&specid=".$specId);
 
-        // $pagelist[$key]['act'][]= array("type"=>"confirm","name"=>"button","value"=>"删除","_width"=>"500","_height"=>"200","_title"=>'是否确定删除该记录?',"_url"=>"/Product/Spec/delSpecValue?ids=".Encode($row['id'])."&specid=".$specId);
+        $pagelist[$key]['act'][]= array("type"=>"confirm","name"=>"button","value"=>"删除","_width"=>"500","_height"=>"200","_title"=>'是否确定删除该记录?',"_url"=>"/Product/Spec/delSpecValue?ids=".Encode($row['id'])."&specid=".$specId);
 
         $pagelist[$key]['act'] = Html::Htmlact($pagelist[$key]['act']);
 	}
 
+      //自动生成按钮
+    $button = array(
+            "bt1"=>array("type"=>"popup_listpage","name"=>"button","value"=>"添加规格值","_width"=>"550","_height"=>"450","_title"=>'添加规格值',"_url"=>"/Product/Spec/addSpecValue?specid=".$specId),
+
+            "bt2"=>array("type"=>"confirm_all","name"=>"button","value"=>"批量删除","_width"=>"500","_height"=>"200","_title"=>'删除选中项?',"_url"=>"/Product/Spec/delSpecValue?rel=delete&specid=".$specId)
+        );
+    
     /*
     设置搜索项
     "keyword"=>array("type"=>"text","name"=>"商品名称/关键字","value"=>$this->_request->getParam("keyword")),
@@ -54,15 +61,11 @@ use app\lib\Db;
           显示的值  自动获取 
     */
  	$search = array(
-        "spec_value_name"=>array("type"=>"text","name"=>"关键字","value"=>"")
+        "spec_value_name"=>array("type"=>"text","name"=>"规格值名称","value"=>""),
+        "specid"=>array("type"=>"hidden","name"=>"","value"=>$specId),
     );
 
-    //自动生成按钮
-    // $button = array(
-    //         "bt1"=>array("type"=>"popup_listpage","name"=>"button","value"=>"添加规格值","_width"=>"550","_height"=>"450","_title"=>'添加规格值',"_url"=>"/Product/Spec/addSpecValue?specid=".$specId),
-
-    //         "bt2"=>array("type"=>"confirm_all","name"=>"button","value"=>"批量删除","_width"=>"500","_height"=>"200","_title"=>'删除选中项?',"_url"=>"/Product/Spec/delSpecValue?rel=delete&specid=".$specId)
-    //     );
+  
 
 ?> 
 <?php if ($full_page){?>
