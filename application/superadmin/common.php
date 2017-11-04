@@ -940,7 +940,7 @@ class Html{
             $html .= '<input type="hidden" id="'.$param['id'].'" name="'.($param['name']!=''?$param['name']:$param['id']).'" value="'.$param['value'].'">';
             if(!empty($param['value'])){
 
-                $param['value'] =  str_replace('https://nnhtest.oss-cn-shenzhen.aliyuncs.com/', '',  $param['value']);
+                $param['value'] =  str_replace('http://nnhcoupon.oss-cn-shenzhen.aliyuncs.com/', '',  $param['value']);
                 $param['value'] =  str_replace('?x-oss-process=image/quality,q_80', '',  $param['value']);
 
 

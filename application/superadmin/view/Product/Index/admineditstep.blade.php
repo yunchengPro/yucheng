@@ -163,7 +163,7 @@ $(function(){
                 </td>
             </tr>
 
-               <tr>
+               <!-- <tr>
                 <td align="right" style="width: 5%">
 
                     <div class="label">条形码:</div>
@@ -191,24 +191,22 @@ $(function(){
                         </div>
                     </div>
                 </td>
-            </tr>
-          
-            <tr>
+            </tr> -->
+           <tr>
                 <td align="right">
 
-                    <div class="label"><span class="red">*</span>商品商家分类:</div>
+                    <div class="label"><span class="red">*</span>所属商家:</div>
 
                 </td>
                 <td>
                     <div class="field">
                         <div class="button-group button-group-small radio">
                             <!-- <input type="text" value="<?=$module['categoryname']?>" class="input-text width250" disabled="disabled"> -->
-                            <?php echo html::selectpicker(array("name"=>"businesscategoryid","value"=>$productinfo['businesscategoryid'],'option'=>$optionCate,"validator"=>"required:true","messages"=>"请选择分类"));?>
+                            <?php echo html::selectpicker(array("name"=>"businessid","value"=>$productinfo['businessid'],'option'=>$business,"validator"=>"required:true","messages"=>"请选商家"));?>
                             
                         </div>
                     </div>
                 </td>
-            </tr>
             <tr>
                 <td align="right">
 
@@ -219,7 +217,7 @@ $(function(){
                     <div class="field">
                         <div class="button-group button-group-small radio">
                             <!-- <input type="text" value="<?=$module['categoryname']?>" class="input-text width250" disabled="disabled"> -->
-                            <?php echo html::category(array("name"=>"categoryid","pvalue"=>$parent_cate_id,"svalue"=>$productinfo['categoryid'],"validator"=>"required:true","messages"=>"请选择分类"));?>
+                            <?php echo html::select(array("name"=>"categoryid","value"=>$productinfo['categoryid'],"option"=>$optionProCate,"validator"=>"required:true","messages"=>"请选择分类"));?>
                             
                         </div>
                     </div>
@@ -261,20 +259,8 @@ $(function(){
                 </td>
                 <td>
                
-                    <?php if(in_array(1, $type_arr)){ ?><input id="radio-1" type="radio" value="1" <?php if($productinfo['saletype'] == 1){ ?> checked="checked" <?php } ?> class="settle_cycle" id="settle_cycle1" name="saletype">牛票
-                    <?php } ?>
-                    <?php if(in_array(2, $type_arr)){ ?><input  id="radio-2" type="radio" value="2" <?php if($productinfo['saletype'] == 2){ ?> checked="checked" <?php } ?>  class="settle_cycle" id="settle_cycle2" name="saletype">牛票+牛豆
-
-                    <input  id="radio-3" type="radio" value="3" <?php if($productinfo['saletype'] == 3){ ?> checked="checked" <?php } ?>  class="settle_cycle" id="settle_cycle3" name="saletype">牛豆
-
-                    <?php } ?>
-                <?php if(!in_array(1, $type_arr) && !in_array(2, $type_arr)){ ?>
-                    <input id="radio-1" type="radio" value="1" <?php if($productinfo['saletype'] == 1){ ?> checked="checked" <?php } ?> class="settle_cycle" id="settle_cycle1" name="saletype">牛票
-                    <input  id="radio-2" type="radio" value="2" <?php if($productinfo['saletype'] == 2){ ?> checked="checked" <?php } ?>  class="settle_cycle" id="settle_cycle2" name="saletype">牛票+牛豆
-                     <input  id="radio-3" type="radio" value="3" <?php if($productinfo['saletype'] == 3){ ?> checked="checked" <?php } ?>  class="settle_cycle" id="settle_cycle3" name="saletype">牛豆
-                <?php } ?>    
+                    <input id="radio-1" type="radio" value="1"  checked="checked"  class="settle_cycle" id="settle_cycle1" name="saletype">牛票
                   
-                </td>
             </tr>
              <tr id="price_input">
                 <td>
@@ -458,100 +444,9 @@ $(function(){
                     </div>
                 </td>
             </tr>
-           <!--  <tr>
-                <td align="right">
-                        <div class="label">商品包邮</div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="button-group button-group-small radio">    
-                            <input id="freight_type" nctype="freight_type" name="freight_type" class="radio" type="radio" <?php if($freight['freight_type'] ==1){ ?> checked="checked"<?php } ?> value="1" >满
-                            <input type="text" name="freight_1" <?php if($freight['freight_type'] == 1){ ?> value="<?=$freight['freight']?>" <?php } ?> class="input-text width250" size="20">件包邮
-                        </div>
-                        <div class="button-group button-group-small radio" style="margin-top:5px; ">    
-                            <input id="freight_type" nctype="freight_type" name="freight_type" <?php if($freight['freight_type'] == 2){ ?> checked="checked"<?php } ?>  class="radio" type="radio" value="2">满
-                            <input type="text" name="freight_2" <?php if($freight['freight_type'] == 2){ ?> value="<?=$freight['freight']?>" <?php } ?> class="input-text width250" size="20">金额包邮
-                        </div>
-                        <div class="button-group button-group-small radio" style="margin-top:5px; ">    
-                            <input id="freight_type" nctype="freight_type" <?php if($freight['freight_type'] != 2 && $freight['freight_type'] != 1){ ?> checked="checked"<?php } ?> name="freight_type" class="radio" type="radio" value="0">都不参与
-                        </div>
-                    </div>
-                </td>
-            </tr>-->
-            <tr>
-                <td align="right">
-                        <div class="label">运费模板</div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="button-group button-group-small radio">
-                           
-                                   
-                                    <div nctype="div_freight" >
-                                  
-                               
-                                       
-                                             
-                                        <?php if(!empty($transport_list)){ ?>                                            
-                                        <?php echo Html::select(["name"=>"transportid","class"=>"select","option"=>$transport_list,"value"=>$productinfo['transportid']]); ?>
-                                        <?php }else{  echo "没有查到可用运费模板,请配置运费模板"; } ?>
-                                        
-                                    </div>
-                              </ul>
-                        </div>
-                    </div>
-                </td>
-            </tr> 
-          <!--   <tr>
-                <td align="right">
-                    <div class="label">库存:</div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="button-group button-group-small radio">    
-                            <input type="text" name="productstorage" value="<?=$productinfo['productstorage']?>" class="input-text width250" size="20">
-                        </div>
-                    </div>
-                </td>
-            </tr> -->
-           <!--  <?php if(is_array($attribute) && !empty($attribute)){ ?>
-            <?php $i = 1; ?>
-            <?php foreach($attribute as $sk=>$sv){  ?>
-                 <tr>
-                <td align="right">
-                        <label>扩展属性<?=$i?>:</label>
-                </td>
-                <td>
-                    <div class="field">
-                        <font style="float:left;margin-right: 40px;margin-left: 20px;" size="4"><?=$sv['attr_name']?></font>
-                        <select name="attributevalue_<?=$sv['id']?>" style="float:left; width: 200px;">
-                             <option selected value="">--请选择--</option>
-                                <?php foreach($sv['itemValue'] as $k=>$v){ ?>
-                                    <option value="<?=$v['id']?>"><?=$v['attr_value_name']?></option>
-                                <?php } ?>
-                        </select>
-                    </div>
-                </td>
-            </tr>
+         
           
-            <?php $i++; ?>
-            <?php } ?>
-            <?php } ?> -->
-            <tr>
-                <td align="right">
-
-                    <div class="label">是否为海外商品:</div>
-
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="button-group button-group-small radio">
-
-                        <?php echo Html::select(['name'=>'isabroad','value'=>$productinfo['isabroad'],'option'=>["0"=>"不是","1"=>"是"],"validator"=>"required:true","messages"=>"请选择"]);?>
-                          
-                    </div>
-                </td>
-            </tr>
+       
             <tr>
                 <td align="right">
 
@@ -568,47 +463,7 @@ $(function(){
                 </td>
             </tr>
             
-           <!--  <tr>
-                <td align="right">
-                        <div class="label">运费</div>
-                </td>
-                <td>
-                    <div class="field">
-                        <div class="button-group button-group-small radio">
-                            <ul class="ncsc-form-radio-list">                                   
-                                <li>
-                                    <input id="freight_0" nctype="freight" name="freight" <?php if($productinfo['transportid'] == 0){ ?>checked="checked" <?php } ?> class="radio" type="radio" value="0">
-                                    固定运费
-                                    <div nctype="div_freight" 
-                                    <?php if($productinfo['transportid'] != 0){ ?>
-                                        style="display: none;"
-                                    <?php } ?>
-                                    >
-                                        <input id="g_freight" class="input" nc_type="transport" type="text" value="<?php if($productinfo['freight'] != 0){ ?> <?php echo $productinfo['freight']; ?> <?php }else{ ?>0.00<?php } ?>" style="width:80px;display:inline-block" name="g_freight"><span>元</span>
-                                        
-                                    </div> 
-                                <li>
-                                    <input id="freight_1" nctype="freight" name="freight" class="radio" type="radio" <?php if($productinfo['transportid'] != 0){ ?>checked="checked"<?php } ?> value="1">
-                                    使用运费模板
-                                    <div nctype="div_freight" 
-                                    <?php if($productinfo['transportid'] == 0){ ?>
-                                        style="display: none;"
-                                    <?php } ?>
-                                    >
-                                        <input id="transport_title" type="hidden" value="<?=$productinfo['transporttitle']?>" name="transport_title">
-                                             
-                                        <?php if(!empty($transport_list)){ ?>                                            
-                                        <?php echo Html::select(["name"=>"transportid","class"=>"select","option"=>$transport_list,"value"=>$productinfo['transportid']]); ?>
-                                        <?php }else{  echo "没有查到可用运费模板,请配置运费模板"; } ?>
-                                        
-                                    </div>
-                              </ul>
-                        </div>
-                    </div>
-                </td>
-            </tr> -->
-
-
+      
 
             <tr>
                 <td>
@@ -617,7 +472,7 @@ $(function(){
                     <div class="form-button" style="margin:0;padding:0">
                         <?=$formtoken?>
                         <input type="hidden" name="id" value="<?=$productinfo['id']?>" />
-                        <input type="hidden" name="businessid" value="<?=$productinfo['businessid']?>" />
+                        
                         <input type="hidden" name="moduleid" value="<?=$module['id']?>" />
 
                         <button id="submit" class="button btn btn-primary " style="width:500px;color:#FFF;background-color:#636675;float:left;margin-top:20px;" type="submit">提交</button>
@@ -653,9 +508,7 @@ $(function(){
                 productname:{
                     required:true
                 },
-                businesscategoryid:{
-                    required:true
-                },
+             
                 supplyprice: {
                     number:true,
                     required:true
@@ -688,15 +541,13 @@ $(function(){
                 prouctprice:{
                     required:'商品价格不能为空'
                 },
-                bullamount:{
-                    required:'牛豆不能为空'
-                },
+                // bullamount:{
+                //     required:'牛豆不能为空'
+                // },
                 productname:{
                     required:'商品名称不能为空'
                 },
-                businesscategoryid:{
-                    required:'请选择商家分类'
-                },
+             
                 supplyprice: {
                     number: "供货价格只能是数字",
                     required:'供货价格不能为空'

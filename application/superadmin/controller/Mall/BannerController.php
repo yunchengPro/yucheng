@@ -43,8 +43,8 @@ class BannerController extends ActionController{
 //         $where = $this->searchWhere([
 //             "bname" => "like"
 //         ],$where);
-        //$list = Model::ins("MallBanner")->pageList($where,'*','id desc');
-        $list = Model::ins("MallBanner")->getList($where, '*', 'sort asc');
+        //$list = Model::ins('SysBanner')->pageList($where,'*','id desc');
+        $list = Model::ins('SysBanner')->getList($where, '*', 'sort asc');
         //var_dump($list); exit();
         
         $viewData = array(
@@ -91,7 +91,7 @@ class BannerController extends ActionController{
         $skipurl = Config::get('skipurl');
 
         $action = '/Mall/Banner/doaddOreditBanner';
-        $bannerData =  Model::ins('MallBanner')->getRow(['id'=>$id]);
+        $bannerData =  Model::ins('SysBanner')->getRow(['id'=>$id]);
         //var_dump($bannerData); exit();
         
           //form验证token
@@ -122,30 +122,30 @@ class BannerController extends ActionController{
             $id = $post['id'];
 
             //$post['businessid'] = $this->businessid; 
-            $post = Model::ins('MallBanner')->_facade($post);
+            $post = Model::ins('SysBanner')->_facade($post);
             //var_dump($post); exit();
 
             //自动验证表单 需要修改form对应表名
-            $MallBannerAdd = new MallBannerAdd();
-            if(!$MallBannerAdd->isValid($post)){//验证是否正确 
-                $this->showError($MallBannerAdd->getErr());//提示报错信息
-            }else{   
+            // $MallBannerAdd = new MallBannerAdd();
+            // if(!$MallBannerAdd->isValid($post)){//验证是否正确 
+            //     $this->showError($MallBannerAdd->getErr());//提示报错信息
+            // }else{   
                            
                 if(empty($id)){
                   
                     $post['addtime'] = date('Y-m-d H:i:s');
-                    $data = Model::ins('MallBanner')->insert($post);  
+                    $data = Model::ins('SysBanner')->insert($post);  
                 }else{
-                    $data = Model::ins('MallBanner')->update($post,['id'=>$id]);  
+                    $data = Model::ins('SysBanner')->update($post,['id'=>$id]);  
                 }
               
-                Model::Redis("MallBanner")->del($post['type']);
+              
                 if($data > 0){
                     $this->showSuccess('操作成功');
                 }else{
                     $this->showError('操作错误，请联系管理员');
                 }
-            }
+            // }
 
         }else{
             $this->showError('token错误，禁止操作');
@@ -170,7 +170,7 @@ class BannerController extends ActionController{
         $bannerId = explode(',', $bannerId);
         //批量删除用户
         foreach ($bannerId as $value) {
-            $data = Model::ins('MallBanner')->delete(['id'=>$value]);
+            $data = Model::ins('SysBanner')->delete(['id'=>$value]);
         }
 
         $this->showSuccess('成功删除');

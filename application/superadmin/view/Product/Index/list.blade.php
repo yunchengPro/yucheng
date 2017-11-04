@@ -98,6 +98,7 @@ use app\lib\Db;
     
     //自动生成按钮
     $button = array(
+            "bt1"=>array("type"=>"popup_listpage","name"=>"button","value"=>"添加商品","_width"=>"500","_height"=>"300","_title"=>'添加商品',"_url"=>"/Product/Index/addProductStepone"),
             //"bt1"=>array("type"=>"popup_listpage","name"=>"button","value"=>"导出商品","_width"=>"500","_height"=>"300","_title"=>'导出商品',"_url"=>"/Product/Index/exportproduct"),
 
             "bt2"=>array("type"=>"confirm_all","name"=>"button","value"=>"批量通过","_width"=>"500","_height"=>"200","_title"=>'批量通过选中项?',"_url"=>"/Product/Index/passcheck?rel=check")
@@ -115,7 +116,7 @@ use app\lib\Db;
             <!---搜索条件-->
             
             <!---这里可以写操作按钮等-->
-            <button _rel="newpage" id="goto2" style="display: none;" name="button" class="button " _title="添加产品" _width="500" _height="300" type="newpage" _url="">添加产品</button>
+            <button _rel="newpage" id="goto2" style="display: none" name="button" class="button " _title="添加产品" _width="500" _height="300" type="newpage" _url="">添加产品</button>
 
            
                   

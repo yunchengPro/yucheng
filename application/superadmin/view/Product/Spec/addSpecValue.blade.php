@@ -65,9 +65,9 @@
 
     $field = array(
             "spec_value_name"=>array("type"=>"text","name"=>"规格值名称","validator"=>"required:true","value"=>$specValueData['spec_value_name']),
-            "category_id"=>array("type"=>"text","name"=>"商品分类id","value"=>$specValueData['category_id']),
-            "store_id"=>array("type"=>"text","name"=>"店铺id","value"=>$specValueData['store_id']),
-            "spec_value_color"=>array("type"=>"text","name"=>"规格颜色","value"=>$specValueData['spec_value_color']),
+            // "category_id"=>array("type"=>"text","name"=>"商品分类id","value"=>$specValueData['category_id']),
+            // "store_id"=>array("type"=>"text","name"=>"店铺id","value"=>$specValueData['store_id']),
+            // "spec_value_color"=>array("type"=>"text","name"=>"规格颜色","value"=>$specValueData['spec_value_color']),
             "spec_value_sort"=>array("type"=>"text","name"=>"排序","value"=>$specValueData['spec_value_sort']),
             "id"=>array("type"=>"hidden","value"=>$specValueData['id']),
             "spec_id"=>array("type"=>"hidden","value"=>$specId),

@@ -74,7 +74,7 @@ function goods_stock_set(){
             .find('img[nc_type]').each(function(){
                 s = $(this).attr('nc_type');
                 try{
-                    $(this).attr('src',"//nnhtest.oss-cn-shenzhen.aliyuncs.com/"+V[s]);
+                    $(this).attr('src',"//nnhcoupon.oss-cn-shenzhen.aliyuncs.com/"+V[s]);
                     //$(this).val(E_SPV[s]);
 
                 }catch(ex){$(this).val('');};
@@ -165,7 +165,7 @@ $(function(){
             .find('img[nc_type]').each(function(){
                 s = $(this).attr('nc_type');
                 try{
-                    $(this).attr('src',"//nnhtest.oss-cn-shenzhen.aliyuncs.com/"+V[s]);
+                    $(this).attr('src',"//nnhcoupon.oss-cn-shenzhen.aliyuncs.com/"+V[s]);
                     //$(this).val(E_SPV[s]);
 
                 }catch(ex){$(this).val('');};
@@ -240,7 +240,7 @@ function recursionSpec($len,$sign,$action) {
         echo "str +='<td><input class=\"input-text width250 productstorage\" style=\"width:90px;\" type=\"test\" name=\"spec['+spec_bunch+'][productstorage]\" data_type=\"productstorage\" nc_type=\"'+spec_bunch+'|productstorage\" value=\"\" /></td>';\n";
 
         //图片
-        echo "str +='<td><div class=\"formControls col-xs-9 col-sm-8\"><span class=\"btn btn-danger fileinput-button\" id=\"spec-'+spec_bunch+'-image_upload\" name=\"spec['+spec_bunch+'][image_upload]\"><span>添加图片</span><input type=\"file\" name=\"file\" multiple=\"\"></span>&nbsp;<font>(文件数：1,上传多张只会保存最新的；文件大小：4M)</font><div id=\"uploadfiles_spec-'+spec_bunch+'-image\" class=\"uploadfiles\" style=\"margin-top:15px;\"><input type=\"hidden\" id=\"spec-'+spec_bunch+'-image\" name=\"spec['+spec_bunch+'][image]\" nc_type=\"'+spec_bunch+'|image\" value=\"\"><div class=\"filediv_spec-'+spec_bunch+'-image\" id=\"file_spec-'+spec_bunch+'-image_1327\" style=\"float: left; width: 100px; margin-right: 10px;\"><div><img id=\"spec-'+spec_bunch+'-image_show\" nc_type=\"'+spec_bunch+'|image\" src=\"\" width=\"100px\"></div><div style=\"text-align:center;\"></div><span id=\"url\" nc_type=\"'+spec_bunch+'|image\" style=\"display:none\"></span></div></div><script type=\"text/javascript\">fileupload(\'spec-'+spec_bunch+'-image\',\'{\"url\":\"/uploadfile/jqueryfileupload.php\",\"domain\":\"//nnhtest.oss-cn-shenzhen.aliyuncs.com/\",\"maxFileSize\":4194304,\"maxNumberOfFiles\":\"2\",\"savefileurl\":\"/Sys/upload/getfile\",\"getParamUrl\":\"/Sys/upload/policy\",\"server_type\":\"NNH/images\",\"formData\":{\"server_type\":\"NNH/images\"}}\');<\/script>（建议尺寸:200pxX200px）</div></td></tr>';\n";
+        echo "str +='<td><div class=\"formControls col-xs-9 col-sm-8\"><span class=\"btn btn-danger fileinput-button\" id=\"spec-'+spec_bunch+'-image_upload\" name=\"spec['+spec_bunch+'][image_upload]\"><span>添加图片</span><input type=\"file\" name=\"file\" multiple=\"\"></span>&nbsp;<font>(文件数：1,上传多张只会保存最新的；文件大小：4M)</font><div id=\"uploadfiles_spec-'+spec_bunch+'-image\" class=\"uploadfiles\" style=\"margin-top:15px;\"><input type=\"hidden\" id=\"spec-'+spec_bunch+'-image\" name=\"spec['+spec_bunch+'][image]\" nc_type=\"'+spec_bunch+'|image\" value=\"\"><div class=\"filediv_spec-'+spec_bunch+'-image\" id=\"file_spec-'+spec_bunch+'-image_1327\" style=\"float: left; width: 100px; margin-right: 10px;\"><div><img id=\"spec-'+spec_bunch+'-image_show\" nc_type=\"'+spec_bunch+'|image\" src=\"\" width=\"100px\"></div><div style=\"text-align:center;\"></div><span id=\"url\" nc_type=\"'+spec_bunch+'|image\" style=\"display:none\"></span></div></div><script type=\"text/javascript\">fileupload(\'spec-'+spec_bunch+'-image\',\'{\"url\":\"/uploadfile/jqueryfileupload.php\",\"domain\":\"//nnhcoupon.oss-cn-shenzhen.aliyuncs.com/\",\"maxFileSize\":4194304,\"maxNumberOfFiles\":\"2\",\"savefileurl\":\"/Sys/upload/getfile\",\"getParamUrl\":\"/Sys/upload/policy\",\"server_type\":\"NNH/images\",\"formData\":{\"server_type\":\"NNH/images\"}}\');<\/script>（建议尺寸:200pxX200px）</div></td></tr>';\n";
        
         
         for($i=0; $i< $len; $i++){

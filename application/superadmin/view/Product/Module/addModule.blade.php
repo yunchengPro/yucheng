@@ -1,10 +1,10 @@
 {include file="Pub/header" /}
 <link rel="stylesheet" href="/newui/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
-<form  method="post" id="form" class="frm"  rel="iframe-form" ><!--rel="iframe-form"-->
+<form action="<?=$action?>" method="post" id="form" class="frm"  rel="iframe-form" ><!--rel="iframe-form"-->
 <div class="type-edit" id="type-edit">
     <h4 class="font-gold">商品属性</h4>
     <div class="type-edit-row">
-        <label>类型名称</label><input type="text" class="input-text" id="modulename" value="<?=$moduleData['modulename']?>" name="modulename" style="width:180px">
+        <label>属性名称</label><input type="text" class="input-text" id="modulename" value="<?=$moduleData['modulename']?>" name="modulename" style="width:180px">
         <!--< label>关联分类</label>
         <select type="text" class="input-text" name="categoryid[]" multiple="multiple" style="width: 180px;height: 200px;">
             <?php foreach($categoryArr as $key =>  $value){ ?>
@@ -49,10 +49,9 @@
         <a class="add add_attr" _page="2">+</a>
     </div> -->
     <input type='hidden' name="id" id="id" value="<?=$moduleData['id']?>" />
-   <!--  <div class="opreation display-flex">
-        <a class="btn-primary" href="/Product/procategory/product_type_list">取消</a>
+    <div class="opreation display-flex">
         <button type="submit" class="btn btn-danger" style="width:100px;">保存</button>
-    </div> -->
+    </div>
 </div>
 </form>
 {include file="Pub/footer" /}

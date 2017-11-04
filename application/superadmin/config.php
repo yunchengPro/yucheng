@@ -198,24 +198,24 @@ return [
     // | 会话设置
     // +----------------------------------------------------------------------
 
-    'session'                => [
+    /*'session'                => [
         'id'             => '',
         // SESSION_ID的提交变量,解决flash上传跨域
         'var_session_id' => '',
         // SESSION 前缀
         'prefix'         => 'superadmin',
         // 驱动方式 支持redis memcache memcached
-        // 'type'           => 'redis',
-        // // 是否自动开启 SESSION
-         'auto_start'     => true,
+        'type'           => 'redis',
+        // 是否自动开启 SESSION
+        'auto_start'     => true,
 
-        // 'host'       => '192.168.1.16',
-        //  // redis端口
-        // 'port'       => 6379,
-        //  // 密码
-        // 'password'   => '',
-        // 'session_name'=>'session_superadmin_',
-    ],
+        'host'       => '192.168.1.16',
+         // redis端口
+        'port'       => 6379,
+         // 密码
+        'password'   => '',
+        'session_name'=>'session_superadmin_',
+    ],*/
 
     // +----------------------------------------------------------------------
     // | Cookie设置

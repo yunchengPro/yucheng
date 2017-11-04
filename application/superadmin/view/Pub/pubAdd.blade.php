@@ -90,7 +90,8 @@
                             "option"=>$value['option'],
                             "top_option"=>$value['top_option'],
                             "other"=>$value['other'],
-                            "value"=>($info[$key]!=''?$info[$key]:$value['value'])
+                            "value"=>($info[$key]!=''?$info[$key]:$value['value']),
+                            "disabled" => $value["disabled"],
                         )
                     );
                 }elseif($value['type']=='selectpicker'){

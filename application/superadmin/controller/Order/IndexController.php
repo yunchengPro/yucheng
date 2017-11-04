@@ -668,12 +668,12 @@ class IndexController extends ActionController {
         $logistics['express_no'] = $this->getParam('express_no');
         $logistics['delivery_time'] = getFormatNow();
         
-        $OrdOrderLogisticsEdit = new OrdOrderLogisticsEdit();
+//         $OrdOrderLogisticsEdit = new OrdOrderLogisticsEdit();
         
-        if(!$OrdOrderLogisticsEdit->isValid($logistics)) {
+//         if(!$OrdOrderLogisticsEdit->isValid($logistics)) {
             // 验证是否正确
-            $this->showError($OrdOrderLogisticsEdit->getErr());
-        } else {
+//             $this->showError($OrdOrderLogisticsEdit->getErr());
+//         } else {
             
             $amountModel = Model::ins("AmoAmount");
             $amountModel->startTrans();
@@ -712,7 +712,7 @@ class IndexController extends ActionController {
                 Log::add($e,__METHOD__);
                 $this->showError("操作错误，请联系管理员");
             }
-        }
+//         }
     }
     
     /**

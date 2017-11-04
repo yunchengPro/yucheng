@@ -80,7 +80,14 @@ body, th, td, button, input, select, textarea { font-family: "dongqingheiti", se
     float: left;
     margin-right: 10px;
 }
-
+#settle_cycle label{
+    float: right;
+    margin-right: 83%;
+}
+#businesscategoryid label{
+    float: right;
+    margin-right: 77%;
+}
 </style>
 <link rel="stylesheet" type="text/css" href="/pinture/css/jquery.editable-select.min.css" />
 
@@ -132,7 +139,7 @@ $(function(){
             $("#specialpic").css("display", "");
             $("#f_specialpic").attr("class", "required");
         }else{
-            //console.log(validator.rules);
+            console.log(validator.rules);
             $("#specialpic").css("display", "none");
         }
     });
@@ -143,7 +150,7 @@ $(function(){
 </script>
 
 <div class="admin">
-    <form id="fModi" method="post"  rel="iframe-form"   class="form-x" ><!--   -->
+    <form id="fModi" method="post"  rel="iframe-form" class="form-x" action="/product/index/doaddOreditProduct"><!--    -->
   
 
         <table class="table  table_header tab_style_base table_view" >
@@ -162,8 +169,8 @@ $(function(){
                     </div>
                 </td>
             </tr>
-
-               <tr>
+           
+            <tr>
                 <td align="right" style="width: 5%">
 
                     <div class="label">条形码:</div>
@@ -192,24 +199,23 @@ $(function(){
                     </div>
                 </td>
             </tr>
-          
-            <tr>
+            
+           <tr>
                 <td align="right">
 
-                    <div class="label"><span class="red">*</span>商品商家分类:</div>
+                    <div class="label"><span class="red">*</span>所属商家:</div>
 
                 </td>
                 <td>
                     <div class="field">
                         <div class="button-group button-group-small radio">
                             <!-- <input type="text" value="<?=$module['categoryname']?>" class="input-text width250" disabled="disabled"> -->
-                            <?php echo html::selectpicker(array("name"=>"businesscategoryid","value"=>$productinfo['businesscategoryid'],'option'=>$optionCate,"validator"=>"required:true","messages"=>"请选择分类"));?>
+                            <?php echo html::selectpicker(array("name"=>"businessid","value"=>$productinfo['businessid'],'option'=>$business,"validator"=>"required:true","messages"=>"请选商家"));?>
                             
                         </div>
                     </div>
                 </td>
-            </tr>
-            <tr>
+             <tr>
                 <td align="right">
 
                     <div class="label"><span class="red">*</span>商品分类:</div>
@@ -219,7 +225,7 @@ $(function(){
                     <div class="field">
                         <div class="button-group button-group-small radio">
                             <!-- <input type="text" value="<?=$module['categoryname']?>" class="input-text width250" disabled="disabled"> -->
-                            <?php echo html::category(array("name"=>"categoryid","pvalue"=>$parent_cate_id,"svalue"=>$productinfo['categoryid'],"validator"=>"required:true","messages"=>"请选择分类"));?>
+                            <?php echo html::select(array("name"=>"categoryid","value"=>$productinfo['categoryid'],"option"=>$optionProCate,"validator"=>"required:true","messages"=>"请选择分类"));?>
                             
                         </div>
                     </div>
@@ -255,38 +261,26 @@ $(function(){
                 </td>
             </tr>
         
-            <tr>
+           <tr>
                 <td>
                     <div class="label">商品价格:</div>
                 </td>
                 <td>
                
-                    <?php if(in_array(1, $type_arr)){ ?><input id="radio-1" type="radio" value="1" <?php if($productinfo['saletype'] == 1){ ?> checked="checked" <?php } ?> class="settle_cycle" id="settle_cycle1" name="saletype">牛票
-                    <?php } ?>
-                    <?php if(in_array(2, $type_arr)){ ?><input  id="radio-2" type="radio" value="2" <?php if($productinfo['saletype'] == 2){ ?> checked="checked" <?php } ?>  class="settle_cycle" id="settle_cycle2" name="saletype">牛票+牛豆
-
-                    <input  id="radio-3" type="radio" value="3" <?php if($productinfo['saletype'] == 3){ ?> checked="checked" <?php } ?>  class="settle_cycle" id="settle_cycle3" name="saletype">牛豆
-
-                    <?php } ?>
-                <?php if(!in_array(1, $type_arr) && !in_array(2, $type_arr)){ ?>
-                    <input id="radio-1" type="radio" value="1" <?php if($productinfo['saletype'] == 1){ ?> checked="checked" <?php } ?> class="settle_cycle" id="settle_cycle1" name="saletype">牛票
-                    <input  id="radio-2" type="radio" value="2" <?php if($productinfo['saletype'] == 2){ ?> checked="checked" <?php } ?>  class="settle_cycle" id="settle_cycle2" name="saletype">牛票+牛豆
-                     <input  id="radio-3" type="radio" value="3" <?php if($productinfo['saletype'] == 3){ ?> checked="checked" <?php } ?>  class="settle_cycle" id="settle_cycle3" name="saletype">牛豆
-                <?php } ?>    
+                    <input id="radio-1" type="radio" value="1"  checked="checked"  class="settle_cycle" id="settle_cycle1" name="saletype">牛票
                   
-                </td>
             </tr>
              <tr id="price_input">
                 <td>
                 </td>
                 <td>
-                    供货价<input type="text" onfocus="" onblur=""  onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"  id="supplyprice"   name="supplyprice" value="<?php echo DePrice($productinfo['supplyprice']);?>" class="input-scanNo input-text radius" >
+                    供货价<input type="text" onfocus="" onblur=""   id="supplyprice"   name="supplyprice" value="<?php echo DePrice($productinfo['supplyprice']);?>" class="input-scanNo input-text radius" >
                     销售价
-                    <input type="text" onfocus="" onblur="" onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')" id="saleprice"  name="saleprice" value="<?php echo DePrice($productinfo['saleprice']); ?>" value="" class="input-scanNo input-text radius" >
+                    <input type="text" onfocus="" onblur=""  id="saleprice"  name="saleprice" value="<?php echo DePrice($productinfo['saleprice']); ?>" value="" class="input-scanNo input-text radius" >
                     <span style="color:red" id="msg"></span>
                 </td>
             </tr>
-            <tr id="cash_input" style="display: none;">
+            <tr id="cash_input" >
                 <td>
                 </td>
                 <td>
@@ -342,7 +336,7 @@ $(function(){
            
             <?php if(is_array($spec) && !empty($spec)){ ?>
             <?php $i = 0; ?>
-            <?php foreach($spec as $sk => $sv){  ?>
+            <?php foreach($spec as $sk => $sv){ ?>
             <tr>
                 <td align="right">
                     <div class='label'><?=$sv['specname']?>:</div>
@@ -358,14 +352,14 @@ $(function(){
                                     <?php foreach($sv['itemValue'] as $v){  ?>
                                     <li>
                                         <span nctype="input_checkbox">
-                                            <input style="30px;display:inline" type="checkbox" name="sp_val[<?php echo $sk; ?>][<?php echo $v['id']; ?>]" nc_type="<?php echo $v['id']; ?>" value="<?php echo $v['spec_value_name'];?>">
+                                            <input style="30px;display:inline" type="checkbox" name="sp_val[<?php echo $sk; ?>][<?php echo $v['id']; ?>]" nc_type="<?php echo $v['id']; ?>" value="<?php echo $v['spec_value_name'];?>" >
                                         </span>
                                         <span nctype="pv_name"><?php echo $v['spec_value_name'];?></span>
                                     </li>
                                     <?php } ?>
                                 <?php } ?>
-
-                             <!--    <li data-speid="<?php echo $sv['id']; ?>" data-spename="<?php echo $sv['specname']; ?>" data-url="/Product/index/ajaxaddspec">
+                                <?php if($sv['_id'] > 0){ ?>
+                                <li data-speid="<?php echo $sv['_id']; ?>" data-spename="<?php echo $sv['specname']; ?>" data-url="/Product/index/ajaxaddspec">
                                     <div nctype="specAdd1">
                                         <a href="javascript:void();" class="ncsc-btn" nctype="specAdd">
                                             <i class="icon-plus"></i>添加规格值
@@ -376,7 +370,8 @@ $(function(){
                                         <a href="javascript:void();" nctype="specAddSubmit">确认</a>
                                         <a href="javascript:void();" nctype="specAddCancel">取消</a>
                                     </div>
-                                </li> -->
+                                </li>
+                                <?php } ?>
                             </ul>
                         </div>
                     </div>
@@ -387,7 +382,7 @@ $(function(){
             <?php } ?>
             <?php } ?>
 
-            <tr nc_type="spec_dl" style="display:none;">
+            <tr nc_type="spec_dl" style="<?php echo empty($spec_arr_td)?"display:none;":""?>">
                 <td align="right">
                         <div class="label">库存配置:</div>
                 </td>
@@ -397,10 +392,9 @@ $(function(){
                             <span id="notice" style="color: #0a6699;">不填写价格的记录不生成规格数据</span>
                             <table class="table table-hover table_header tab_style_base_new tab_style_base table_view">
                                 <thead nc_type="spec_thead">
-                                    <?php if(is_array($spec) && !empty($spec)){?>
-                                    <?php foreach($spec as $key=>$value){ ?>
-                                        <th nctype='spec_name_<?=$key?>'><?=$value['specname']?></th>
-                                    <?php } ?>
+                                    <th>序号</th>
+                                    <?php foreach($spec_arr_td as $key=>$value){ ?>
+                                        <th nctype='spec_name_<?=$key?>'><?=$value?></th>
                                     <?php } ?>
                                     <th >供货价格</th>;
                                     <th >销售价格</th>
@@ -410,9 +404,10 @@ $(function(){
                                     <th >条形码</th>
                                     <th >商品货号</th>
                                     <th >库存</th>
-                                    <th style="width:50%">图片</th>
+                                    <th >图片</th>
                                 </thead>
                                 <tbody nc_type="spec_table">
+
                                     
                                 </tbody>
                             </table>
@@ -458,7 +453,7 @@ $(function(){
                     </div>
                 </td>
             </tr>
-         <!--    <tr>
+            <!--<tr>
                 <td align="right">
                         <div class="label">商品包邮</div>
                 </td>
@@ -477,7 +472,7 @@ $(function(){
                         </div>
                     </div>
                 </td>
-            </tr> -->
+            </tr>-->
             <tr>
                 <td align="right">
                         <div class="label">运费模板</div>
@@ -502,7 +497,7 @@ $(function(){
                     </div>
                 </td>
             </tr>
-          <!--   <tr>
+            <!-- <tr>
                 <td align="right">
                     <div class="label">库存:</div>
                 </td>
@@ -568,48 +563,24 @@ $(function(){
                 </td>
             </tr>
             
-           <!--  <tr>
-                <td align="right">
-                        <div class="label">运费</div>
-                </td>
+           
+
+
+
+            <tr>
                 <td>
-                    <div class="field">
-                        <div class="button-group button-group-small radio">
-                            <ul class="ncsc-form-radio-list">                                   
-                                <li>
-                                    <input id="freight_0" nctype="freight" name="freight" <?php if($productinfo['transportid'] == 0){ ?>checked="checked" <?php } ?> class="radio" type="radio" value="0">
-                                    固定运费
-                                    <div nctype="div_freight" 
-                                    <?php if($productinfo['transportid'] != 0){ ?>
-                                        style="display: none;"
-                                    <?php } ?>
-                                    >
-                                        <input id="g_freight" class="input" nc_type="transport" type="text" value="<?php if($productinfo['freight'] != 0){ ?> <?php echo $productinfo['freight']; ?> <?php }else{ ?>0.00<?php } ?>" style="width:80px;display:inline-block" name="g_freight"><span>元</span>
-                                        
-                                    </div> 
-                                <li>
-                                    <input id="freight_1" nctype="freight" name="freight" class="radio" type="radio" <?php if($productinfo['transportid'] != 0){ ?>checked="checked"<?php } ?> value="1">
-                                    使用运费模板
-                                    <div nctype="div_freight" 
-                                    <?php if($productinfo['transportid'] == 0){ ?>
-                                        style="display: none;"
-                                    <?php } ?>
-                                    >
-                                        <input id="transport_title" type="hidden" value="<?=$productinfo['transporttitle']?>" name="transport_title">
-                                             
-                                        <?php if(!empty($transport_list)){ ?>                                            
-                                        <?php echo Html::select(["name"=>"transportid","class"=>"select","option"=>$transport_list,"value"=>$productinfo['transportid']]); ?>
-                                        <?php }else{  echo "没有查到可用运费模板,请配置运费模板"; } ?>
-                                        
-                                    </div>
-                              </ul>
-                        </div>
+                </td>
+                <td  style="text-align:center;height:100px;line-height:100px">
+                    <div class="form-button" style="margin:0;padding:0">
+                        <?=$formtoken?>
+                        <input type="hidden" name="id" value="<?=$productinfo['id']?>" />
+                        
+                        <input type="hidden" name="moduleid" value="<?=$module['id']?>" />
+
+                        <button id="submit" class="button btn btn-primary " style="width:500px;color:#FFF;background-color:#636675;float:left;margin-top:20px;" type="submit">提交</button>
                     </div>
                 </td>
-            </tr> -->
-
-
-
+            </tr>
 
 
         </table>
@@ -624,32 +595,32 @@ $(function(){
      var validator = $("#fModi").validate({
             ignore:[],
             rules: {
-                saletype:{
-                    required:true
-                },
-                discount:{
-                    required:true
-                },
-                prouctprice:{
-                    required:true
-                },
-                bullamount:{
-                    required:true
-                },
+                // saletype:{
+                //     required:true
+                // },
+                // discount:{
+                //     required:true
+                // },
+                // prouctprice:{
+                //     required:true
+                // },
+                // bullamount:{
+                //     required:true
+                // },
                 productname:{
                     required:true
                 },
-                businesscategoryid:{
-                    required:true
-                },
-                supplyprice: {
-                    number:true,
-                    required:true
-                },
-                saleprice: {
-                    number:true,
-                    required:true
-                }, 
+                // businesscategoryid:{
+                //     required:true
+                // },
+                // supplyprice: {
+                //     number:true,
+                //     required:true
+                // },
+                // saleprice: {
+                //     number:true,
+                //     required:true
+                // }, 
                 images: {
                     required: true
                 },
@@ -665,32 +636,32 @@ $(function(){
             },
             messages: {
 
-                saletype:{
-                    required:'请选择商品类型'
-                },
-                discount:{
-                    required:'折扣不能为空'
-                },
-                prouctprice:{
-                    required:'商品价格不能为空'
-                },
-                bullamount:{
-                    required:'牛豆不能为空'
-                },
+                // saletype:{
+                //     required:'请选择商品类型'
+                // },
+                // discount:{
+                //     required:'折扣不能为空'
+                // },
+               // prouctprice:{
+                 //   required:'商品价格不能为空'
+               // },
+               // bullamount:{
+                //    required:'牛豆不能为空'
+               // },
                 productname:{
                     required:'商品名称不能为空'
                 },
-                businesscategoryid:{
-                    required:'请选择商家分类'
-                },
-                supplyprice: {
-                    number: "供货价格只能是数字",
-                    required:'供货价格不能为空'
-                },
-                saleprice: {
-                    number: "销售价格只能是数字",
-                    required:'销售价格不能为空'
-                },  
+                // businesscategoryid:{
+                //     required:'请选择商家分类'
+                // },
+               // supplyprice: {
+                 //   number: "供货价格只能是数字",
+                  //  required:'供货价格不能为空'
+               // },
+               // saleprice: {
+                 //   number: "销售价格只能是数字",
+                  //  required:'销售价格不能为空'
+               // },  
                 images: {
                     required: "商品缩略图必须上传"
                 },
@@ -724,11 +695,11 @@ $(function(){
     //年度结算周期
     var settle_cycle = $('input:radio[name="saletype"]:checked').val();
 
-    if(settle_cycle == 2){
-        $("#cash_input").show();
-    }else{
-        $("#cash_input").hide();
-    }
+    // if(settle_cycle == 2){
+    //     $("#cash_input").show();
+    // }else{
+    //     $("#cash_input").hide();
+    // }
 
 
     $(".settle_cycle").click(function(){
@@ -749,7 +720,7 @@ $(function(){
                 dataType:'json',
                 url:"/Product/Index/formatPrice",
                 success:function(res){
-                    //console.log(res);
+                    console.log(res);
                     $('input:text[name="prouctprice"]').val(res.prouctprice);
                     $('input:text[name="discount"]').val(res.discount);
                     $('input:text[name="bullamount"]').val(res.bullamount);
@@ -758,11 +729,11 @@ $(function(){
             });
         }
        
-        if(settle_cycle == 2){
-            $("#cash_input").show();
-        }else{
-            $("#cash_input").hide();
-        }
+        // if(settle_cycle == 2){
+        //     $("#cash_input").show();
+        // }else{
+        //     $("#cash_input").hide();
+        // }
     });
 
     $('input:text[name="supplyprice"]').blur(function(){
@@ -783,7 +754,7 @@ $(function(){
                 dataType:'json',
                 url:"/Product/Index/formatPrice",
                 success:function(res){
-                    //console.log(res);
+                    console.log(res);
                     $('input:text[name="prouctprice"]').val(res.prouctprice);
                     $('input:text[name="discount"]').val(res.discount);
                     $('input:text[name="bullamount"]').val(res.bullamount);
@@ -810,7 +781,7 @@ $(function(){
                 dataType:'json',
                 url:"/Product/Index/formatPrice",
                 success:function(res){
-                    //console.log(res);
+                    console.log(res);
                     $('input:text[name="prouctprice"]').val(res.prouctprice);
                     $('input:text[name="discount"]').val(res.discount);
                     $('input:text[name="bullamount"]').val(res.bullamount);

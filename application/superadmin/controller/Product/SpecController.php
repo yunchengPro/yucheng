@@ -35,10 +35,10 @@ class SpecController extends ActionController{
     public function indexAction(){
 
         //查询
-       
+        //$where['businessid']=$this->businessid;
         
         $where = $this->searchWhere([
-                "specname"=>"="
+                "specname"=>"like"
             ],$where);
 
         //品牌列表
@@ -52,120 +52,126 @@ class SpecController extends ActionController{
         return $this->view($viewData);
     }
 
-    // /**
-    //  * [addSpecAction 添加规格]
-    //  * @Author   ISir<673638498@qq.com>
-    //  * @DateTime 2017-03-15T19:41:23+0800
-    //  */
-    // public function addSpecAction(){
+    /**
+     * [addSpecAction 添加规格]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-15T19:41:23+0800
+     */
+    public function addSpecAction(){
 
-    //     $action = '/Product/Spec/doaddOreditSpec';
-    //     //form验证token
-    //     $formtoken = $this->Btoken('Product-Spec-addSpec');
-    //     $viewData = array(
-    //             "title"=>"添加规格",
-    //             'formtoken'=>$formtoken,
-    //             "action"=>$action
-    //         );
-    //     return $this->view($viewData);
-    // }
+        $action = '/Product/Spec/doaddOreditSpec';
+        //form验证token
+        $formtoken = $this->Btoken('Product-Spec-addSpec');
+        $viewData = array(
+                "title"=>"添加规格",
+                'formtoken'=>$formtoken,
+                "action"=>$action
+            );
+        return $this->view($viewData);
+    }
 
-    // /**
-    //  * [editSpecAction 编辑规格]
-    //  * @Author   ISir<673638498@qq.com>
-    //  * @DateTime 2017-03-15T19:41:42+0800
-    //  * @return   [type]                   [description]
-    //  */
-    // public function editSpecAction(){
+    /**
+     * [editSpecAction 编辑规格]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-15T19:41:42+0800
+     * @return   [type]                   [description]
+     */
+    public function editSpecAction(){
 
-    //     $id = $this->getParam('id');
+        $id = $this->getParam('id');
 
-    //     $action = '/Product/Spec/doaddOreditSpec';
-    //     $specData =  Db::Model('ProSpec')->getRow(['id'=>$id]);
-    //       //form验证token
-    //     $formtoken = $this->Btoken('Product-Brand-editSpec');
-    //     $viewData = array(
-    //             "title"=>"编辑品牌",
-    //             "specData"=>$specData,
-    //             'formtoken'=>$formtoken,
-    //             "action"=>$action
-    //         );
-    //     return $this->view($viewData);
-    // }
+        $action = '/Product/Spec/doaddOreditSpec';
+        $specData =  Db::Model('ProSpec')->getRow(['id'=>$id]);
+          //form验证token
+        $formtoken = $this->Btoken('Product-Brand-editSpec');
+        $viewData = array(
+                "title"=>"编辑品牌",
+                "specData"=>$specData,
+                'formtoken'=>$formtoken,
+                "action"=>$action
+            );
+        return $this->view($viewData);
+    }
 
-    // /**
-    //  * [doaddOreditSpecAction 修改或添加规格操作]
-    //  * @Author   ISir<673638498@qq.com>
-    //  * @DateTime 2017-03-15T19:42:51+0800
-    //  * @return   [type]                   [description]
-    //  */
-    // public function doaddOreditSpecAction(){
+    /**
+     * [doaddOreditSpecAction 修改或添加规格操作]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-15T19:42:51+0800
+     * @return   [type]                   [description]
+     */
+    public function doaddOreditSpecAction(){
         
-    //     // if($this->Ctoken()){
+        // if($this->Ctoken()){
 
-    //         $post = $this->params;
-    //         $id = $post['id'];
-           
-    //         // $post['class_id'] = empty($post['class_id']) ?  0 : $post['class_id']; 
-    //         // $post['class_name'] = empty($post['class_id']) ?  0 : $post['class_name']; 
-    //          //自动验证表单 需要修改form对应表名字段
-    //         $ProSpecAdd = new ProSpecAdd();
+            $post = $this->params;
+            $id = $post['id'];
+            
+            $this->businessid = empty($post['businessid']) ? 0 : $post['businessid'];
+            // $post['class_id'] = empty($post['class_id']) ?  0 : $post['class_id']; 
+            // $post['class_name'] = empty($post['class_id']) ?  0 : $post['class_name']; 
+             //自动验证表单 需要修改form对应表名字段
+            $ProSpecAdd = new ProSpecAdd();
           
-    //         $post = Db::Model('ProSpec')->_facade($post);
+            $post = Db::Model('ProSpec')->_facade($post);
            
-    //         //print_r($post);
-    //         if(!$ProSpecAdd->isValid($post)){//验证是否正确 
-    //             $this->showError($ProSpecAdd->getErr());//提示报错信息
-    //         }else{
-    //             $data = Db::Model('ProSpec')->getRow(['specname'=>$post['specname'],'businessid'=>$this->businessid],'id');
-    //             if(!empty($data))
-    //                 $this->showError('规格已存在');
-    //             if(empty($id)){
-    //                 $post['businessid'] = $this->businessid;
-    //                 $data = Db::Model('ProSpec')->insert($post);  
-    //             }else{
-    //                 $data = Db::Model('ProSpec')->update($post,['id'=>$id]);  
-    //             }
-    //             if($data > 0){
-    //                 $this->showSuccess('操作成功');
-    //             }else{
-    //                 $this->showError('操作错误，请联系管理员');
-    //             }
-    //         }
+            //print_r($post);
+            if(!$ProSpecAdd->isValid($post)){//验证是否正确 
+                $this->showError($ProSpecAdd->getErr());//提示报错信息
+            }else{
+               
+                if(empty($id)){
+                    $data = Db::Model('ProSpec')->getRow(['specname'=>$post['specname'],'businessid'=>$this->businessid],'id');
+                    if(!empty($data))
+                        $this->showError('规格已存在');
 
-    //     // }else{
-    //     //     $this->showError('token错误，禁止操作');
-    //     // }
+                    $post['businessid'] = $this->businessid;
+                    $data = Db::Model('ProSpec')->insert($post);  
+                }else{
+                    $data = Db::Model('ProSpec')->getRow(['specname'=>$post['specname'],'businessid'=>$this->businessid,'id'=>['<>',$id]],'id');
+                    if(!empty($data))
+                        $this->showError('规格已存在');
+                    $data = Db::Model('ProSpec')->update($post,['id'=>$id]);  
+                }
+                if($data > 0){
+                    $this->showSuccess('操作成功');
+                }else{
+                    $this->showError('操作错误，请联系管理员');
+                }
+            }
 
-    // }
+        // }else{
+        //     $this->showError('token错误，禁止操作');
+        // }
 
-    // /**
-    //  * [delSpecAction 删除规格]
-    //  * @Author   ISir<673638498@qq.com>
-    //  * @DateTime 2017-03-15T19:42:09+0800
-    //  * @return   [type]                   [description]
-    //  */
-    // public function delSpecAction(){
+    }
 
-    //     $SpecId = $this->getParam('ids');
+    /**
+     * [delSpecAction 删除规格]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-15T19:42:09+0800
+     * @return   [type]                   [description]
+     */
+    public function delSpecAction(){
 
-    //     if(empty($SpecId)){
-    //         $this->showError('请选择需要删除的规格');
-    //     }
+        $SpecId = $this->getParam('ids');
+
+        if(empty($SpecId)){
+            $this->showError('请选择需要删除的规格');
+        }
      
    
-    //     $SpecId = explode(',', $SpecId);
-    //     //批量删除用户
-    //     foreach ($SpecId as $value) {
+        $SpecId = explode(',', $SpecId);
+        //批量删除用户
+        foreach ($SpecId as $value) {
 
-    //         $specData = Db::Model('ProSpec')->delete(['id'=>$value]);
+            $specData = Db::Model('ProSpec')->delete(['id'=>$value]);
           
-    //         $specValueData = Db::Model('ProSpecValue')->delete(['spec_id'=>$value]);
-    //     }
+            $specValueData = Db::Model('ProSpecValue')->delete(['spec_id'=>$value]);
+        }
 
-    //    $this->showSuccess('成功删除');
+       $this->showSuccess('成功删除');
 
-    // }
+    }
 
     /**
      * [specValueAction 规格值]
@@ -181,9 +187,9 @@ class SpecController extends ActionController{
         $where['spec_id'] = $specId;
         
         $where = $this->searchWhere([
-                "spec_value_name"=>"=",
+                "spec_value_name"=>"like",
             ],$where);
-
+       
         //品牌列表
         $list = Db::Model("ProSpecValue")->pageList($where,'*','id desc');
 
@@ -220,102 +226,108 @@ class SpecController extends ActionController{
         return $this->view($viewData);
     }
 
-    // /**
-    //  * [editSepcValueAction 编辑规格值]
-    //  * @Author   ISir<673638498@qq.com>
-    //  * @DateTime 2017-03-15T20:54:52+0800
-    //  * @return   [type]                   [description]
-    //  */
-    // public function editSpecValueAction(){
+    /**
+     * [editSepcValueAction 编辑规格值]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-15T20:54:52+0800
+     * @return   [type]                   [description]
+     */
+    public function editSpecValueAction(){
         
-    //     $specId = $this->getParam('specid');
-    //     $specData = Db::Model('ProSpec')->getRow(['id'=>$specId]);
-    //     if(empty($specData))
-    //         $this->showError('不存在的规格');
+        $specId = $this->getParam('specid');
+        $specData = Db::Model('ProSpec')->getRow(['id'=>$specId]);
+        if(empty($specData))
+            $this->showError('不存在的规格');
 
-    //     $id = $this->getParam('id');
+        $id = $this->getParam('id');
 
-    //     $action = '/Product/Spec/doaddOreditSpecValue';
-    //     $specValueData =  Db::Model('ProSpecValue')->getRow(['id'=>$id]);
-    //       //form验证token
-    //     $formtoken = $this->Btoken('Product-Brand-editSepcValue');
-    //     $viewData = array(
-    //             "title"=>"编辑品牌",
-    //             "specValueData"=>$specValueData,
-    //             'formtoken'=>$formtoken,
-    //             "specId"=>$specId,
-    //             "action"=>$action
-    //         );
-    //     return $this->view($viewData);
-    // }
+        $action = '/Product/Spec/doaddOreditSpecValue';
+        $specValueData =  Db::Model('ProSpecValue')->getRow(['id'=>$id]);
+          //form验证token
+        $formtoken = $this->Btoken('Product-Brand-editSepcValue');
+        $viewData = array(
+                "title"=>"编辑品牌",
+                "specValueData"=>$specValueData,
+                'formtoken'=>$formtoken,
+                "specId"=>$specId,
+                "action"=>$action
+            );
+        return $this->view($viewData);
+    }
 
-    // /**
-    //  * [doaddOreditSpecValueAction 修改或添加规格值操作]
-    //  * @Author   ISir<673638498@qq.com>
-    //  * @DateTime 2017-03-15T20:56:28+0800
-    //  * @return   [type]                   [description]
-    //  */
-    // public function doaddOreditSpecValueAction(){
+    /**
+     * [doaddOreditSpecValueAction 修改或添加规格值操作]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-15T20:56:28+0800
+     * @return   [type]                   [description]
+     */
+    public function doaddOreditSpecValueAction(){
 
 
-    //     // if($this->Ctoken()){
+        // if($this->Ctoken()){
 
-    //         $post = $this->params;
-    //         $id = $post['id'];
+            $post = $this->params;
+            $id = $post['id'];
            
           
-    //          //自动验证表单 需要修改form对应表名字段
-    //         $ProSpecValueAdd = new ProSpecValueAdd();
+             //自动验证表单 需要修改form对应表名字段
+            $ProSpecValueAdd = new ProSpecValueAdd();
           
-    //         $post = Db::Model('ProSpecValue')->_facade($post);
+            $post = Db::Model('ProSpecValue')->_facade($post);
            
-    //         //print_r($post);
-    //         if(!$ProSpecValueAdd->isValid($post)){//验证是否正确 
-    //             $this->showError($ProSpecValueAdd->getErr());//提示报错信息
-    //         }else{
+            //print_r($post);
+            if(!$ProSpecValueAdd->isValid($post)){//验证是否正确 
+                $this->showError($ProSpecValueAdd->getErr());//提示报错信息
+            }else{
                 
-    //             if(empty($id)){
-    //                 $data = Db::Model('ProSpecValue')->insert($post);  
-    //             }else{
-    //                 $data = Db::Model('ProSpecValue')->update($post,['id'=>$id]);  
-    //             }
-    //             if($data > 0){
-    //                 $this->showSuccess('操作成功');
-    //             }else{
-    //                 $this->showError('操作错误，请联系管理员');
-    //             }
-    //         }
+                if(empty($id)){
+                    $hasDdata =  Db::Model('ProSpecValue')->getRow(['spec_value_name'=>$post['spec_value_name']],'id');
+                    if(!empty($hasDdata))
+                        $this->showError('规格值已存在');
+                    $data = Db::Model('ProSpecValue')->insert($post);  
+                }else{
+                    $hasDdata =  Db::Model('ProSpecValue')->getRow(['spec_value_name'=>$post['spec_value_name'],'id'=>['<>',$id]],'id');
+                    if(!empty($hasDdata))
+                        $this->showError('规格值已存在');
+                    $data = Db::Model('ProSpecValue')->update($post,['id'=>$id]);  
+                }
+                if($data > 0){
+                    $this->showSuccess('操作成功');
+                }else{
+                    $this->showError('操作错误，请联系管理员');
+                }
+            }
 
-    //     // }else{
-    //     //     $this->showError('token错误，禁止操作');
-    //     // }
+        // }else{
+        //     $this->showError('token错误，禁止操作');
+        // }
 
-    // }
+    }
 
-    // /**
-    //  * [delSpecValueAction 删除规格值]
-    //  * @Author   ISir<673638498@qq.com>
-    //  * @DateTime 2017-03-15T21:00:50+0800
-    //  * @return   [type]                   [description]
-    //  */
-    // public function delSpecValueAction(){
+    /**
+     * [delSpecValueAction 删除规格值]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-15T21:00:50+0800
+     * @return   [type]                   [description]
+     */
+    public function delSpecValueAction(){
 
-    //     $SpecValueId = $this->getParam('ids');
+        $SpecValueId = $this->getParam('ids');
 
-    //     if(empty($SpecValueId)){
-    //         $this->showError('请选择需要删除的规格');
-    //     }
+        if(empty($SpecValueId)){
+            $this->showError('请选择需要删除的规格');
+        }
      
    
-    //     $SpecValueId = explode(',', $SpecValueId);
-    //     //批量删除用户
-    //     foreach ($SpecValueId as $value) {
+        $SpecValueId = explode(',', $SpecValueId);
+        //批量删除用户
+        foreach ($SpecValueId as $value) {
           
-    //         $specValueData = Db::Model('ProSpecValue')->delete(['id'=>$value]);
-    //     }
+            $specValueData = Db::Model('ProSpecValue')->delete(['id'=>$value]);
+        }
 
-    //    $this->showSuccess('成功删除');
-    // }
+       $this->showSuccess('成功删除');
+    }
 
 
 }

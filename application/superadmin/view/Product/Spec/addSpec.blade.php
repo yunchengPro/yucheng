@@ -66,8 +66,8 @@
     $field = array(
             "specname"=>array("type"=>"text","name"=>"规格名称","validator"=>"required:true","value"=>$specData['specname']),
             "sort"=>array("type"=>"text","name"=>"排序","validator"=>"required:true","value"=>$specData['sort']),
-            "class_id"=>array("type"=>"text","name"=>"商品分类id","value"=>$specData['class_id']),
-            "class_name"=>array("type"=>"text","name"=>"商品分类名称","value"=>$specData['class_name']),
+            // "class_id"=>array("type"=>"text","name"=>"商品分类id","value"=>$specData['class_id']),
+            // "class_name"=>array("type"=>"text","name"=>"商品分类名称","value"=>$specData['class_name']),
             "id"=>array("type"=>"hidden","value"=>$specData['id']),
             //"submit"=>array("type"=>"submit","name"=>"提交"), //加该参数表示独立页面，不加该参数表示弹窗
         );
