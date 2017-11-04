@@ -123,7 +123,7 @@ class StoOrderLogisticsModel {
     * $flag = 0 表示不返回总条数
     */
     public function pageList($where,$field='*',$order='',$flag=1,$page='',$pagesize=''){
-        return $this->_modelObj->pageList($where,$field,$order,$flag);
+        return $this->_modelObj->pageList($where,$field,$order,$flag,$page,$pagesize);
     }
     
     /*

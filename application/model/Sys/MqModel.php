@@ -105,6 +105,7 @@ class MqModel
     ]
      */
     public static function add($param){
+        return true;
         self::$mqlist[] = $param;
     }
 
@@ -118,7 +119,7 @@ class MqModel
 
     // 提交
     public static function submit(){
-
+        return true;
         if(!empty(self::$mqlist)){
             
             // 记录消息请求信息

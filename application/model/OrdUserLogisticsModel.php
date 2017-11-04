@@ -112,7 +112,7 @@ class OrdUserLogisticsModel {
      * @return   [type]                               [description]
      */
     public function getUserDefaultLogistics($param){
-
+    	
     	$customerid = $param['customerid'];
 
     	$logisticsid = $param['logisticsid'];
@@ -127,7 +127,7 @@ class OrdUserLogisticsModel {
     	}else if(!empty($logisticsid)){
     		$logistics = $this->getRow(["id"=>$logisticsid],"id as address_id,mobile,realname,city_id,city,address");
     	}
-
+    	
     	return $logistics;
     }
 

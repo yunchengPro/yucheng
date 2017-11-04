@@ -144,8 +144,8 @@ class PayBillWeixinModel {
 	 * 分页列表
 	 * $flag = 0 表示不返回总条数
 	 */
-	public function pageList($where,$field='*',$order='',$flag=1){
-	    return $this->_modelObj->pageList($where,$field,$order,$flag);
+	public function pageList($where,$field='*',$order='',$flag=1,$page='',$pagesize=''){
+	    return $this->_modelObj->pageList($where,$field,$order,$flag,$page,$pagesize);
 	}
 
 }

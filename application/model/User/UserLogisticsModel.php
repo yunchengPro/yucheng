@@ -20,7 +20,11 @@ class UserLogisticsModel{
     	$customerid = $param['customerid'];
 
     	$logistics_list = Model::ins('OrdUserLogistics')->getList(['customerid'=>$customerid],'*','isdefault desc,id desc');
+    	foreach ($logistics_list as $key => $value) {
 
+    		$logistics_list[$key]['address_id'] = $value['id'];
+    		unset($logistics_list[$key]['id']);
+    	}
     	return ['code'=>200,'data'=>$logistics_list]; 
     }
 
@@ -76,6 +80,11 @@ class UserLogisticsModel{
      */
     public static function updateCustomerLogistic($param){
 
+    	$logisticid =  $param['logisticid'];
+
+    	if(empty($logisticid))
+    		return ['code'=>404,'data'=>'','msg'=>'请选择要修改的收货地址信息'];
+
     	if(empty($param['realname']))
 			return ['code'=>404,'data'=>'','msg'=>'收货人姓名不能为空'];
 
@@ -89,10 +98,7 @@ class UserLogisticsModel{
 			return ['code'=>404,'data'=>'','msg'=>'请填写收货人详细地址'];
 
 
-    	$logisticid =  $param['logisticid'];
-
-    	if(empty($logisticid))
-    		return ['code'=>404,'data'=>'','msg'=>'请选择要修改的收货地址信息'];
+    	
 
 		$OrdUserLogistics = Model::ins('OrdUserLogistics');
 		$LogisticData =  $OrdUserLogistics->getRow(['id'=>$param['logisticid']],'id,customerid');
@@ -133,6 +139,9 @@ class UserLogisticsModel{
 		$customerid =$param['customerid'];
 		$id = $param['logisticid'];
 
+		if(empty($id))
+			return ['code'=>404,'msg'=>'参数错误'];
+
 		$OrdUserLogistics =  Model::ins('OrdUserLogistics');
 
 		$LogisticData =  $OrdUserLogistics->getRow(['id'=>$id]);
@@ -160,6 +169,10 @@ class UserLogisticsModel{
 	 * @return   [type]                          [description]
 	 */
 	public static function delCustomerLogistic($param){
+
+		if(empty($param['logisticid']))
+    		return ['code'=>404,'data'=>'','msg'=>'请选择要删除的收货地址信息'];
+
 		$OrdUserLogistics =  Model::ins('OrdUserLogistics');
 		$data = $OrdUserLogistics->getRow(['customerid'=>$param['customerid'],'id'=>$param['logisticid']],'id');
 		//print_r($data);

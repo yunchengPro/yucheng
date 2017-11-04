@@ -1,6 +1,7 @@
 <?php
 namespace app\model\User;
 use app\lib\Model;
+use app\model\Sys\CommonModel;
 
 class UserBankModel
 {
@@ -29,9 +30,15 @@ class UserBankModel
         
         // 标识
         $result['bankStatus'] = 0;
-        $bankInfo = Model::ins("CusBank")->getRow($where,"*","is_default desc, sort desc, addtime desc");
-        if(!empty($bankInfo)) {
+        $bankInfo = Model::ins("CusBank")->getRow($where,"id,bank_type_name,account_type,account_number","is_default desc, sort desc, addtime desc");
+        if(!empty($bankInfo['id'])) {
             $result['bankStatus'] = 1;
+        }
+        if(empty($bankInfo)) {
+            $bankInfo['id'] = "";
+            $bankInfo['bank_type_name'] = "";
+            $bankInfo['account_type'] = "";
+            $bankInfo['account_number'] = "";
         }
         $result['bankInfo'] = $bankInfo;
         
@@ -55,7 +62,7 @@ class UserBankModel
         $where['customerid'] = $customerid;
         $where['enable'] = 1;
         
-        $result = Model::ins("CusBank")->pageList($where,"*","is_default desc, sort desc ,addtime desc");
+        $result = Model::ins("CusBank")->pageList($where,"id,bank_type_name,account_type,account_number","is_default desc, sort desc ,addtime desc");
         
         return ["code" => "200", "data" => $result];
     }
@@ -76,26 +83,35 @@ class UserBankModel
         $branch = $param['branch'];
         $mobile = $param['mobile'];
 
+       
+
         if(empty($customerid))
-            return ['code'=>404,'data'=>'','msg'=>'用户信息不存在，请重新登录'];
+            return ['code'=>404,'data'=>[],'msg'=>'用户信息不存在，请重新登录'];
 
         if(empty($bank_type_name))
-            return ['code'=>404,'data'=>'','msg'=>'开户银行名称不能为空'];
+            return ['code'=>404,'data'=>[],'msg'=>'开户银行名称不能为空'];
 
         if(empty($account_name))
-            return ['code'=>404,'data'=>'','msg'=>'银行开户名'];
+            return ['code'=>404,'data'=>[],'msg'=>'银行开户名'];
 
         if(empty($account_type))
-            return ['code'=>404,'data'=>'','msg'=>'请选择账户类型'];
+            return ['code'=>404,'data'=>[],'msg'=>'请选择账户类型'];
 
         if(empty($account_number))
-            return ['code'=>404,'data'=>'','msg'=>'银行卡号不能为空'];
+            return ['code'=>404,'data'=>[],'msg'=>'银行卡号不能为空'];
+
+          // 当是个人帐号时才去校验银行卡号(对公帐号规则 太杂了。没标准)；
+        if($this->params['account_type'] == 1) {
+            if(!CommonModel::account_bank_validate($this->params['account_number'])) {
+                return  ['code'=>20012,'data'=>[],'msg'=>'银行卡号码不正确']; 
+            }
+        }
 
         if(empty($branch))
-            return ['code'=>404,'data'=>'','msg'=>'请填写支行名称'];
+            return ['code'=>404,'data'=>[],'msg'=>'请填写支行名称'];
 
         if(empty($mobile))
-            return ['code'=>404,'data'=>'','msg'=>'银行预留手机号码不能为空'];
+            return ['code'=>404,'data'=>[],'msg'=>'银行预留手机号码不能为空'];
         
         $insert = [
             'customerid' => $customerid,
@@ -108,23 +124,32 @@ class UserBankModel
             'addtime' => date('Y-m-d H:i:s')
         ];
 
-        $bank_row = Model::ins('CusBank')->getRow(['account_number'=>$account_number],'id');
+
+        $bank_row = Model::ins('CusBank')->getRow(['account_number'=>$account_number,'customerid'=>$customerid],'id,customerid,enable');
+
 
         if(!empty($bank_row)){
             if($bank_row['enable'] == 1){
-                return ['code'=>404,'data'=>'','msg'=>'该银行卡已经添加'];
+                return ['code'=>404,'data'=>[],'msg'=>'该银行卡已经添加'];
             }else{
-                $insert['enable'] =1;
-                $ret = Model::ins("CusBank")->modify($insert,['id'=>$bank_row['id']]);
+                if($customerid == $bank_row['customerid']) {
+                    // 重新启用
+                    $ret = Model::ins("CusBank")->modify(["enable"=>1],['id'=>$bank_row['id']]);
+                } else {
+                    $ret = Model::ins("CusBank")->add($insert);
+                }
+                // $insert['enable'] =1;
+                // $ret = Model::ins("CusBank")->modify($insert,['id'=>$bank_row['id']]);
             }
         }else{
 
             $ret = Model::ins("CusBank")->add($insert);
         }
         if($ret > 0){
-            return ['code'=>200,'data'=>$ret,'msg'=>'添加成功'];
+            // return ['code'=>200,'data'=>$ret,'msg'=>'添加成功'];
+            return ['code'=>200,'data'=>[],'msg'=>'添加成功'];
         }else{
-            return ['code'=>400,'data'=>'','msg'=>'添加错误，请重新提交'];
+            return ['code'=>400,'data'=>[],'msg'=>'添加错误，请重新提交'];
         }
 
     }
@@ -141,10 +166,10 @@ class UserBankModel
         // 查询数据库该卡号是否已经存在(已激活的)
         $cusBankInfo = $cusBankOBJ->getRow(array("id" => $param['bank_id'], "enable" => 1), "id, customerid");
         if(empty($cusBankInfo)) {
-            return ["code" => 10003,'data'=>'','msg'=>'信息不存在'];
+            return ["code" => 10003,'data'=>[],'msg'=>'信息不存在'];
         }
         if($cusBankInfo['customerid'] != $param['customerid']) {
-            return ["code" => 4004,'data'=>'','msg'=>'无权操作'];
+            return ["code" => 4004,'data'=>[],'msg'=>'无权操作'];
         }
         
         // 进行解绑操作
@@ -154,8 +179,8 @@ class UserBankModel
 
 //         $status = $cusBankOBJ->delete(array("id" => $params["id"]));
         if($status) {
-            return ["code" => 200,'data'=>$status,'msg'=>'操作成功'];
+            return ["code" => 200,'data'=>[],'msg'=>'解绑成功'];
         }
-        return ["code" => 400,'data'=>'','msg'=>'操作有误'];
+        return ["code" => 400,'data'=>[],'msg'=>'操作有误'];
     }
 }

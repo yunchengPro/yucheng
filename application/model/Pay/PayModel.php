@@ -374,6 +374,9 @@ class PayModel{
                 case 'allinpay_weixin':
                     $payorder['pay_type_name'] = "微信支付";
                     break; 
+                case 'balance':
+                    $payorder['pay_type_name'] = "余额支付";
+                    break;    
                 default:
                     $payorder['pay_type_name'] = "";
                     break;
@@ -436,121 +439,34 @@ class PayModel{
      */
     public function checkbalance($param){
 
-        $orderno = $param['orderno'];
-        $userid  = $param['userid'];
+        $orderno        = $param['orderno'];
+        $userid         = $param['userid'];
+        $balancetype    = $param['balancetype']; // conamount,mallamount,recamount
 
-        if(substr($orderno,0,6)=='NNHSTO'  || substr($orderno,0,6)=='NNHSTB'){
-            $order = Model::ins("StoPayFlow")->getRow(['pay_code'=>$orderno],"*");
-        }else if(substr($orderno,0,5)=='NNHRE'){
-            // 充值
-        }else if(substr($orderno,0,5)=='NNHNR'){
-            // 牛人申请
-            $order = Model::ins("RoleApplyLog")->getRow(['orderno'=>$orderno],"*");
-        }else if(substr($orderno,0,5)=='NNHND'){
-            $order = Model::ins("RoleApplyLog")->getRow(['orderno'=>$orderno],"*");
-        }else if(substr($orderno,0,5)=='NNHNC'){
-            // 牛创客申请
-            $order = Model::ins("RoleApplyLog")->getRow(['orderno'=>$orderno],"*");
-        }else if(substr($orderno,0,6)=='NNHTNC'){
-            // 牛创客推荐
-            $order = Model::ins("RoleRecoEn")->getRow(['orderno'=>$orderno],"*");
-            $order['customerid'] = $order['instroducerid'];
-        }else if(substr($orderno,0,6)=='NNHTND'){
-            // 牛创客推荐
-            $order = Model::ins("RoleRecoTalent")->getRow(['orderno'=>$orderno],"*");
-            $order['customerid'] = $order['instroducerid'];
-        }else if(substr($orderno,0,6)=='NNHTNR'){
-            // 牛人推荐  
-            $order = Model::ins("RoleRecoOr")->getRow(['orderno'=>$orderno],"*");
-            $order['customerid'] = $order['instroducerid'];
-        }else if(substr($orderno,0,6)=='NNHMOR'){
-            // 多订单合并支付  
-            $order = Model::ins("OrdOrderMore")->getByNo($orderno,"id,customerid,bullamount,totalamount");
-        }else if(substr($orderno,0,6)=='NNHOTO'){
-            // 外卖订单
-            $order = Model::ins("StoOrder")->getRow(["orderno"=>$orderno],"id,customerid,totalamount");
-        }else{
+        if(substr($orderno,0,4)=='MALL'){
             // 商城
-            $order = Model::ins("OrdOrder")->getByNo($orderno,"id,customerid,bullamount,totalamount");
+            $order = Model::ins("OrdOrder")->getByNo($orderno,"id,customerid,totalamount");
+        }
+
+        // if(substr($orderno,0,3)=='REC'){
+        //     $order = Model::ins("CusRecharge")->getRow(['orderno'=>$orderno],"id,customerid,amount");
+
+        //     $order['totalamount'] = $order['amount'];
+        // }
+
+        if(substr($orderno,0,3)=='CON'){
+            $order = Model::ins("ConOrder")->getRow(['orderno'=>$orderno],"id,customerid,totalamount");
         }
 
         if(!empty($order)){
             if($order['customerid'] == $userid){
                 
-                if(substr($orderno,0,6)=='NNHSTO' || substr($orderno,0,6)=='NNHSTB'){
-                    // 判断是否使用了奖励金
-                    $bonus = Model::ins("BonusOrder")->getRow(["orderno"=>$orderno],"id,bonusamount");
-                    if(!empty($bonus)){
-                        $order['amount'] = $order['amount']-$bonus['bonusamount'];
-                    }
-
-                    $result = Model::new("Amount.Amount")->checkamountbalance([
-                        "userid"=>$userid,
-                        "profitamount"=>$order['amount'],
-                    ]);
-                }else if(substr($orderno,0,5)=='NNHRE'){
-                    // 充值
-                }else if(substr($orderno,0,5)=='NNHNR'){
-                    // 牛人申请
-                    $result = Model::new("Amount.Amount")->checkamountbalance([
-                        "userid"=>$userid,
-                        "cashamount"=>$order['amount'],
-                    ]);
-                }else if(substr($orderno,0,5)=='NNHND'){
-                    // 牛达人申请
-                    $result = Model::new("Amount.Amount")->checkamountbalance([
-                        "userid"=>$userid,
-                        "cashamount"=>$order['amount'],
-                    ]);
-                }else if(substr($orderno,0,5)=='NNHNC'){
-                    // 牛创客申请
-                    $result = Model::new("Amount.Amount")->checkamountbalance([
-                        "userid"=>$userid,
-                        "cashamount"=>$order['amount'],
-                    ]);
-                }else if(substr($orderno,0,6)=='NNHTNC'){
-                    // 牛创客推荐
-                    $result = Model::new("Amount.Amount")->checkamountbalance([
-                        "userid"=>$userid,
-                        "cashamount"=>$order['amount'],
-                    ]);
-                }else if(substr($orderno,0,6)=='NNHTNR'){
-                    // 牛人推荐  
-                    $result = Model::new("Amount.Amount")->checkamountbalance([
-                        "userid"=>$userid,
-                        "cashamount"=>$order['amount'],
-                    ]);
-                }else if(substr($orderno,0,6)=='NNHTND'){
-                    // 牛达人推荐
-                    $result = Model::new("Amount.Amount")->checkamountbalance([
-                        "userid"=>$userid,
-                        "cashamount"=>$order['amount'],
-                    ]);
-                }else if(substr($orderno,0,6)=='NNHMOR'){
-                    // 多订单合并支付  
-                    $result = Model::new("Amount.Amount")->checkamountbalance([
-                        "userid"=>$userid,
-                        "cashamount"=>$order['totalamount'],
-                        "bullamount"=>$order['bullamount'],
-                    ]);
-                }else if(substr($orderno,0,6)=='NNHOTO'){
-                    // 判断是否使用了奖励金
-                    $bonus = Model::ins("BonusOrder")->getRow(["orderno"=>$orderno],"id,bonusamount");
-                    if(!empty($bonus)){
-                        $order['totalamount'] = $order['totalamount']-$bonus['bonusamount'];
-                    }
+                if(substr($orderno,0,4)=='MALL' || substr($orderno,0,3)=='CON'){
                     
-                    // 外卖订单
-                    $result = Model::new("Amount.Amount")->checkamountbalance([
-                        "userid"=>$userid,
-                        "profitamount"=>$order['totalamount'],
-                    ]);
-                }else{
                     // 商城
                     $result = Model::new("Amount.Amount")->checkamountbalance([
                         "userid"=>$userid,
-                        "cashamount"=>$order['totalamount'],
-                        "bullamount"=>$order['bullamount'],
+                        $balancetype=>$order['totalamount'],
                     ]);
                 }
 
@@ -582,6 +498,7 @@ class PayModel{
         $paypwd         = $param['paypwd'];
         $orderno        = $param['orderno'];
         $userid         = $param['userid'];
+        $balancetype    = $param['balancetype'];
         
         $paypwd_error_limit = 3;
         $ActLimitOBJ = Model::new("Sys.ActLimit");
@@ -596,99 +513,30 @@ class PayModel{
 
         if($check_result['code']=='200'){
             //校验成功
-        
+            
+            // 判断余额是否足够
+            $result = $this->checkbalance([
+                "orderno"=>$orderno,
+                "userid"=>$userid,
+                "balancetype"=>$balancetype,
+            ]);
+
+            if($result['code']!='200' || $result['data']['balance']!=1)
+                return ["code"=>"1003"];
+
             $flowid = Model::new("Amount.Flow")->getFlowId($orderno);
         
         
-            if(substr($orderno,0,6)=='NNHSTO' || substr($orderno,0,6)=='NNHSTB'){
-                $result = OrderPayModel::orderpay_sto([
+            if(substr($orderno,0,4)=='MALL'){
+
+                $order_info = Model::ins("OrdOrder")->getRow(['orderno'=>$orderno],"id,customerid,totalamount");
+
+                $result = Model::new("Pay.Pay")->addPayOrder([
                     "orderno"=>$orderno,
+                    "amount"=>$order_info['totalamount'],
+                    "pay_type"=>"balance",
                     "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
                 ]);
-        
-            }else if(substr($orderno,0,5)=='NNHRE'){
-                // 充值
-                $result = OrderPayModel::orderpay_re([
-                    "orderno"=>$orderno,
-                    "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
-                ]);
-        
-        
-            }else if(substr($orderno,0,5)=='NNHNR'){
-                // 牛人申请
-                $result = OrderPayModel::orderpay_nr([
-                    "orderno"=>$orderno,
-                    "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
-                ]);
-        
-            }else if(substr($orderno,0,5)=='NNHND'){
-                // 牛达人申请
-                $result = OrderPayModel::orderpay_nd([
-                    "orderno"=>$orderno,
-                    "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
-                ]);
-            }else if(substr($orderno,0,5)=='NNHNC'){
-                // 牛创客申请
-                $result = OrderPayModel::orderpay_nc([
-                    "orderno"=>$orderno,
-                    "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
-                ]);
-        
-        
-            }else if(substr($orderno,0,6)=='NNHTNC'){
-                // 牛创客推荐
-                $result = OrderPayModel::orderpay_tnc([
-                    "orderno"=>$orderno,
-                    "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
-                ]);
-        
-            }else if(substr($orderno,0,6)=='NNHTNR'){
-                // 牛人推荐
-                $result = OrderPayModel::orderpay_tnr([
-                    "orderno"=>$orderno,
-                    "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
-                ]);
-            }else if(substr($orderno,0,6)=='NNHTND'){
-                // 牛达人推荐
-                $result = OrderPayModel::orderpay_tnd([
-                    "orderno"=>$orderno,
-                    "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
-                ]);
-            }else if(substr($orderno,0,6)=='NNHMOR'){
-                // 多订单合并操作
-                $result = OrderPayModel::orderpay_more([
-                    "orderno"=>$orderno,
-                    "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
-                ]);
-                 
-            }else if(substr($orderno,0,6)=='NNHOTO'){
-                // 多订单合并操作
-                $result = OrderPayModel::orderpay_oto([
-                    "orderno"=>$orderno,
-                    "userid"=>$userid,
-                    "flowid"=>$flowid,
-                    "balancepay"=>1,
-                ]);
-                 
-            }else{
         
                 // 商城
                 $result = OrderPayModel::orderpay([
@@ -696,8 +544,49 @@ class PayModel{
                     "userid"=>$userid,
                     "flowid"=>$flowid,
                     "balancepay"=>1,
+                    "balancetype"=>$balancetype, // 余额支付类型
                 ]);
+
+                if($result['code']=='200')
+                    Model::new("Pay.Pay")->updatePayOrder([
+                            "orderno"=>$orderno,
+                            "pay_money"=>$order_info['totalamount'],
+                            "pay_type"=>"balance",
+                        ]);
+
             }
+
+            if(substr($orderno,0,3)=='CON'){
+                
+                if($balancetype!='recamount')
+                    return ["code"=>"404"];
+
+                $order_info = Model::ins("ConOrder")->getRow(['orderno'=>$orderno],"id,customerid,totalamount");
+
+                $result = Model::new("Pay.Pay")->addPayOrder([
+                    "orderno"=>$orderno,
+                    "amount"=>$order_info['totalamount'],
+                    "pay_type"=>"balance",
+                    "userid"=>$userid,
+                ]);
+
+                // 商城
+                $result = OrderPayModel::orderpay_con([
+                    "orderno"=>$orderno,
+                    "userid"=>$userid,
+                    "flowid"=>$flowid,
+                    "balancepay"=>1,
+                    "balancetype"=>$balancetype, // 余额支付类型
+                ]);
+
+                if($result['code']=='200')
+                    Model::new("Pay.Pay")->updatePayOrder([
+                            "orderno"=>$orderno,
+                            "pay_money"=>$order_info['totalamount'],
+                            "pay_type"=>"balance",
+                        ]);
+            }
+
             if($result['code']!='200')
                 return ["code"=>$result['code']];
 //                 return $this->json($result['code']);

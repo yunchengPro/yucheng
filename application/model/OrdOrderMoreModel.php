@@ -56,7 +56,7 @@ class OrdOrderMoreModel {
 	 * @return   [type]                   [description]
 	 */
 	public function getOrderNo(){
-		return "NNHMOR".date("YmdHis").rand(100000,999999);
+		return "NNHMOR".date("YmdHis").rand(1000,9999);
 	}
 
 	/**
@@ -148,7 +148,7 @@ class OrdOrderMoreModel {
     * $flag = 0 表示不返回总条数
     */
     public function pageList($where,$field='*',$order='',$flag=1,$page='',$pagesize=''){
-        return $this->_modelObj->pageList($where,$field,$order,$flag);
+        return $this->_modelObj->pageList($where,$field,$order,$flag,$page,$pagesize);
     }
     
     /*

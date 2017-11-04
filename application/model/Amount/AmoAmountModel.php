@@ -27,6 +27,7 @@ class AmoAmountModel {
         $result['intamount'] = !empty($amoAmount['intamount']) ? DePrice($amoAmount['intamount']) : '0.00';
         $result['mallamount'] = !empty($amoAmount['mallamount']) ? DePrice($amoAmount['mallamount']) : '0.00';
         $result['stoamount'] = !empty($amoAmount['stoamount']) ? DePrice($amoAmount['stoamount']) : '0.00';
+        $result['recamount'] = !empty($amoAmount['recamount']) ? DePrice($amoAmount['recamount']) : '0.00';
         
         return ["code" => "200", "data" => $result];
     }
@@ -140,6 +141,10 @@ class AmoAmountModel {
         if($param['customerid'] == '') {
             return ["code" => "404"];
         }
+
+        // if(!empty($param['customerid'])) {
+        //     $where["userid"] = ["in", "select customerid from cus_relation_list where parentid = ".$param['customerid']];
+        // }
         
         $where['userid'] = $param['customerid'];
         if(!empty($param['direction'])) {
@@ -147,12 +152,64 @@ class AmoAmountModel {
         }
         if(!empty($param['begintime'])) {
 //             $where['begintime'] = $param['begintime'];
-            $where['flowtime'] = [[">=",date("Y-m-d", $param['begintime'])],["<",date("Y-m-d", strtotime($param['begintime']+3600*24))]];
+            $where['flowtime'] = [[">=",$param['begintime']],["<",date("Y-m-d", strtotime($param['begintime'])+3600*24)]];
         }
         
         $AmoFlowCon = Model::ins("AmoFlowCon");
         
         $amount = $AmoFlowCon->getRow($where,"sum(amount) as amount");
+        
+        $result['amount'] = !empty($amount['amount']) ? DePrice($amount['amount']) : '0.00';
+        
+        return ["code" => "200", "data" => $result];
+    }
+
+    /**
+    * @user 获取销售额 营业额数据
+    * @param 
+    * @author jeeluo
+    * @date 2017年10月17日下午3:10:47
+    */
+    public function getChildCashTypeAmount($param) {
+        if($param['customerid'] == '') {
+            return ["code" => "404"];
+        }
+
+        // if(!empty($param['customerid'])) {
+            // $where["userid"] = ["in", "select customerid from cus_relation_list where parentid = ".$param['customerid']];
+        // }
+
+        $where['userid'] = $param['customerid'];
+
+        if(!empty($param['direction'])) {
+            $where['direction'] = $param['direction'];
+        }
+        if(!empty($param['begintime'])) {
+            $where['flowtime'] = [[">=",$param['begintime']],["<",date("Y-m-d", strtotime($param['begintime'])+3600*24)]];
+        }
+
+        // if(!empty($param['flowtype'])) {
+        //     $where['flowtype'] = $param['flowtype'];
+        // }
+
+        $AmoObject = Model::ins("AmoFlowCon");
+
+        if($param['role'] == 2) {
+            $AmoObject = Model::ins("AmoFlowBus");
+            $where['flowtype'] = 13;
+        } else if($param['role'] == 3 || $param['role'] == 4){
+            $AmoObject = Model::ins("AmoFlowCash");
+            // $where['flowtype'] = 14;
+            if($param['role'] == 3) {
+                $where['flowtype'] = 16;
+            } else {
+                $where['flowtype'] = 17;
+            }
+        }
+        
+        // $AmoFlowCash = Model::ins("AmoFlowCash");
+        
+        $amount = $AmoObject->getRow($where,"sum(amount) as amount");
         
         $result['amount'] = !empty($amount['amount']) ? DePrice($amount['amount']) : '0.00';
         
@@ -190,6 +247,10 @@ class AmoAmountModel {
         $result['totalAmount'] = !empty($totalAmount['amount']) ? DePrice($totalAmount['amount']) : '0.00';
         
         return ["code" => "200", "data" => $result];
+    }
+
+    public function getChildBusFlowAmount($param) {
+
     }
     
     /**

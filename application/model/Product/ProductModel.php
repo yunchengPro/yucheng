@@ -18,6 +18,7 @@ use \think\Config;
 
 use app\model\Profit\Cash_abstract;
 use app\model\Business\BusinessModel;
+use app\model\Sys\CommonModel;
 
 class ProductModel{
 
@@ -123,95 +124,19 @@ class ProductModel{
 
         $list = self::ProductPageList([
                 "where"     => $param['where'],
-                "fields"    => "id as productid,productname,thumb,prouctprice,bullamount,supplyprice",
+                "fields"    => "id as productid,productname,thumb,prouctprice",
                 "order"     => $param['order']!="" ? $param['order']:" sort desc,id desc",
             ]);
-
-        $productbuy = Model::new("Product.ProductBuy");
        
         foreach($list['list'] as $k=>$v){
-
-             //商品sku 所有情况
-            $sku = self::getProSkuById($v['productid']);
-
-           // print_r($sku);
-            //取出sku最低价
-            /*$min = [];
-            $arr = $sku;
-            $len = count($arr);
-            for ($i=0; $i<$len; $i++){
-                if ($i==0){
-                    $min = $arr[$i];
-
-                    continue;
-
-                }
-
-                if ($arr[$i]['prouctprice']<$min['prouctprice']){
-                    $min = $arr[$i];
-                }
-
-            }
-           
-
-            if(!empty($min['prouctprice'])){
-                $list['list'][$k]['prouctprice'] = $min['prouctprice'];
-                $list['list'][$k]['supplyprice'] = $min['supplyprice'];
-                $list['list'][$k]['bullamount'] = $min['bullamount'];
-                if($list['list'][$k]['bullamount'] > 0){
-                    $list['list'][$k]['marketprice'] = $min['prouctprice'] + $min['bullamount'];
-                }else{
-                    $list['list'][$k]['marketprice'] = $min['prouctprice'];
-                }
-            }else{
-           
-                $list['list'][$k]['prouctprice'] = DePrice($v['prouctprice']);
-                $list['list'][$k]['bullamount'] = DePrice($v['bullamount']);
-                if($list['list'][$k]['bullamount'] > 0){
-                    $list['list'][$k]['marketprice'] = DePrice($v['prouctprice'] + $v['bullamount']);
-                }else{
-                    $list['list'][$k]['marketprice'] =  DePrice($min['prouctprice']);
-                }
-            }*/
-
-            $v['prouctprice']     = DePrice($v['prouctprice']);
-            $v['bullamount']      = DePrice($v['bullamount']);
-            $v['supplyprice']     = DePrice($v['supplyprice']);
-
-            //判断是否有抢购活动
-            $productbuy_price = $productbuy->getProductPrice([
-                "prouctprice"=>$v['prouctprice'],
-                "bullamount"=>$v['bullamount'],
-                "supplyprice"=>$v['supplyprice'],
-            ]);
-            $v['prouctprice'] = $productbuy_price['prouctprice'];
-            $v['bullamount']  = $productbuy_price['bullamount'];
-            $v['supplyprice'] = $productbuy_price['supplyprice'];
-
-
-            $list['list'][$k]['prouctprice']  = $v['prouctprice'];
-            $list['list'][$k]['bullamount']   = $v['bullamount'];
-            $list['list'][$k]['marketprice']  = $v['prouctprice'] + $v['bullamount'];
-            
-
+            $list['list'][$k]['prouctprice']  = DePrice($v['prouctprice']);
             $list['list'][$k]['thumb'] = Img::url($v['thumb'],300,300);
-            
-
-            // give_profitamount 牛粮  give_bullamount 牛豆
-            if($v['bullamount']==0){
-                $product_profit = Cash_abstract::getCashUserReturn($v['prouctprice'],$v['supplyprice']);
-                $list['list'][$k]['give_profitamount']  = ForMatPrice($product_profit['userBind']);
-                $list['list'][$k]['give_bullamount']    = ForMatPrice($product_profit['bullNumber']);
-            }else{
-                $list['list'][$k]['give_profitamount']  = 0;
-                $list['list'][$k]['give_bullamount']    = 0;
-            }
-            
-            $list['list'][$k]['supplyprice'] = '0';
-
+            $productinfo_row = Model::ins('ProProductInfo')->getRow(['id'=>$v['productid']],'salecount');
+           
+            $list['list'][$k]['salecount'] = $productinfo_row['salecount'];
         }
 
-        return $list;
+        return ['code'=>200,'data'=>$list];
     }
 
 
@@ -242,7 +167,7 @@ class ProductModel{
      * @param  [type] $id [description]
      * @return [type]     [description]
      */
-    public static function getProDetailById($id,$fields='*',$customerid=0){
+    public static function getProDetailById($id,$fields='*'){
 
         //商品信息
         $ProProduct = Model::ins("ProProduct");
@@ -252,37 +177,22 @@ class ProductModel{
 
         if(!empty($proData)){
             
-
+           
             $proData['productid'] = $proData['id'];
-
-            $proData['detailInfo'] = Config::get('webview.webviewUrl').'/Product/Index/detail?goodsid='.$id;
-            $proData['detailParams'] = Config::get('webview.webviewUrl').'/Product/Index/detailParams?goodsid='.$id;
 
            
             $proData['prouctprice'] = DePrice($proData['prouctprice']);
             $proData['bullamount'] = DePrice($proData['bullamount']);
             $proData['supplyprice'] = DePrice($proData['supplyprice']);
-
-
-
-            // give_profitamount 牛粮  give_bullamount 牛豆
-            if($proData['bullamount']==0){
-                $product_profit = Cash_abstract::getCashUserReturn($proData['prouctprice'],$proData['supplyprice']);
-                $proData['give_profitamount']  = ForMatPrice($product_profit['userBind']);
-                $proData['give_bullamount']    = ForMatPrice($product_profit['bullNumber']);
-            }else{
-                $proData['give_profitamount']  = 0;
-                $proData['give_bullamount']    = 0;
-            }
-
             
-            // if(empty($proData['freight']) <= 0){
-                $Transport = self::getProTransport($proData['transportid'],$proData['businessid']);
-                $Transport = !empty($Transport) ? $Transport : 0;
-                $proData['transport'] = DePrice($Transport);
-            // }else{
-            //     $proData['transport'] = $proData['freight'];
-            // }
+            //商品sku 所有情况
+            $sku = self::getProSkuById($id,$newuserproductstorage,$productbuy);  // return ["sku"=>$sku,"spec"=>]
+            $proData['productstorage'] = $sku['all_productstorage'];  
+            $proData['sku'] = $sku['sku'];   
+            //print_r($sku);
+            $proData['companyphone'] = CommonModel::getCompanyPhone();
+            $proData['spec'] = $sku['spec'];
+            
 
             //商品图片
             $img =  self::getProPhotosById($id);
@@ -291,8 +201,7 @@ class ProductModel{
 
              //图文详情
             $productInfo =  self::getProInfoById($id);
-           
-           
+
             $arr['url'] =  Config::get('shareparma.product_url').$id;
             $arr['title'] =  $proData['productname'];
             $arr['description'] =  mb_substr(strip_tags($productInfo['description']),0,30,'utf-8');
@@ -300,19 +209,10 @@ class ProductModel{
             
             $proData['sharecontent'] = $arr;
 
-            unset($productInfo['description']);
-
-            $EvaluateData = Model::ins('ProEvaluate')->getRow(['productid'=>$id,'parentid'=>0,"state"=>0, "enable" => 1],'count(*) as count');
-           
-            $productInfo['evaluatecount'] =  $EvaluateData['count'];
-            
 
             if(!empty($productInfo))
                $proData = array_merge($proData,$productInfo); 
-
-            
-           
-            //商家信息
+               //商家信息
             $business =  self::getProBusinessById($proData['businessid']);
 
             $service = BusinessModel::businessnService($proData['businessid']);
@@ -333,103 +233,23 @@ class ProductModel{
                 $business['scores'] = scoresFormat($business['scores']);
             }
 
+            $Transport = self::getProTransport($proData['transportid'],$proData['businessid']);
+            $Transport = !empty($Transport) ? $Transport : 0;
+            $proData['transport'] = DePrice($Transport);
+
             $proData['area']= $business['area'];
             if(!empty($business))
                $proData['business'] = $business; 
-
-            /**
-             * 新人专享商品只能购买一次
-             * zhuangqm
-             * 2017-09-04
-             */
-            $newuserproductstorage = self::getNewUserProductStorage([
-                    "productid"=>$id,
-                    "categoryid"=>$proData['categoryid'],
-                    "customerid"=>$customerid,
-                ]);
-
-            // 判断是否有抢购活动
-            $productbuy = [];
-            if(!$newuserproductstorage["product_storage_flag"]){
-                $productbuy = Model::new("Product.ProductBuy")->ProductBuy(["productid"=>$id,"userid"=>$customerid]);
-            }
-            $proData['qianggou'] = [
-                "qianggou_flag"=>(!empty($productbuy)&&$productbuy['product_storage_flag'])?1:0,
-                "status"=>intval($productbuy['product_buy_status']),
-                "nowtime"=>date("Y-m-d H:i:s"),
-                "starttime"=>$productbuy['product_buy']['starttime'],
-                "endtime"=>$productbuy['product_buy']['endtime'],
-                "prouctprice"=>DePrice($productbuy['product_buy']['prouctprice']),
-                //"supplyprice"=>DePrice($productbuy['product_buy']['supplyprice']),
-                //"saleprice"=>DePrice($productbuy['product_buy']['saleprice']),
-                "bullamount"=>DePrice($productbuy['product_buy']['bullamount']),
-                "productstorage"=>$productbuy['product_buy']['productstorage_buy'],
-                "limitbuy"=>intval($productbuy['product_buy']['limitbuy']),
-            ];
-          
-            //商品sku 所有情况
-            $sku = self::getProSkuById($id,$newuserproductstorage);  // return ["sku"=>$sku,"spec"=>]
-            $proData['sku'] = $sku['sku'];   
-            //print_r($sku);
-
-            $proData['spec'] = $sku['spec'];
-        
-            //商品评论
-            $commnentData =  self::getCommentListById($id);
-
-            if(!empty($commnentData)){
-                $proData['commnentData'] = $commnentData; 
-            }else{
-                $proData['commnentData'] = ["evaluate_id"=>"","productid"=>"","productname"=>"","scores"=>"","content"=>"","frommemberid"=>"","headpic"=>"","addtime"=>""];
-            }  
-
-              //print_r($proData['sku']);
-            //取出sku最低价
-            $min = [];
-            $arr = $proData['sku'];
-            $len = count($arr);
-            for ($i=0; $i<$len; $i++){
-                if ($i==0){
-                    $min = $arr[$i];
-
-                    continue;
-
-                }
-                if($min['prouctprice'] > 0){
-                    if ($arr[$i]['prouctprice'] < $min['prouctprice']){
-                        $min = $arr[$i];
-                    }
-                }else{
-                    if ($arr[$i]['bullamount'] < $min['bullamount']){
-                        $min = $arr[$i];
-                    }
-                }
-
-            }
            
+            
 
-            if(!empty($min)){
-                $proData['prouctprice'] = $min['prouctprice'];
-                $proData['supplyprice'] = $min['supplyprice'];
-                $proData['bullamount'] = $min['bullamount'];
-                if($proData['bullamount'] > 0){
-                    $proData['marketprice'] = $proData['prouctprice'] + $proData['bullamount'] . '元';
-                }else{
-                    $proData['marketprice'] =   $proData['prouctprice'] . '元';
-                }
-            }else{
-                if($proData['bullamount'] > 0){
-                    $proData['marketprice'] = DePrice($proData['prouctprice'] + $proData['bullamount']) . '元';
-                }else{
-                    $proData['marketprice'] =   DePrice($proData['prouctprice']) . '元';
-                }
-            }
-           
-            $proData['supplyprice'] = '0';
+            $proData['detailInfo'] = Config::get('webview.webviewUrl').'/Product/Index/detail?goodsid='.$id;
+            $proData['detailParams'] = Config::get('webview.webviewUrl').'/Product/Index/detailParams?goodsid='.$id;
+
+            return ['code'=>200,'data'=>$proData];
+        }else{
+            return ['code'=>'400'];
         }
-
-      
-        return $proData;
     }
 
     /**
@@ -482,40 +302,9 @@ class ProductModel{
             return $spec;
     }
 
-    /**
-     * [getProTransport 获取商家运费]
-     * @Author   ISir<673638498@qq.com>
-     * @DateTime 2017-03-08T10:39:23+0800
-     * @return   [type]                   [description]
-     */
-    public function getProTransport($transportid,$businessid){
+  
        
-        // //$OrdTransport = Model::ins("OrdTransport");
-        // $OrdTransportExtend = Model::ins("OrdTransportExtend");
-        // //$transportData = $OrdTransport->getRow(['business_id'=>$businessid],"id,valuation_type"); 
-        // //print_r($transportData);
-        // $extendData = $OrdTransportExtend->getRow(['business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
-        // if(empty($extendData))
-        //     $OrdTransportExtend->getRow(['business_id'=>$businessid],"snum,sprice,xnum,xprice");
-        if(!empty($transportid)){
-            $OrdTransport = Model::ins('OrdTransport')->getRow(['id'=>$transportid]);
-            $extendData = Model::ins("OrdTransportExtend")->getRow(['transport_id'=>$transportid,'business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
-
-        }else if($transportid == 0){
-            $OrdTransport = Model::ins('OrdTransport')->getRow(['business_id'=>$businessid,'transport_type'=>1]);
-            $extendData = Model::ins("OrdTransportExtend")->getRow(['transport_id'=>$OrdTransport['id'],'business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
-            if(empty($extendData)){
-                $extendData = Model::ins("OrdTransportExtend")->getRow(['business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
-            }
-        }else{
-            $OrdTransport = Model::ins('OrdTransport')->getRow(['business_id'=>$businessid,'transport_type'=>1]);
-            $extendData = Model::ins("OrdTransportExtend")->getRow(['transport_id'=>$OrdTransport['id'],'business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
-            if(empty($extendData)){
-                $extendData = Model::ins("OrdTransportExtend")->getRow(['business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
-            }
-        }
-        return $extendData['sprice']; 
-    }
+     
 
     /**
      * [getProSpecById 根据skuid获取单条商品sku信息]
@@ -543,7 +332,7 @@ class ProductModel{
         $ProProductphoto = Model::ins("ProProductPhoto");
         $photoData = $ProProductphoto->getList(['productid'=>$id],"istop,productpic,sort",'sort asc',0,5);
         foreach ($photoData as $key => $value) {
-           $photoData[$key]['productpic'] = Img::url($value['productpic']);
+           $photoData[$key]['productpic'] = Img::url($value['productpic'],600,300);
         }
         if(!empty($photoData)){
             return $photoData;
@@ -633,166 +422,9 @@ class ProductModel{
     }
 
 
-    /**
-     * [getProBussinessById 获取商铺基本信息]
-     * @return [type] [description]
-     */
-    public static function getProBusinessById($id){
-        
-        $empty_array = ["businessid"=>"","businessname"=>"","businesslogo"=>"","mobile"=>"","area"=>"","goodscount"=>"","collectcount"=>"","scores"=>""];
-        
-        $BusBusinessInfo = Model::ins("BusBusinessInfo");
-        $busineInfo = $BusBusinessInfo->getRow(['id'=>$id],'id as businessid,businessname,businesslogo,mobile,area,area_code,goodscount,collectcount,scores');
-        $busineInfo['businesslogo'] = Img::url($busineInfo['businesslogo']);
+   
 
-        $areaData = Model::ins('SysArea')->getRow(['id'=>$busineInfo['area_code']],'id,areaname,parentid');
-        $parentarea = Model::ins('SysArea')->getRow(['id'=>$areaData['parentid']],'id,areaname,parentid');
-        $grandarea = Model::ins('SysArea')->getRow(['id'=>$parentarea['parentid']],'id,areaname,parentid');
-  
-        $busineInfo['area'] = $grandarea['areaname'] .'/'. $parentarea['areaname'];
-        if(!empty($busineInfo)) {
-            return $busineInfo;
-        }else{
-            return $empty_array;
-        }
-    }
-
-    /**
-     * [getProSkuById 获取商品所有sku]
-     * @Author   ISir<673638498@qq.com>
-     * @DateTime 2017-03-01 
-     * @param  [type] $id [description]
-     * @return [type]     [description]
-     */
-    public static function getProSkuById($id,$newuserproductstorage=[],$productbuy=[]){
-         
-
-             //组合商品sku 获取商品所以组合sku情况
-            $ProProductspec = Model::ins('ProProductSpec');
-            $ProductSpecInfo = $ProProductspec->getList ('productid='.$id,'*','id desc');
-            
-             //--------------------------------
-            //重组商品sku
-            $sku_list = [];
-
-            $empty_sku = [["id"=>"","aotusku"=>"","productid"=>"","supplyprice"=>"","bullamount"=>"","productimage"=>"","f_productspec"=>""],["id"=>"","aotusku"=>"","productid"=>"","supplyprice"=>"","bullamount"=>"","productimage"=>"","f_productspec"=>""]];
-          
-            $empty_spec = [
-                ["id"=>"",'f_images'=>"","value"=>[
-                        ["id"=>"","spec_value"=>"","parent_id"=>""],
-                        ["id"=>"","spec_value"=>"","parent_id"=>""]
-                    ]
-                ],
-                ["id"=>"",'f_images'=>"","value"=>[
-                        ["id"=>"","spec_value"=>"","parent_id"=>""],
-                        ["id"=>"","spec_value"=>"","parent_id"=>""]
-                    ]
-                ]
-            ]
-            ;
-            if(!empty($ProductSpecInfo) && is_array($ProductSpecInfo)){
-
-
-
-                foreach ($ProductSpecInfo as $k => $v) {
-                    
-                    $sku_list[$k]['id'] = $v['id']; 
-                    $sku_list[$k]['aotusku'] = $v['aotusku']; 
-                    $sku_list[$k]['productid'] = $v['productid']; 
-                    $sku_list[$k]['prouctprice'] = DePrice($v['prouctprice']); 
-                    $sku_list[$k]['supplyprice'] = DePrice($v['supplyprice']);
-                    $sku_list[$k]['bullamount'] = DePrice($v['bullamount']);
-                    $sku_list[$k]['saleprice'] = DePrice($v['saleprice']);
-
-                    if($v['bullamount'] > 0){
-                        $sku_list[$k]['marketprice'] = DePrice($v['prouctprice'] + $v['bullamount']);
-                    }else{
-                        $sku_list[$k]['marketprice'] =  0;
-                    }
-
-                    $sku_list[$k]['productimage'] = Img::url($v['productimage']);
-                    $sku_list[$k]['productstorage'] = $v['productstorage'];
-                    
-                    $productspec = json_decode($v['productspec'],true); 
-
-                  
-                    $gtproductspec = '';
-
-                    foreach ($productspec as $fk => $fv) {
-                       $gtproductspec .= $fk . ",";
-                    }
-                    $gtproductspec = rtrim($gtproductspec,',');
-                    $sku_list[$k]['f_productspec'] = $gtproductspec;
-
-                    // 新人专享
-                    if($v['productstorage']>0 && $newuserproductstorage['product_storage_flag'])
-                        $sku_list[$k]['productstorage'] = $newuserproductstorage['productstorage'];
-
-                    // 抢购活动
-                    /*if(!empty($productbuy) && $productbuy['product_storage_flag']){
-                        $sku_list[$k]['productstorage'] = $productbuy['productstorage'];
-                        $sku_list[$k]['prouctprice']    = DePrice($productbuy['product_buy']['prouctprice']);
-                        $sku_list[$k]['supplyprice']    = DePrice($productbuy['product_buy']['supplyprice']);
-                        $sku_list[$k]['saleprice']      = DePrice($productbuy['product_buy']['saleprice']);
-                    }*/
-                }
-
-                //--------------------------------
-                //$skulist = Model::ins("ProProductspec")->getList(["productid"=>$id],"productspec,spec");
-
-                $spec_arr = [];
-                foreach($ProductSpecInfo as $k=>$v){
-                    $spec_value = json_decode($v['spec'],true);
-                    $productspec_value = json_decode($v['productspec'],true);
-
-                    $productspec_value_new = [];
-                    foreach($productspec_value as $id=>$productspec_value_value){
-                        $productspec_value_new[] = [
-                            "id"=>$id,
-                            //"specvalue"=>$productspec_value_value,
-                        ];
-                    }
-
-                    foreach($spec_value as $i=>$spec_value_value){
-                        $spec_value[$i]['id'] = $productspec_value_new[$i]['id'];
-
-                        $spec_arr[$spec_value_value['name']][$productspec_value_new[$i]['id']] = [
-                            "id"=>$productspec_value_new[$i]['id'],
-                            "spec_value"=>$spec_value_value['value'],                       
-                        ];
-                    }
-
-                } 
-
-                $spec = [];
-                $count = 1;
-                foreach($spec_arr as $k=>$v){
-                    $value = [];
-                    foreach($v as $vv){
-                        $vv['parent_id'] = $count;
-                        $value[] = $vv;
-                    }
-
-                    $spec[] = [
-                        "id"=>$count,
-                        "f_images"=>"",
-                        "spec_name"=>$k,
-                        "value"=>$value,
-                    ];
-
-                    $count++;
-                }
-
-            }else{
-                 $sku_list = $empty_sku ;
-                 $spec = $empty_spec;
-            }
-            
-          
-            //--------------------------------
-            
-            return ['sku'=>$sku_list,'spec'=>$spec];
-    }
+   
 
     /**
      * [getProIntroById 获取商品图文详情]
@@ -828,13 +460,6 @@ class ProductModel{
         if($commentData['isanonymous'] == 1){
             $commentData['frommembername'] = substr_cut($commentData['frommembername']);
         }
-
-        // $imgArr = $ProEvaluateImage->getList(['evaluate_id'=>$commentData['evaluate_id']],'thumb');
-        // $imgArr_tmp = [];
-        // foreach ($imgArr as $k => $v) {
-        //     $imgArr_tmp[] =  Img::url($v['thumb']);
-        // }
-        // $commentData['imgArr'] = $imgArr_tmp;
         
         return $commentData;
     }
@@ -867,7 +492,7 @@ class ProductModel{
             $imgArr_tmp = [];
             foreach ($imgArr as $k => $v) {
                 if(!empty($v['thumb'])){
-                    $v['thumb'] = str_replace('http://nnhtest.oss-cn-shenzhen.aliyuncs.com/', '', $v['thumb']);
+                    $v['thumb'] = str_replace('http://nnhcoupon.oss-cn-shenzhen.aliyuncs.com/', '', $v['thumb']);
                     $imgArr_tmp[] =  Img::url($v['thumb'],500,500);
                 }
             }
@@ -878,26 +503,6 @@ class ProductModel{
         return $data;
     }
     
-//     /** 
-//     * @user 获取用户的所有商品评价信息(暂时不包括图片信息)
-//     * @param $customerid 用户id
-//     * @author jeeluo
-//     * @date 2017年4月5日上午10:53:14
-//     */
-//     public static function getAllUserComment($customerid) {
-//         $ProEvaluate = Model::ins('ProEvaluate');
-//         $ProEvaluateImage = Model::ins("ProEvaluateImage");
-//         $data = $ProEvaluate->pageList(array("frommemberid" => $customerid, "state" => 0), "id as evaluate_id,productid,skuid,productname,scores,content,addtime, isanonymous","addtime desc");
-//         foreach ($data['list'] as $key => $value) {
-//             $imgArr = $ProEvaluateImage->getList(['evaluate_id' => $value['evaluate_id']], 'thumb');
-//             foreach ($imgArr as $k => $v) {
-//                 $imgArr[$k]['thumb'] = Img::url($v['thumb']);
-//             }
-//             $data['list'][$key]['imgArr'] = $imgArr;
-//         }
-        
-//         return $data;
-//     }
 
     /**
      * [searchProduct 搜索商品信息]
@@ -1061,7 +666,31 @@ class ProductModel{
      * @return   [type]                   [description]
      */
     public static function getCategoryData(){
-        return $data = Model::ins("ProCategory")->getList(['status'=>['>=',0]]);
+        
+        $data = Model::ins("ProCategory")->getList(['status'=>['>=',0],'category_icon'=>['<>',''],'parent_id'=>0]);
+        foreach ($data as $key => $value) {
+            $data[$key]['category_icon'] = Img::url($value['category_icon']);
+        }
+        return ['code'=>200,'data'=>$data];
+    }
+
+    /**
+     * [formartCategory 格式化商品分类 二级]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-10-10T10:24:09+0800
+     * @return   [type]                   [description]
+     */
+    public static function formartCategory(){
+        $category = Model::ins('ProCategory')->getList(['status'=>['>=',0],'parent_id'=>0],'id as cateId,name as cateName');
+        $cate_arr = [];
+        foreach ($category as $key => $value) {
+            $son_category = Model::ins('ProCategory')->getList(['status'=>['>=',0],'parent_id'=>$value['cateId']],'id as cid,name as cname');
+            $category[$key]['childs'] = $son_category;
+        }
+        foreach ($category as  $cate) {
+            $cate_arr[$cate['cateId']] = $cate;
+        } 
+        return ['code'=>200,'data'=>$cate_arr];
     }
 
     /**
@@ -1343,20 +972,231 @@ class ProductModel{
         return $ret = Model::ins('ProProductAlterlog')->insert($insert);
     }
 
+      /**
+     * [getProSkuById 获取商品所有sku]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-01 
+     * @param  [type] $id [description]
+     * @return [type]     [description]
+     */
+    public static function getProSkuById($id,$newuserproductstorage=[],$productbuy=[]){
+         
+
+             //组合商品sku 获取商品所以组合sku情况
+            $ProProductspec = Model::ins('ProProductSpec');
+            $ProductSpecInfo = $ProProductspec->getList ('productid='.$id,'*','id desc');
+            
+             //--------------------------------
+            //重组商品sku
+            $sku_list = [];
+
+            $empty_sku = [["id"=>"","aotusku"=>"","productid"=>"","supplyprice"=>"","bullamount"=>"","productimage"=>"","f_productspec"=>""],["id"=>"","aotusku"=>"","productid"=>"","supplyprice"=>"","bullamount"=>"","productimage"=>"","f_productspec"=>""]];
+          
+            $empty_spec = [
+                ["id"=>"",'f_images'=>"","value"=>[
+                        ["id"=>"","spec_value"=>"","parent_id"=>""],
+                        ["id"=>"","spec_value"=>"","parent_id"=>""]
+                    ]
+                ],
+                ["id"=>"",'f_images'=>"","value"=>[
+                        ["id"=>"","spec_value"=>"","parent_id"=>""],
+                        ["id"=>"","spec_value"=>"","parent_id"=>""]
+                    ]
+                ]
+            ]
+            ;
+            if(!empty($ProductSpecInfo) && is_array($ProductSpecInfo)){
+
+
+                $all_productstorage = 0;
+                foreach ($ProductSpecInfo as $k => $v) {
+                    
+                    $sku_list[$k]['id'] = $v['id']; 
+                    $sku_list[$k]['aotusku'] = $v['aotusku']; 
+                    $sku_list[$k]['productid'] = $v['productid']; 
+                    $sku_list[$k]['prouctprice'] = DePrice($v['prouctprice']); 
+                    $sku_list[$k]['supplyprice'] = DePrice($v['supplyprice']);
+                    $sku_list[$k]['bullamount'] = DePrice($v['bullamount']);
+                    $sku_list[$k]['saleprice'] = DePrice($v['saleprice']);
+
+                    if($v['bullamount'] > 0){
+                        $sku_list[$k]['marketprice'] = DePrice($v['prouctprice'] + $v['bullamount']);
+                    }else{
+                        $sku_list[$k]['marketprice'] =  0;
+                    }
+
+                    $sku_list[$k]['productimage'] = Img::url($v['productimage']);
+                    $sku_list[$k]['productstorage'] = $v['productstorage'];
+                    $all_productstorage += $v['productstorage'];
+                    $productspec = json_decode($v['productspec'],true); 
+
+                  
+                    $gtproductspec = '';
+
+                    foreach ($productspec as $fk => $fv) {
+                       $gtproductspec .= $fk . ",";
+                    }
+                    $gtproductspec = rtrim($gtproductspec,',');
+                    $sku_list[$k]['f_productspec'] = $gtproductspec;
+
+                    // 新人专享
+                    if($v['productstorage']>0 && $newuserproductstorage['product_storage_flag'])
+                        $sku_list[$k]['productstorage'] = $newuserproductstorage['productstorage'];
+
+                    // 抢购活动
+                    if(!empty($productbuy) && $productbuy['product_storage_flag'] && $productbuy['product_buy_status']==1){
+                        $sku_list[$k]['productstorage'] = ($sku_list[$k]['productstorage']>$productbuy['product_buy']['productstorage'])?$sku_list[$k]['productstorage']-$productbuy['product_buy']['productstorage']:0;
+                        /*$sku_list[$k]['prouctprice']    = DePrice($productbuy['product_buy']['prouctprice']);
+                        $sku_list[$k]['supplyprice']    = DePrice($productbuy['product_buy']['supplyprice']);
+                        $sku_list[$k]['saleprice']      = DePrice($productbuy['product_buy']['saleprice']);*/
+                    }
+                }
+
+                //--------------------------------
+                //$skulist = Model::ins("ProProductspec")->getList(["productid"=>$id],"productspec,spec");
+
+                $spec_arr = [];
+                foreach($ProductSpecInfo as $k=>$v){
+                    $spec_value = json_decode($v['spec'],true);
+                    $productspec_value = json_decode($v['productspec'],true);
+
+                    $productspec_value_new = [];
+                    foreach($productspec_value as $id=>$productspec_value_value){
+                        $productspec_value_new[] = [
+                            "id"=>$id,
+                            //"specvalue"=>$productspec_value_value,
+                        ];
+                    }
+
+                    foreach($spec_value as $i=>$spec_value_value){
+                        $spec_value[$i]['id'] = $productspec_value_new[$i]['id'];
+
+                        $spec_arr[$spec_value_value['name']][$productspec_value_new[$i]['id']] = [
+                            "id"=>$productspec_value_new[$i]['id'],
+                            "spec_value"=>$spec_value_value['value'],                       
+                        ];
+                    }
+
+                } 
+
+                $spec = [];
+                $count = 1;
+                foreach($spec_arr as $k=>$v){
+                    $value = [];
+                    foreach($v as $vv){
+                        $vv['parent_id'] = $count;
+                        $value[] = $vv;
+                    }
+
+                    $spec[] = [
+                        "id"=>$count,
+                        "f_images"=>"",
+                        "spec_name"=>$k,
+                        "value"=>$value,
+                    ];
+
+                    $count++;
+                }
+
+            }else{
+                 $sku_list = $empty_sku ;
+                 $spec = $empty_spec;
+            }
+           
+            //--------------------------------
+            
+            return ['sku'=>$sku_list,'spec'=>$spec,'all_productstorage'=>$all_productstorage];
+    }
+
     /**
-     * [categorylist 获取分类信息]
+     * [getOneRecommendProduct 获取推荐商品]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-10-21T11:29:44+0800
+     * @return   [type]                   [description]
+     */
+    public static function getOneRecommendProduct(){
+        $where['enable'] = 1;
+        $where['checksatus'] = 1;
+        $where['thumb'] = ['<>',''];
+        $product_row = Model::ins('ProProduct')->getList($where,'id,productname,thumb,prouctprice,productstorage','id desc',10);
+
+        foreach ($product_row as $key => $value) {
+            $productinfo_row = Model::ins('ProProductInfo')->getRow(['id'=>$value['id']],'salecount');
+            $ProductSpecInfo = Model::ins("ProProductSpec")->getList('productid='.$value['id'],'productstorage','id desc');
+            $count_productstorage = 0;
+            foreach ($ProductSpecInfo as $v) {
+                $count_productstorage += $v['productstorage'];
+            }
+            $product_row[$key]['productstorage'] = $count_productstorage;
+            $product_row[$key]['salecount'] = $productinfo_row['salecount'];
+            $product_row[$key]['thumb'] = Img::url($value['thumb']);
+            $product_row[$key]['prouctprice'] = DePrice($value['prouctprice']);
+        }
+       
+     
+        return ['code'=>200,'data'=>$product_row];
+    }
+
+    /**
+     * [getProBussinessById 获取商铺基本信息]
      * @return [type] [description]
      */
-    public function categorylist(){
-        $category = Model::ins('ProCategory')->getList(['parent_id'=>0]);
-        foreach ($category as $key => $value) {
-            $category[$key]['category_icon'] = Img::url($value['category_icon']);
-            $soncate = Model::ins('ProCategory')->getList(['parent_id'=>$value['id']]);
-            foreach ($soncate as $sk => $sv) {
-                $soncate[$sk]['category_icon'] = Img::url($sv['category_icon']);
-            }
-            $category[$key]['child'] = $soncate;
+    public static function getProBusinessById($id){
+        
+        $empty_array = ["businessid"=>"","businessname"=>"","businesslogo"=>"","mobile"=>"","area"=>"","goodscount"=>"","collectcount"=>"","scores"=>""];
+        
+        $BusBusinessInfo = Model::ins("BusBusinessInfo");
+        $busineInfo = $BusBusinessInfo->getRow(['id'=>$id],'id as businessid,businessname,businesslogo,mobile,area,area_code,goodscount,collectcount,scores');
+        $busineInfo['businesslogo'] = Img::url($busineInfo['businesslogo']);
+
+        $areaData = Model::ins('SysArea')->getRow(['id'=>$busineInfo['area_code']],'id,areaname,parentid');
+        $parentarea = Model::ins('SysArea')->getRow(['id'=>$areaData['parentid']],'id,areaname,parentid');
+        $grandarea = Model::ins('SysArea')->getRow(['id'=>$parentarea['parentid']],'id,areaname,parentid');
+  
+        $busineInfo['area'] = $grandarea['areaname'] .'/'. $parentarea['areaname'];
+        if(!empty($busineInfo)) {
+            return $busineInfo;
+        }else{
+            return $empty_array;
         }
-        return  $category;
     }
+
+
+
+    /**
+     * [getProTransport 获取商家运费]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-03-08T10:39:23+0800
+     * @return   [type]                   [description]
+     */
+    public function getProTransport($transportid,$businessid){
+       
+        // //$OrdTransport = Model::ins("OrdTransport");
+        // $OrdTransportExtend = Model::ins("OrdTransportExtend");
+        // //$transportData = $OrdTransport->getRow(['business_id'=>$businessid],"id,valuation_type"); 
+        // //print_r($transportData);
+        // $extendData = $OrdTransportExtend->getRow(['business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
+        // if(empty($extendData))
+        //     $OrdTransportExtend->getRow(['business_id'=>$businessid],"snum,sprice,xnum,xprice");
+        if(!empty($transportid)){
+            $OrdTransport = Model::ins('OrdTransport')->getRow(['id'=>$transportid]);
+            $extendData = Model::ins("OrdTransportExtend")->getRow(['transport_id'=>$transportid,'business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
+
+        }else if($transportid == 0){
+            $OrdTransport = Model::ins('OrdTransport')->getRow(['business_id'=>$businessid,'transport_type'=>1]);
+            $extendData = Model::ins("OrdTransportExtend")->getRow(['transport_id'=>$OrdTransport['id'],'business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
+            if(empty($extendData)){
+                $extendData = Model::ins("OrdTransportExtend")->getRow(['business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
+            }
+        }else{
+            $OrdTransport = Model::ins('OrdTransport')->getRow(['business_id'=>$businessid,'transport_type'=>1]);
+            $extendData = Model::ins("OrdTransportExtend")->getRow(['transport_id'=>$OrdTransport['id'],'business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
+            if(empty($extendData)){
+                $extendData = Model::ins("OrdTransportExtend")->getRow(['business_id'=>$businessid,"is_default"=>1],"snum,sprice,xnum,xprice");
+            }
+        }
+        return $extendData['sprice']; 
+    }
+    
+
 }

@@ -54,43 +54,43 @@ class SettlementModel{
 
         if($amount>0){
 
-            $rowcount = Model::ins("AmoFlowBusCash")->getRow(["orderno"=>$orderno,"direction"=>1],"count(*) as count");
+            //$rowcount = Model::ins("AmoFlowBusCash")->getRow(["orderno"=>$orderno,"direction"=>1],"count(*) as count");
 
             if($rowcount['count']==0){
-                $Business = Model::ins("BusBusiness")->getRow(["id"=>$order['businessid']],"customerid");
+                // $Business = Model::ins("BusBusiness")->getRow(["id"=>$order['businessid']],"customerid");
 
                 //生成流水号
                 $flowid = Model::new("Amount.Flow")->getFlowId($orderno);
 
                 // 增加营业收入
-                Model::new("Amount.Amount")->add_comcashamount([
-                                                "fromuserid"=>$Business['customerid'],
-                                                "userid"=>$Business['customerid'],
+                Model::new("Amount.Amount")->add_com_cashamount([
+                                                "fromuserid"=>$order['customerid'],
+                                                // "userid"=>$Business['customerid'],
                                                 "amount"=>$amount,
                                                 "orderno"=>$orderno,
-                                                "flowtype"=>16,
-                                                "tablename"=>"AmoFlowCusComCash",
+                                                "flowtype"=>68,
+                                                "tablename"=>"AmoFlowComCash",
                                                 "flowid"=>$flowid,
                                             ]);
 
                 
-                Model::ins("AmoFlowBusCash")->insert([
-                    "flowid"=>$flowid,
-                    "userid"=>$Business['customerid'],
-                    "businessid"=>$order['businessid'],
-                    "fromuserid"=>$Business['customerid'],
-                    "orderno"=>$orderno,
-                    "flowtype"=>16,
-                    "direction"=>1,
-                    "flowtime"=>date("Y-m-d H:i:s"),
-                    "amount"=>$amount,
-                    "remark"=>'',
-                    //"amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
-                ]);
+                // Model::ins("AmoFlowBusCash")->insert([
+                //     "flowid"=>$flowid,
+                //     "userid"=>$Business['customerid'],
+                //     "businessid"=>$order['businessid'],
+                //     "fromuserid"=>$Business['customerid'],
+                //     "orderno"=>$orderno,
+                //     "flowtype"=>16,
+                //     "direction"=>1,
+                //     "flowtime"=>date("Y-m-d H:i:s"),
+                //     "amount"=>$amount,
+                //     "remark"=>'',
+                //     //"amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
+                // ]);
 
                 // 待收货款的状态处理
-                Model::ins("AmoFlowFutBusCash")->update(["futstatus"=>1],["orderno"=>$orderno]);
-                Model::ins("AmoFlowFutCusComCash")->update(["futstatus"=>1],["orderno"=>$orderno]);
+                // Model::ins("AmoFlowFutBusCash")->update(["futstatus"=>1],["orderno"=>$orderno]);
+                // Model::ins("AmoFlowFutCusComCash")->update(["futstatus"=>1],["orderno"=>$orderno]);
             }
         }
 
@@ -120,7 +120,7 @@ class SettlementModel{
 
         if(!empty($orderreturn)){
 
-            $rowcount = Model::ins("AmoFlowBusCash")->getRow(["orderno"=>$orderno,"direction"=>2],"count(*) as count");
+            //$rowcount = Model::ins("AmoFlowBusCash")->getRow(["orderno"=>$orderno,"direction"=>2],"count(*) as count");
 
             // if($rowcount['count']==0){
 
@@ -131,40 +131,40 @@ class SettlementModel{
 
                 $amount = $orderreturn['productnum']*$orderitem['supplyprice'];
                 
-                $Business = Model::ins("BusBusiness")->getRow(["id"=>$orderreturn['business_id']],"customerid");
+                // $Business = Model::ins("BusBusiness")->getRow(["id"=>$orderreturn['business_id']],"customerid");
 
                 //生成流水号
                 $flowid = Model::new("Amount.Flow")->getFlowId($orderno);
                 // 扣减营业收入
-                Model::new("Amount.Amount")->pay_comcashamount([
-                                                "fromuserid"=>$Business['customerid'],
-                                                "userid"=>$Business['customerid'],
+                Model::new("Amount.Amount")->pay_com_cashamount([
+                                                "fromuserid"=>$order['customerid'],
+                                                // "userid"=>$Business['customerid'],
                                                 "amount"=>$amount,
                                                 "orderno"=>$orderno,
-                                                "flowtype"=>48,
-                                                "tablename"=>"AmoFlowCusComCash",
+                                                "flowtype"=>69,
+                                                "tablename"=>"AmoFlowComCash",
                                                 "flowid"=>$flowid,
                                             ]);
 
                 
-                Model::ins("AmoFlowBusCash")->insert([
-                    "flowid"=>$flowid,
-                    "userid"=>$Business['customerid'],
-                    "businessid"=>$orderreturn['business_id'],
-                    "fromuserid"=>$Business['customerid'],
-                    "orderno"=>$orderno,
-                    "flowtype"=>16,
-                    "direction"=>2,
-                    "flowtime"=>date("Y-m-d H:i:s"),
-                    "amount"=>$amount,
-                    "remark"=>'',
-                    //"amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
-                ]);
+                // Model::ins("AmoFlowBusCash")->insert([
+                //     "flowid"=>$flowid,
+                //     "userid"=>$Business['customerid'],
+                //     "businessid"=>$orderreturn['business_id'],
+                //     "fromuserid"=>$Business['customerid'],
+                //     "orderno"=>$orderno,
+                //     "flowtype"=>16,
+                //     "direction"=>2,
+                //     "flowtime"=>date("Y-m-d H:i:s"),
+                //     "amount"=>$amount,
+                //     "remark"=>'',
+                //     //"amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
+                // ]);
 
 
                 // 待收货款的扣款
-                Model::ins("AmoFlowFutBusCash")->update("amount=amount-".intval($amount),["orderno"=>$orderno]);
-                Model::ins("AmoFlowFutCusComCash")->update("amount=amount-".intval($amount),["orderno"=>$orderno]);
+                // Model::ins("AmoFlowFutBusCash")->update("amount=amount-".intval($amount),["orderno"=>$orderno]);
+                // Model::ins("AmoFlowFutCusComCash")->update("amount=amount-".intval($amount),["orderno"=>$orderno]);
             // }
         }
         return true;
@@ -178,29 +178,29 @@ class SettlementModel{
      * @return   [type]                          [description]
      */
     public function returnfutpay($param){
-
-        $returnno = $param['returnno'];
-
-        $orderreturn   = Model::ins("OrdOrderReturn")->getRow([
-                                        "returnno"=>$returnno,
-                                        "orderstatus"=>["in","1,12"],
-                                    ],"orderstatus,business_id,order_code,skuid,productnum,freight");
-
-        $orderno = $orderreturn['order_code'];
-
-        if(!empty($orderreturn)){
-
-            $orderitem     = Model::ins("OrdOrderItem")->getRow([
-                                            "orderno"=>$orderreturn['order_code'],
-                                            "skuid"=>$orderreturn['skuid'],
-                                        ],"productnum,supplyprice");
-
-            $amount = $orderreturn['productnum']*$orderitem['supplyprice']+$orderreturn['freight'];
-
-            Model::ins("AmoFlowFutBusCash")->update("amount=amount-".intval($amount),["orderno"=>$orderno]);
-            Model::ins("AmoFlowFutCusComCash")->update("amount=amount-".intval($amount),["orderno"=>$orderno]);
-        }
         return true;
+        // $returnno = $param['returnno'];
+
+        // $orderreturn   = Model::ins("OrdOrderReturn")->getRow([
+        //                                 "returnno"=>$returnno,
+        //                                 "orderstatus"=>["in","1,12"],
+        //                             ],"orderstatus,business_id,order_code,skuid,productnum,freight");
+
+        // $orderno = $orderreturn['order_code'];
+
+        // if(!empty($orderreturn)){
+
+        //     $orderitem     = Model::ins("OrdOrderItem")->getRow([
+        //                                     "orderno"=>$orderreturn['order_code'],
+        //                                     "skuid"=>$orderreturn['skuid'],
+        //                                 ],"productnum,supplyprice");
+
+        //     $amount = $orderreturn['productnum']*$orderitem['supplyprice']+$orderreturn['freight'];
+
+        //     Model::ins("AmoFlowFutBusCash")->update("amount=amount-".intval($amount),["orderno"=>$orderno]);
+        //     Model::ins("AmoFlowFutCusComCash")->update("amount=amount-".intval($amount),["orderno"=>$orderno]);
+        // }
+        // return true;
     }
 
     /**
@@ -211,15 +211,16 @@ class SettlementModel{
      * @return   [type]                          [description]
      */
     public function returnallfutpay($param){
-        $orderno = $param['orderno'];
-
-        if(!empty($orderno)){
-
-            Model::ins("AmoFlowFutBusCash")->update(["futstatus"=>2],["orderno"=>$orderno]);
-            Model::ins("AmoFlowFutCusComCash")->update(["futstatus"=>2],["orderno"=>$orderno]);
-
-        }
         return true;
+        // $orderno = $param['orderno'];
+
+        // if(!empty($orderno)){
+
+        //     Model::ins("AmoFlowFutBusCash")->update(["futstatus"=>2],["orderno"=>$orderno]);
+        //     Model::ins("AmoFlowFutCusComCash")->update(["futstatus"=>2],["orderno"=>$orderno]);
+
+        // }
+        // return true;
     }
 
     /**
@@ -230,59 +231,60 @@ class SettlementModel{
      * @return   [type]                          [description]
      */
     public function futpay($param){
-        $orderno = $param['orderno'];
+        return true;
+        // $orderno = $param['orderno'];
 
-        $order = Model::ins("OrdOrder")->getRow(['orderno'=>$orderno],"customerid,businessid,actualfreight");
+        // $order = Model::ins("OrdOrder")->getRow(['orderno'=>$orderno],"customerid,businessid,actualfreight");
 
-        $orderitem_list     = Model::ins("OrdOrderItem")->getList([
-                                        "orderno"=>$orderno,
-                                    ],"skuid,productnum,supplyprice");
+        // $orderitem_list     = Model::ins("OrdOrderItem")->getList([
+        //                                 "orderno"=>$orderno,
+        //                             ],"skuid,productnum,supplyprice");
        
-        $itemlist = [];
-        foreach($orderitem_list as $k=>$v){
-            $itemlist[$v['skuid']] = $v;
-        }
+        // $itemlist = [];
+        // foreach($orderitem_list as $k=>$v){
+        //     $itemlist[$v['skuid']] = $v;
+        // }
 
-        $amount = 0;
-        foreach($itemlist as $k=>$v){
-            $amount+=$v['productnum']*$v['supplyprice'];
-        }
+        // $amount = 0;
+        // foreach($itemlist as $k=>$v){
+        //     $amount+=$v['productnum']*$v['supplyprice'];
+        // }
 
-        $amount+=$order['actualfreight']; // 算上运费
+        // $amount+=$order['actualfreight']; // 算上运费
 
 
-        $rowcount = Model::ins("AmoFlowFutBusCash")->getRow(["orderno"=>$orderno,"direction"=>1],"count(*) as count");
+        // $rowcount = Model::ins("AmoFlowFutBusCash")->getRow(["orderno"=>$orderno,"direction"=>1],"count(*) as count");
 
-        if($rowcount['count']==0){
+        // if($rowcount['count']==0){
             
-            $Business = Model::ins("BusBusiness")->getRow(["id"=>$order['businessid']],"customerid");
-            //生成流水号
-            $flowid = Model::new("Amount.Flow")->getFlowId($orderno);
-            // 待营业收入
-            Model::new("Amount.Fut")->add_fut_comcashamount([
-                                                    "fromuserid"=>$Business['customerid'],
-                                                    "userid"=>$Business['customerid'],
-                                                    "amount"=>$amount,
-                                                    "orderno"=>$orderno,
-                                                    "flowtype"=>16,
-                                                    "tablename"=>"AmoFlowFutCusComCash",
-                                                    "flowid"=>$flowid,
-                                                ]);
+        //     $Business = Model::ins("BusBusiness")->getRow(["id"=>$order['businessid']],"customerid");
+        //     //生成流水号
+        //     $flowid = Model::new("Amount.Flow")->getFlowId($orderno);
+        //     // 待营业收入
+        //     Model::new("Amount.Fut")->add_fut_comcashamount([
+        //                                             "fromuserid"=>$Business['customerid'],
+        //                                             "userid"=>$Business['customerid'],
+        //                                             "amount"=>$amount,
+        //                                             "orderno"=>$orderno,
+        //                                             "flowtype"=>16,
+        //                                             "tablename"=>"AmoFlowFutCusComCash",
+        //                                             "flowid"=>$flowid,
+        //                                         ]);
 
-            Model::ins("AmoFlowFutBusCash")->insert([
-                "flowid"=>$flowid,
-                "userid"=>$Business['customerid'],
-                "businessid"=>$order['businessid'],
-                "fromuserid"=>$Business['customerid'],
-                "orderno"=>$orderno,
-                "flowtype"=>16,
-                "direction"=>1,
-                "flowtime"=>date("Y-m-d H:i:s"),
-                "amount"=>$amount,
-                //"amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
-            ]);
+        //     Model::ins("AmoFlowFutBusCash")->insert([
+        //         "flowid"=>$flowid,
+        //         "userid"=>$Business['customerid'],
+        //         "businessid"=>$order['businessid'],
+        //         "fromuserid"=>$Business['customerid'],
+        //         "orderno"=>$orderno,
+        //         "flowtype"=>16,
+        //         "direction"=>1,
+        //         "flowtime"=>date("Y-m-d H:i:s"),
+        //         "amount"=>$amount,
+        //         //"amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
+        //     ]);
 
-        }
+        // }
     }
 
 

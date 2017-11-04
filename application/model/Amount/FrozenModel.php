@@ -39,7 +39,7 @@ class FrozenModel{
                                 "direction"=>2,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
+                                "amounttype"=>2, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                             ],
                     ]);
 
@@ -72,7 +72,7 @@ class FrozenModel{
                                 "direction"=>2,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
+                                "amounttype"=>2, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                             ],
                     ]);
 
@@ -109,7 +109,7 @@ class FrozenModel{
                                 "direction"=>1,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
+                                "amounttype"=>2, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                             ],
                     ]);
 
@@ -142,7 +142,7 @@ class FrozenModel{
                                 "direction"=>1,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
+                                "amounttype"=>2, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                             ],
                     ]);
 

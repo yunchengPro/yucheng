@@ -33,22 +33,33 @@ class WithdrawalsModel
      *                                     ]
      */
     public function addWithdrawals($param){
-
-        $amount = EnPrice($param['amount']);
+        
+        // 校验支付密码
+        $validPayResult = Model::new("User.Setting")->validPayPwd($param);
+        
+        if($validPayResult['code'] != "200") {
+            return ["code" => $validPayResult["code"]];
+        }
 
         // 提现要求：1 整数500倍数 2 每天提现一次
         
+        $amount = $param['amount'];
         $withdrawals_config = Config::get("withdrawals");
-        
+
         if(($amount%$withdrawals_config['multiple'])!=0)
             return ["code"=>"1101"];
 
+        $amount = EnPrice($amount);
         $CusWithdrawals = Model::ins('CusWithdrawals'); 
 
         $startime = date("Y-m-d 00:00:00", time()-((date('w')==0?7:date('w'))-1)*24*3600);
-        $endtime = date("Y-m-d 23:59:59",time()+(7-(date('w')==0?7:date('w')))*24*3600);
-//         $startime = date("Y-m-d 00:00:00");
-//         $endtime  = date("Y-m-d 23:59:59");
+//         $endtime = date("Y-m-d 23:59:59",time()+(7-(date('w')==0?7:date('w')))*24*3600);
+        $endtime = date("Y-m-d 23:59:59",time()-((date('w')==0?7:date('w'))-1)*24*3600);
+        
+        $nowtime = getFormatNow();
+        if($startime > $nowtime || $endtime < $nowtime) {
+            return ["code" => "1104"];
+        }
 
         $row = $CusWithdrawals->getRow([
                 "customerid"=>$param['customerid'],
@@ -56,8 +67,8 @@ class WithdrawalsModel
                 "addtime"=>[[">=",$startime],["<=",$endtime]],
             ],"count(*) as count");
 
-        // if($row['count']>=$withdrawals_config['frequency'])
-        //     return ["code"=>"1103"];
+        if($row['count']>=$withdrawals_config['frequency'])
+            return ["code"=>"1103"];
 
         // 获取用户余额
 //         $user_cashamount = Model::new("Amount.Amount")->getUserAmount($param['fromuserid'],"cashamount");
@@ -71,6 +82,7 @@ class WithdrawalsModel
         if(empty($bankInfo)) {
             return ["code" => "1000"];
         }
+
         $orderno = Model::new("CusWithdrawals")->getOrderNo();
 
 //         $cashamount = $user_cashamount-$amount;

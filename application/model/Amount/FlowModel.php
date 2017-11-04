@@ -137,12 +137,17 @@ class FlowModel{
                 //     Model::ins($tablename)->insert($insertData2);
                 break;
             case '5':
-                Model::ins("AmoFlowInt")->insert($insertData1);
+                Model::ins("AmoFlowMall")->insert($insertData1);
                 // if(!empty($tablename))    
                 //     Model::ins($tablename)->insert($insertData2);
                 break;
             case '6':
-                Model::ins("AmoFlowInt")->insert($insertData1);
+                Model::ins("AmoFlowSto")->insert($insertData1);
+                // if(!empty($tablename))    
+                //     Model::ins($tablename)->insert($insertData2);
+                break;
+            case '7':
+                Model::ins("AmoFlowRec")->insert($insertData1);
                 // if(!empty($tablename))    
                 //     Model::ins($tablename)->insert($insertData2);
                 break;

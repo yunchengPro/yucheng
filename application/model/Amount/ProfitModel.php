@@ -83,8 +83,27 @@ class ProfitModel{
 
         if(!empty($cus_relation)){
 
+            //从新计算cash值
+            
+            $parent_cash = $cash;
+            
+            if($cus_relation['parentid']>0){
+
+                // 获取直接上级最高购买记录
+                $conorder = Model::ins("ConOrder")->getRow(["customerid"=>$cus_relation['parentid'],"orderstatus"=>1],"id,totalamount","totalamount desc");
+
+                $conorder_amount = DePrice($conorder['totalamount']);
+
+                // 取最小值
+                $parent_cash = $parent_cash>=$conorder_amount?$conorder_amount:$parent_cash;
+
+            }else{
+                $parent_cash = 0;
+            }
+
+
             // 消费者上级
-            $parent_profit = EnPrice($cash*$profit_config['add_con_parent_profit']);
+            $parent_profit = EnPrice($parent_cash*$profit_config['add_con_parent_profit']);
 
             if($cus_relation['parentid']>0 && $parent_profit>0){
 
@@ -124,7 +143,7 @@ class ProfitModel{
             }
 
             // 消费者上上级
-            $grandpa_profit = EnPrice($cash*$profit_config['add_con_grandpa_profit']);
+            $grandpa_profit = EnPrice($parent_cash*$profit_config['add_con_grandpa_profit']);
 
             if($cus_relation['grandpaid']>0 && $grandpa_profit>0){
 
@@ -163,7 +182,7 @@ class ProfitModel{
             }
 
             // 消费者上上上级
-            $ggrandpa_profit = EnPrice($cash*$profit_config['add_con_ggrandpa_profit']);
+            $ggrandpa_profit = EnPrice($parent_cash*$profit_config['add_con_ggrandpa_profit']);
 
             if($cus_relation['ggrandpaid']>0 && $ggrandpa_profit>0){
 

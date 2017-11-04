@@ -88,16 +88,18 @@ class OpenModel
     */
     public function bindOpenid($param) {
         // $isOpenRecord = $this->checkOpenid(["openid"=>$param['openid']]);
-        $isOpenRecord = Model::ins("CusCustomerOpen")->getRow(["openid"=>$param['openid']],"id,headimgurl,nickname,sex");
-        if($isOpenRecord['id']){
-            $cusOpen = $this->getUserid(["openid"=>$param['openid']]);
-            if(empty($cusOpen)) {
-                // 绑定open customerid
-                Model::ins("CusCustomerOpen")->update(["customerid"=>$param['customerid']],["openid"=>$param['openid']]);
-                return ["code" => "200", "data"=>$isOpenRecord];
-            }
-            return ["code"=>"200","data"=>[]];
-        } 
+        if($param['openid']!=''){
+            $isOpenRecord = Model::ins("CusCustomerOpen")->getRow(["openid"=>$param['openid']],"id,customerid,headimgurl,nickname,sex");
+            if($isOpenRecord['id']){
+                $cusOpen = $isOpenRecord['customerid'];
+                if(empty($cusOpen)) {
+                    // 绑定open customerid
+                    Model::ins("CusCustomerOpen")->update(["customerid"=>$param['customerid']],["openid"=>$param['openid']]);
+                    return ["code" => "200", "data"=>$isOpenRecord];
+                }
+                return ["code"=>"200","data"=>[]];
+            } 
+        }
         return ["code" => "1000"];
     }
 }

@@ -19,9 +19,9 @@ class UserRelationModel
         // 有间接下级和直接下级
         $direct = $this->childDirectRelation($param);
         
-        $indirect = $this->childIndirectRelation($param);
-        
-        $total = $direct+$indirect;
+        // $indirect = $this->childIndirectRelation($param);
+        $total = $this->totalDirectRelation($param);
+        // $total = $direct+$indirect;
         
         $result['direct'] = $direct;
         $result['total'] = $total;
@@ -52,8 +52,10 @@ class UserRelationModel
     */
     private function childDirectRelation($param) {
         $CusRelation = Model::ins("CusRelation");
+
+        $cusRelation = $CusRelation->getRow(["parentid"=>$param['customerid']],"count(id) as count");
         
-        $cusRelation = $CusRelation->getRow(["parentrole"=>$param['role'],"parentid"=>$param['customerid']],"count(id) as count");
+        // $cusRelation = $CusRelation->getRow(["parentrole"=>$param['role'],"parentid"=>$param['customerid']],"count(id) as count");
         return $cusRelation['count'];
     }
     
@@ -67,7 +69,27 @@ class UserRelationModel
     private function childIndirectRelation($param) {
         $CusRelation = Model::ins("CusRelation");
 
-        $cusRelation = $CusRelation->getRow(["grandparole"=>$param['role'],"grandpaid"=>$param['customerid']],"count(id) as count");
+        // $cusRelation = $CusRelation->getRow(["grandparole"=>$param['role'],"grandpaid"=>$param['customerid']],"count(id) as count");
         return $cusRelation['count'];
+    }
+
+    /**
+    * @user 查看用户所有关系
+    * @param $customerid 用户id值
+    * @author jeeluo
+    * @date 2017-10-23 17:26:58
+    */
+    private function totalDirectRelation($param) {
+        $CusRelationList = Model::ins("CusRelationList");
+
+        $total = $CusRelationList->getRow(["parentid"=>$param['customerid']],"count(id) as count");
+
+        // $firstLevel = $CusRelation->getRow(["parentid"=>$param['customerid']],"count(id) as count");
+        // $secondLevel = $CusRelation->getRow(["grandpaid"=>$param['customerid']],"count(id) as count");
+        // $thirdLevel = $CusRelation->getRow(["ggrandpaid"=>$param['customerid']],"count(id) as count");
+
+        // $total = $firstLevel['count'] + $secondLevel['count'] + $thirdLevel['count'];
+
+        return $total['count'] ? $total['count'] : 0;
     }
 }

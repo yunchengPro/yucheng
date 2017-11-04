@@ -36,14 +36,34 @@ class OrderModel
         $orderno  = $ConOrder->getOrderNo();
 
         $con_config = Config::get("conn");
-
+        $conn_coupon = Config::get("conn_coupon");
         $totalamount = $param['amount'];
+
+        $concount = $param['concount'];
+        $confacecount = $param['confacecount'];
+        $conn_coupon = array_merge(['10'],$conn_coupon);
+        if(!in_array($confacecount, $conn_coupon)){
+            return [
+                "code"=>"30025",
+                "orderno"=>'',
+                "msg"=>'消费券面值错误'
+            ];
+        }
+
+        if($param['amount'] != $concount*$confacecount){
+            return [
+                "code"=>"30024",
+                "orderno"=>'',
+                "msg"=>'购买总面值错误'
+            ];
+        }
 
         if($param['amount'] < 10000){
             $count = $param['amount']*$con_config['con_price'];
         }else{
             $count = $param['amount']*$con_config['con_more_price'];
         }
+       
 
         $customer_row = Model::ins('CusCustomer')->getRow(['id'=>$param['customerid']],'username');
         $ret = $ConOrder->insert([
@@ -55,6 +75,8 @@ class OrderModel
                 "addtime"=>date("Y-m-d H:i:s"),
                 "orderstatus"=>0,//1,
                 "pay_voucher"=>$param['pay_voucher'],
+                "concount" => $concount,
+                "confacecount" => EnPrice($confacecount)
                 //"mobile"=>$param['mobile'],
                 //"mobile_userid"=>$param['mobile_userid'],
                 //"businessid"=>$param['businessid']

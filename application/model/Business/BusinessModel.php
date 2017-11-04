@@ -254,7 +254,7 @@ class BusinessModel{
                
                 foreach ($imgList as $imgKey => $imgValue) {
                     if(!empty($imgValue['thumb'])){
-                        $imgValue['thumb'] = str_replace('http://nnhtest.oss-cn-shenzhen.aliyuncs.com/', '', $imgValue['thumb']);
+                        $imgValue['thumb'] = str_replace('http://nnhcoupon.oss-cn-shenzhen.aliyuncs.com/', '', $imgValue['thumb']);
                         $tmp_img[] = Img::url($imgValue['thumb'],500,500);
                     }
                 }

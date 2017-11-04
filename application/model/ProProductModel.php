@@ -9,7 +9,7 @@ use app\lib\Db;
 use app\lib\Img;
 use app\lib\model\RedisModel;
 
-class ProProductModel extends RedisModel {    // extends RedisModel
+class ProProductModel {    // extends RedisModel
 
 
     protected $_id   = null;
@@ -106,13 +106,14 @@ class ProProductModel extends RedisModel {    // extends RedisModel
         return $this->_dataInfo;
     }
 
-       /*
+    /*
     * 获取单条数据
     * $where 可以是字符串 也可以是数组
     */
-    // public function getRow($where,$field='*',$order='',$otherstr=''){
-    //     return $this->_modelObj->getRow($where,$field,$order,$otherstr='');
-    // }
+    public function getRow($where,$field='*',$order='',$otherstr=''){
+        return $this->_modelObj->getRow($where,$field,$order,$otherstr='');
+    }
+    
     /*
     * 获取多行记录
     */
@@ -132,24 +133,24 @@ class ProProductModel extends RedisModel {    // extends RedisModel
     * 写入数据
     * $insertData = array() 如果ID是自增 返回生成主键ID
     */
-    // public function insert($insertData) {
-    //     return $this->_modelObj->insert($insertData);
-    // }
+    public function insert($insertData) {
+        return $this->_modelObj->insert($insertData);
+    }
 
 
     /*
     * 更新数据
     * $updateData = array()
     */
-    // public function update($updateData,$where,$limit=''){
-    //     return $this->_modelObj->update($updateData,$where,$limit='');
-    // }
+    public function update($updateData,$where,$limit=''){
+        return $this->_modelObj->update($updateData,$where,$limit='');
+    }
     /*
     * 删除数据
     */
-    // public function delete($where,$limit=''){
-    //     return $this->_modelObj->delete($where,$limit);
-    // }
+    public function delete($where,$limit=''){
+        return $this->_modelObj->delete($where,$limit);
+    }
 
 
 

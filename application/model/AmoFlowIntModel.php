@@ -122,8 +122,8 @@ class AmoFlowIntModel {
 		return $this->_modelObj->getList($where,$field,$order,$limit,$offset,$otherstr);
 	}
 	
-	public function pageList($where,$field='*',$order='',$flag=1,$page=''){
-	    return $this->_modelObj->pageList($where,$field,$order,$flag,$page);
+	public function pageList($where,$field='*',$order='',$flag=1,$page='',$pagesize=''){
+	    return $this->_modelObj->pageList($where,$field,$order,$flag,$page,$pagesize);
 	}
 
 	/*

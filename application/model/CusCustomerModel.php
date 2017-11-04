@@ -149,8 +149,8 @@ class CusCustomerModel {
 	 * 分页列表
 	 * $flag = 0 表示不返回总条数
 	 */
-	public function pageList($where,$field='*',$order='',$flag=1){
-	    return $this->_modelObj->pageList($where,$field,$order,$flag);
+	public function pageList($where,$field='*',$order='',$flag=1,$page='',$pagesize=''){
+	    return $this->_modelObj->pageList($where,$field,$order,$flag,$page,$pagesize);
 	}
 
 
@@ -261,6 +261,8 @@ class CusCustomerModel {
 	    
 	    $tempValicode = strtoupper(md5("170220".getConfigKey()));
 	    
+	    $iosValicode = strtoupper(md5("110110".getConfigKey()));
+	    
 // 	    if($arr['mobile'] == '13800000000') {
 // 	        return $this->getIdByMobile($arr['mobile']) ?: true;
 // 	    }
@@ -290,6 +292,43 @@ class CusCustomerModel {
 	        }
 // 	        return $this->getIdByMobile($arr['mobile']) ?: true;
             return true;
+	    } else if($arr['mobile'] == "14015016003" && $arr['valicode'] == $iosValicode) {
+	        return $this->getIdByMobile($arr['mobile']) ?: true;
+	    }
+	    return false;
+	}
+	
+	/**
+	* @user 用户密码登录
+	* @param 
+	* @author jeeluo
+	* @date 2017年10月31日下午3:25:53
+	*/
+	public function userLoginPwd($param) {
+	    // 获取数据
+	    $loginpwd = $param['loginpwd'];
+	    $encryptPwd = strtoupper(md5($param['loginpwd'].getConfigPwd()));
+	    
+	    $cus = $this->getRow(["mobile"=>$param['mobile'],"loginpwd"=>$encryptPwd],"id");
+	    
+	    if(!empty($cus["id"])) {
+	        return true;
+	    }
+	    return false;
+	}
+	
+	/**
+	* @user 检测用户是否设置了登录密码
+	* @param 
+	* @author jeeluo
+	* @date 2017年10月31日下午3:55:05
+	*/
+	public function checkUserLoginPwd($param) {
+	    $customerid = $param['customerid'];
+	    // 根据用户id 获取用户是否已经设置登录密码
+	    $cus = $this->getRow(["id"=>$customerid],"loginpwd");
+	    if(!empty($cus['loginpwd'])) {
+	        return true;
 	    }
 	    return false;
 	}

@@ -75,8 +75,8 @@ class AmoAmountModel {
 	 * 分页列表
 	 * $flag = 0 表示不返回总条数
 	 */
-	public function pageList($where,$field='*',$order='',$flag=1){
-	    return $this->_modelObj->pageList($where,$field,$order,$flag);
+	public function pageList($where,$field='*',$order='',$flag=1,$page='',$pagesize=''){
+	    return $this->_modelObj->pageList($where,$field,$order,$flag,$page,$pagesize);
 	}
 
 	/*
@@ -135,6 +135,21 @@ class AmoAmountModel {
 	public function getSaleAmount($userid){
 		$row = $this->getAmount($userid,"saleamount");
 		return intval($row['saleamount']);
+	}
+
+	public function getMallAmount($userid){
+		$row = $this->getAmount($userid,"mallamount");
+		return intval($row['mallamount']);
+	}
+
+	public function getStoAmount($userid){
+		$row = $this->getAmount($userid,"stoamount");
+		return intval($row['stoamount']);
+	}
+
+	public function getRecAmount($userid){
+		$row = $this->getAmount($userid,"recamount");
+		return intval($row['recamount']);
 	}
 
 	// 判断记录是否存在
@@ -237,6 +252,16 @@ class AmoAmountModel {
 		return $result;
 	}
 
+	public function DedRecAmount($userid,$amount){
+		$this->checkAmount($userid);
+		$result =  $this->_modelObj->update("recamount=recamount-".intval($amount),["id"=>$userid]);
+		//更新redis
+		// if($result)
+		// 	$this->hincrbyRedis($userid,["bullamount"=>"-".$amount]);
+
+		return $result;
+	}
+
 	/*
 	增加消费余额
 	 */
@@ -321,6 +346,16 @@ class AmoAmountModel {
 	public function AddSaleAmount($userid,$amount){
 		$this->checkAmount($userid);
 		$result = $this->_modelObj->update("saleamount=saleamount+".intval($amount),["id"=>$userid]);
+		//更新redis
+		// if($result)
+		// 	$this->hincrbyRedis($userid,["intamount"=>$amount]);
+
+		return $result;
+	}
+
+	public function AddRecAmount($userid,$amount){
+		$this->checkAmount($userid);
+		$result = $this->_modelObj->update("recamount=recamount+".intval($amount),["id"=>$userid]);
 		//更新redis
 		// if($result)
 		// 	$this->hincrbyRedis($userid,["intamount"=>$amount]);

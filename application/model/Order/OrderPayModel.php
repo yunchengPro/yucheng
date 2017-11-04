@@ -511,37 +511,69 @@ class OrderPayModel
                 "pay_code"=>$pay_code,
             ]);
 
-        //生成流水号
-        $flowid = Model::new("Amount.Flow")->getFlowId($order_info['orderno']);
-
-
-        $flowtype = 9;
-        
-        // 判断重复充值
-        $check_result = Model::new("Amount.Amount")->check_add_cashamount([
-                                                "tablename"=>"AmoFlowCash",
-                                                "userid"=>$order_info['userid'],
-                                                "amount"=>EnPrice($total_fee),
-                                                "orderno"=>$order_info['orderno'],
-                                                "flowtype"=>$flowtype,
-                                            ]);         
-
-        if($check_result['code']!='200')
-            return $check_result;
-
-        //余额充值
-        Model::new("Amount.Amount")->add_cashamount([
-                                                "userid"=>$order_info['userid'],
-                                                "amount"=>EnPrice($total_fee),
-                                                "usertype"=>"2",
-                                                "orderno"=>$order_info['orderno'],
-                                                "flowtype"=>$flowtype,
-                                                "role"=>1,
-                                                "tablename"=>"AmoFlowCash",
-                                                "flowid"=>$flowid,
-                                            ]);
-        
         $orderno = $order_info['orderno'];
+
+        //生成流水号
+        $flowid = Model::new("Amount.Flow")->getFlowId($orderno);
+
+        // 充值钱包充值
+        if(substr($orderno,0,3)=='REC'){
+
+            $flowtype = 67;
+            
+            // 判断重复充值
+            $check_result = Model::new("Amount.Amount")->check_add_recamount([
+                                                    "tablename"=>"AmoFlowRec",
+                                                    "userid"=>$order_info['userid'],
+                                                    "amount"=>EnPrice($total_fee),
+                                                    "orderno"=>$orderno,
+                                                    "flowtype"=>$flowtype,
+                                                ]);         
+
+            if($check_result['code']!='200')
+                return $check_result;
+
+            //余额充值
+            Model::new("Amount.Amount")->add_recamount([
+                                                    "userid"=>$order_info['userid'],
+                                                    "amount"=>EnPrice($total_fee),
+                                                    "usertype"=>"2",
+                                                    "orderno"=>$orderno,
+                                                    "flowtype"=>$flowtype,
+                                                    "role"=>1,
+                                                    "tablename"=>"AmoFlowCash",
+                                                    "flowid"=>$flowid,
+                                                ]);
+
+        }else{
+
+            $flowtype = 9;
+            
+            // 判断重复充值
+            $check_result = Model::new("Amount.Amount")->check_add_cashamount([
+                                                    "tablename"=>"AmoFlowCash",
+                                                    "userid"=>$order_info['userid'],
+                                                    "amount"=>EnPrice($total_fee),
+                                                    "orderno"=>$orderno,
+                                                    "flowtype"=>$flowtype,
+                                                ]);         
+
+            if($check_result['code']!='200')
+                return $check_result;
+
+            //余额充值
+            Model::new("Amount.Amount")->add_cashamount([
+                                                    "userid"=>$order_info['userid'],
+                                                    "amount"=>EnPrice($total_fee),
+                                                    "usertype"=>"2",
+                                                    "orderno"=>$orderno,
+                                                    "flowtype"=>$flowtype,
+                                                    "role"=>1,
+                                                    "tablename"=>"AmoFlowCash",
+                                                    "flowid"=>$flowid,
+                                                ]);
+        
+        }
         if(substr($orderno,0,3)=='CON'){
             // 购买钻石
             $orderpay_result = self::orderpay_con([
@@ -551,6 +583,16 @@ class OrderPayModel
                 "paymethod"=>$paymethod,
             ]);
 
+        }else if(substr($orderno,0,3)=='REC'){
+
+            // 充值
+            $orderpay_result = self::orderpay_re([
+                "orderno"=>$order_info['orderno'],
+                "userid"=>$order_info['userid'],
+                "flowid"=>$flowid,
+                "paymethod"=>$paymethod,
+                "payamount"=>$total_fee,
+            ]);
         }
 
         if($orderpay_result['code']!='200')
@@ -604,70 +646,22 @@ class OrderPayModel
         $orderno        = $param['orderno'];
         $userid         = $param['userid'];
         $order_amount   = $param['order_amount'];
+        $balancetype    = $param['balancetype'];
         
-        $amountModel = Model::ins("AmoAmount");
-        $amount = $amountModel->getAmount($userid,"cashamount,profitamount,bullamount,comamount");
+        /*$amountModel = Model::ins("AmoAmount");
+        $amount = $amountModel->getAmount($userid,"*");*/
 
-        $cashamount     = 0;
-        $profitamount   = 0;
-        $bullamount     = 0;
-        $comamount     = 0;
+        $conamount     = 0;
+        $mallamount    = 0;
 
-        if(substr($orderno,0,6)=='NNHSTO' || substr($orderno,0,6)=='NNHSTB' || substr($orderno,0,6)=='NNHOTO'){
-            // 实体店订单
-            // 余额支付 优先扣牛粮
-            if($amount['profitamount']>0){
-                if($order_amount<=$amount['profitamount']){
-                    $profitamount   = $order_amount;
-                }else{
-                    $profitamount   = $amount['profitamount'];
-                    if($amount['cashamount']>=($order_amount-$profitamount)){
-                        $cashamount     = $order_amount-$profitamount;
-                    }else{
-                        $cashamount     = $amount['cashamount'];
-                        $comamount      = $order_amount-$profitamount-$cashamount;
-                    }
-                }
-            }else{
-                if($order_amount<=$amount['cashamount']){
-                    $cashamount     = $order_amount;
-                }else{
-                    $cashamount     = $amount['cashamount'];
-                    $comamount      = $order_amount-$cashamount;
-                }
-            }
+        if(substr($orderno,0,4)=='MALL'){
             
-        }else if(substr($orderno,0,5)=='NNHNR' || substr($orderno,0,5)=='NNHND' || substr($orderno,0,5)=='NNHNC' || substr($orderno,0,6)=='NNHTNC' || substr($orderno,0,6)=='NNHTNR' || substr($orderno,0,6)=='NNHTND'){
-            // 牛人申请
-            if($order_amount<=$amount['cashamount']){
-                $cashamount     = $order_amount;
-            }else{
-                $cashamount     = $amount['cashamount'];
-                $comamount      = $order_amount-$cashamount;
-            }
-            
-        }else if(substr($orderno,0,5)=='NNHRE'){
-            // 充值
-            
-        }else if(substr($orderno,0,6)=='NNHMOR'){
-            // 多订单合并支付  
-            
-
-        }else{
-            // 商城
-            if($order_amount<=$amount['cashamount']){
-                $cashamount     = $order_amount;
-            }else{
-                $cashamount     = $amount['cashamount'];
-                $comamount      = $order_amount-$cashamount;
-            }
+           
         }
 
         return [
-            "cashamount"=>$cashamount,
-            "profitamount"=>$profitamount,
-            "bullamount"=>$bullamount,
-            "comamount"=>$comamount,
+            "conamount"=>$conamount,
+            "mallamount"=>$mallamount,
         ];
     }
 
@@ -716,7 +710,7 @@ class OrderPayModel
     }
 
     /**
-     * 订单支付流程
+     * 订单支付流程 -- 商城支付只能通过余额支付完成
      * @Author   zhuangqm
      * @DateTime 2017-03-21T12:01:37+0800
      * @return   [type]                   [description]
@@ -728,6 +722,10 @@ class OrderPayModel
         $paymethod  = $param['paymethod'];
 
         $balancepay = $param['balancepay']; // 使用余额支付 1
+        $balancetype = $param['balancetype']; // 余额支付类型 conamount mallamount
+
+        if(empty($balancetype))
+            return ["code"=>"404"];
 
         $orderModel = Model::ins("OrdOrder");
 
@@ -742,6 +740,9 @@ class OrderPayModel
         //获取订单状态 判断订单是否已支付
         //if($order_row['orderstatus']>0)
            // return ["code"=>"40001"]; //订单已支付
+        
+        if($balancepay==1)
+            $paymethod = "balancepay";
 
         $amountModel = Model::ins("AmoAmount");
 
@@ -755,70 +756,41 @@ class OrderPayModel
             $comamount      = 0;
 
             // 余额支付
-            if($balancepay==1){
-
-                $payamount = self::balancepay([
-                                        "orderno"=>$orderno,
-                                        "userid"=>$userid,
-                                        "order_amount"=>$order_row['totalamount'],
-                                    ]);
-
-                $cashamount         = $payamount['cashamount'];
-                $profitamount       = $payamount['profitamount'];
-                $comamount          = $payamount['comamount'];
-
-            }else{
-                $cashamount = $order_row['totalamount'];
+            
+            $pay_amount = $order_row['totalamount'];
                 
-            }
-
-            $bullamount = $order_row['bullamount'];
-
             //执行订单支付流程
             $result = Model::new("Amount.Pay")->pay([
                     "userid"=>$userid,
                     "orderno"=>$orderno,
-                    "cashamount"=>$cashamount,
-                    "bullamount"=>$bullamount,
-                    "profitamount"=>$profitamount,
-                    "comamount"=>$comamount,
+                    $balancetype=>$pay_amount,
                     "flowid"=>$flowid,
-                    "flowtype_cash"=>"20",
-                    "flowtype_profit"=>"25",
-                    "flowtype_bull"=>"33",
-                    "flowtype_comcash"=>"20",
+                    "flowtype_con"=>"4",
+                    "flowtype_mall"=>"4",
                 ]);
 
             
             //判断是否已扣款
             if($result['code']=='200'){
 
-                if(($order_row['productamount']>0) || ($order_row['productamount']>0 && $order_row['bullamount']>0)){
-                    //进行分润
-                    Model::new("Amount.Profit")->profit([
-                            "userid"=>$userid,
-                            "orderno"=>$orderno,
-                            "flowid"=>$flowid,
-                        ]);
-                }
+                
                 //设置订单状态    
                 $orderModel->update(["orderstatus"=>1],["orderno"=>$orderno]);
-                //抢购订单状态
-                Model::ins("OrdOrderBuy")->update(["status"=>1],["orderno"=>$orderno]);
+
                 //订单支付信息
                 Model::ins("OrdOrderPay")->insert([
                         "orderno"=>$orderno,
                         "totalamount"=>$order_row['totalamount'],
-                        "bullamount"=>$order_row['bullamount'],
+                        "bullamount"=>0,
                         "pay_status"=>1,
                         "paytime"=>date("Y-m-d H:i:s"),
                         "pay_money"=>$order_row['totalamount'],
                         "pay_type"=>$paymethod,
-                        "pay_bull"=>$order_row['bullamount'],
+                        "pay_bull"=>0,
                     ]);
 
                 //商家待收货款
-                Model::new("Business.Settlement")->futpay(["orderno"=>$orderno]);
+                // Model::new("Business.Settlement")->futpay(["orderno"=>$orderno]);
 
                 // Model::new("Order.OrderCount")->deCount($userid,"count_pay");
                 // Model::new("Order.OrderCount")->addCount($userid,"count_deliver");
@@ -863,7 +835,7 @@ class OrderPayModel
 
 
     /**
-     * 购买钻石
+     * 购买钻石 
      * @Author   zhuangqm
      * @DateTime 2017-10-12T15:00:34+0800
      * @param    [type]                   $param [description]
@@ -878,6 +850,10 @@ class OrderPayModel
         $payamount  = $param['payamount']; //实际支付金额
 
         $balancepay = $param['balancepay']; // 使用余额支付 1
+
+        $balancetype = $param['balancetype']; // 余额支付类型 recamount
+
+        $balancetype = $balancetype!=''?$balancetype:"cashamount";
 
         //$orderModel = Model::ins("OrdOrder");
 
@@ -900,13 +876,13 @@ class OrderPayModel
 
             // 增加销售额
             Model::ins("AmoAmount")->AddSaleAmount($userid,$pay_amount);
-
+            
             //执行订单支付流程
             $result = Model::new("Amount.Pay")->pay([
                     "fromuserid"=>$userid,
                     "userid"=>$userid,
                     "orderno"=>$orderno,
-                    "cashamount"=>$pay_amount,
+                    $balancetype=>$pay_amount,
                     "flowid"=>$flowid,
                     "flowtype_cash"=>"10",
                 ]);

@@ -336,6 +336,32 @@ class CommonModel
     }
     
     /**
+    * @user 校验登录密码格式
+    * @param 
+    * @author jeeluo
+    * @date 2017年10月31日下午3:02:10
+    */
+    public static function validate_filter_loginpwd($number) {
+        if(preg_match("/^[0-9a-zA-Z_.]{6,20}$/", $number)) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+    * @user 校验支付密码格式
+    * @param 
+    * @author jeeluo
+    * @date 2017年11月2日下午3:49:20
+    */
+    public static function validate_filter_paypwd($number) {
+        if(preg_match("/^[0-9]{6}$/", $number)) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
     * @user 检查银行卡 对应的银行(个人账户)
     * @param 
     * @author jeeluo
@@ -888,15 +914,15 @@ class CommonModel
     * @date 2017年3月27日下午4:08:34
     */
     public static function sendValidate($params) {
-        if(empty($params['mobile']) || empty($params['privatekey']) || empty($params['sendType'])) {
+        if(empty($params['mobile']) || empty($params['privatekey']) || empty($params['sendType']) || empty($params['devicenumber'])) {
             return ["code" => 404];
         }
-        $sendTypeArr = array("login_register_");
+        $sendTypeArr = array("login_register_","update_phone_","update_pay_","update_loginpwd_");
         if(!in_array($params['sendType'], $sendTypeArr)) {
-            return ["code" => 1001];
+            return ["code" => "406"];
         }
         if(phone_filter($params['mobile'])) {
-            return ["code" => 404];
+            return ["code" => "20006"];
         }
         $privatekey = strtoupper($params['privatekey']);
         $autokey = strtoupper(md5($params['mobile'].getConfigKey()));
@@ -909,30 +935,34 @@ class CommonModel
         
         // 因为添加子店需要特殊处理，所以做特殊判断
         $countNumber = self::initNumber;
-        if($params['sendType'] == "sto_store_") {
-            if($MessageRedis->exists(CommonModel::getStoProfix($params['mobile']))) {
-                $countNumber = $MessageRedis->get(CommonModel::getStoProfix($params['mobile']));
-            }
+//         if($params['sendType'] == "sto_store_") {
+//             if($MessageRedis->exists(CommonModel::getStoProfix($params['mobile']))) {
+                if($MessageRedis->exists($params['sendType'].$params['devicenumber'])) {
+//                     $countNumber = $MessageRedis->get(CommonModel::getStoProfix($params['mobile']));
+                    $countNumber = $MessageRedis->get($params['sendType'].$params['devicenumber']);
+                }
+//             }
 
             if($countNumber >= CommonModel::getMaxStoDevice()) {
                 return ["code"=>"405"];
             }
-        }
+//         }
         
         $randNumber = getRandNumber(self::minRand, self::maxRand);
         
         $mobile = $params['mobile'];
         
         if(Sms::send("$mobile", ["$randNumber", self::minute])) {
-            return ["code" => 2001];
+            return ["code" => 2006];
         } else {
             // 验证码发送成功
             $MessageRedis->set($params['sendType'].$mobile, $randNumber, self::minute * self::minuteToSecond);
+            
+            $MessageRedis->set($params['sendType'].$params['devicenumber'], ++$countNumber, strtotime(date('Y-m-d', strtotime("+1 day")))-time());
 
-            if($params['sendType'] == "sto_store_") {
-                $MessageRedis->set(CommonModel::getStoProfix($params['mobile']), ++$countNumber, strtotime(date('Y-m-d', time()+86400))-time());
-            }
-//             CommonModel::setCacheNumber($params['sendType'].$mobile, $randNumber, self::minute * self::minuteToSecond);
+//             if($params['sendType'] == "sto_store_") {
+//                 $MessageRedis->set(CommonModel::getStoProfix($params['mobile']), ++$countNumber, strtotime(date('Y-m-d', time()+86400))-time());
+//             }
         }
         return ["code" => 200];
     }

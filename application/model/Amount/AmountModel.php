@@ -35,6 +35,7 @@ class AmountModel{
     bullamount
      */
     public function getUserAmount($userid,$field){
+      
     	$AmoAmountObj = Model::ins("AmoAmount");
     	if($field=='conamount')
     		return $AmoAmountObj->getConAmount($userid);
@@ -46,6 +47,12 @@ class AmountModel{
             return $AmoAmountObj->getIntAmount($userid);
         if($field=='saleamount')
             return $AmoAmountObj->getSaleAmount($userid);
+        if($field=='mallamount')
+            return $AmoAmountObj->getMallAmount($userid);
+        if($field=='stoamount')
+            return $AmoAmountObj->getStoAmount($userid);
+        if($field=='recamount')
+            return $AmoAmountObj->getRecAmount($userid);
     }
 
     /**
@@ -69,14 +76,15 @@ class AmountModel{
      * @DateTime 2017-03-22T15:48:54+0800
      * @return   [type]                   $param [
      *                                           userid
-     *                                           cashamount
-     *                                           profitamount
-     *                                           bullamount
+     *                                           conamount
+     *                                           mallamount
+     *                                           recamount
+     *                                           
      * ]
      */
     public function checkamountbalance($param){
         $AmoAmountObj = Model::ins("AmoAmount");
-        $amount = $AmoAmountObj->getAmount($param['userid'],"conamount,cashamount,busamount,intamount");
+        $amount = $AmoAmountObj->getAmount($param['userid'],"*");
 
         $result = [];
 
@@ -88,51 +96,38 @@ class AmountModel{
         
         // $result['bullamount']   = $amount['bullamount']>=$param['bullamount']?1:0;
         // 
-        $cashamount     = intval($param['cashamount']);
-        $profitamount   = intval($param['profitamount']);
-        $bullamount     = intval($param['bullamount']);
-
+        $conamount     = intval($param['conamount']);
+        $mallamount    = intval($param['mallamount']);
+        $recamount     = intval($param['recamount']);
 
         $balance = 0;
         $balanceinfo = "";
 
-        // 企业余额 也可以支付
-        $amount['cashamount']+=$amount['comamount'];
-
-        //三种状态
-        if($cashamount>0 && $bullamount>0){
-            if($amount['cashamount']>=$cashamount && $amount['bullamount']>=$bullamount){
+        // 消费券
+        if(isset($param['conamount']) && $param['conamount']>0){
+            if($param['conamount']<=$amount['conamount']){
                 $balance = 1;
             }else{
-                if($amount['cashamount']<$cashamount)
-                    $balanceinfo = "牛票不足";
-                if($amount['bullamount']<$bullamount)
-                    $balanceinfo = "牛豆不足";
-                if($amount['cashamount']<$cashamount && $amount['bullamount']<$bullamount)
-                    $balanceinfo = "余额不足";
+                $balanceinfo = "余额不足";
             }
-            
         }
 
-        if($cashamount>0 && $bullamount==0){
-            if($amount['cashamount']>=$cashamount)
+        // 商城消费钱包
+        if(isset($param['mallamount']) && $param['mallamount']>0){
+            if($param['mallamount']<=$amount['mallamount']){
                 $balance = 1;
-            else
-                $balanceinfo = "牛票不足";
+            }else{
+                $balanceinfo = "余额不足";
+            }
         }
 
-        if($cashamount==0 && $bullamount>0){
-            if($amount['bullamount']>=$bullamount)
+        // 充值钱包
+        if(isset($param['recamount']) && $param['recamount']>0){
+            if($param['recamount']<=$amount['recamount']){
                 $balance = 1;
-            else
-                $balanceinfo = "牛豆不足";
-        }
-
-        if($profitamount>0){
-            if(($amount['cashamount']+$amount['profitamount'])>=$profitamount)
-                $balance = 1;
-            else
-                $balanceinfo = "牛票不足";
+            }else{
+                $balanceinfo = "余额不足";
+            }
         }
 
         return [
@@ -155,6 +150,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
+        $flowtime       = $param['flowtime'];
 
         //$cashamount = $this->getUserAmount($userid,"cashamount");
 
@@ -166,6 +162,7 @@ class AmountModel{
                 //生成扣减流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>"",
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -175,7 +172,7 @@ class AmountModel{
                                 "direction"=>2,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>1, // amounttype  //1消费 2现金 3商家 4积分 5商城消费 6线下消费
+                                "amounttype"=>1, // amounttype  //1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
                                 "parent_userid"=>$parent_userid,
@@ -226,7 +223,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
     	//$cashamount = $this->getUserAmount($userid,"cashamount");
 
     	//if($cashamount>=$amount){
@@ -237,6 +234,7 @@ class AmountModel{
     			//生成扣减流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>"",
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -246,7 +244,7 @@ class AmountModel{
     							"direction"=>2,
     							"amount"=>abs($amount),
     							"remark"=>$param['remark'],
-    							"amounttype"=>2, //1消费 2现金 3商家 4积分 5商城消费 6线下消费
+    							"amounttype"=>2, //1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
                                 "parent_userid"=>$parent_userid,
@@ -296,7 +294,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
     	//$profitamount = $this->getUserAmount($userid,"profitamount");
 
     	//if($profitamount>=$amount){
@@ -307,6 +305,7 @@ class AmountModel{
     			//生成扣减流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>"",
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -316,7 +315,7 @@ class AmountModel{
     							"direction"=>2,
     							"amount"=>abs($amount),
     							"remark"=>$param['remark'],
-    							"amounttype"=>3, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+    							"amounttype"=>3, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
                                 "parent_userid"=>$parent_userid,
@@ -365,7 +364,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
     	//$bullamount = $this->getUserAmount($userid,"bullamount");
 
     	//if($bullamount>=$amount){
@@ -375,6 +374,7 @@ class AmountModel{
     			//生成扣减流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>"",
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -384,7 +384,7 @@ class AmountModel{
     							"direction"=>2,
     							"amount"=>abs($amount),
     							"remark"=>$param['remark'],
-    							"amounttype"=>4, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+    							"amounttype"=>4, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
                                 "parent_userid"=>$parent_userid,
@@ -413,7 +413,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
         //$bullamount = $this->getUserAmount($userid,"bullamount");
 
         //if($bullamount>=$amount){
@@ -423,6 +423,7 @@ class AmountModel{
                 //生成扣减流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>"",
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -432,7 +433,7 @@ class AmountModel{
                                 "direction"=>2,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>5, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+                                "amounttype"=>5, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
                                 "parent_userid"=>$parent_userid,
@@ -461,7 +462,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
         //$bullamount = $this->getUserAmount($userid,"bullamount");
 
         //if($bullamount>=$amount){
@@ -471,6 +472,7 @@ class AmountModel{
                 //生成扣减流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>"",
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -480,7 +482,7 @@ class AmountModel{
                                 "direction"=>2,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>6, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+                                "amounttype"=>6, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
                                 "parent_userid"=>$parent_userid,
@@ -495,6 +497,73 @@ class AmountModel{
         //}else{
             //return ["code"=>"30001"];
         //}
+    }
+
+
+    public function pay_recamount($param){
+
+        $userid         = $param['userid'];
+        $amount         = $param['amount'];
+        $usertype       = $param['usertype'];
+        $flowid         = $param['flowid'];
+        $role           = $param['role'];
+        $profit_role    = $param['profit_role'];
+        $parent_userid    = $param['parent_userid'];
+        $flowtime       = $param['flowtime'];
+        //$bullamount = $this->getUserAmount($userid,"bullamount");
+
+        //if($bullamount>=$amount){
+            //$AmoAmountObj = Model::ins("AmoAmount");
+            //扣减
+            if(Model::ins("AmoAmount")->DedRecAmount($userid,$amount)){
+                //生成扣减流水
+                Model::new("Amount.Flow")->flowpush([
+                            "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
+                            "tablename"=>"",
+                            "data"=>[
+                                //"usertype"=>$usertype,
+                                "userid"=>$userid,
+                                "orderno"=>$param['orderno'],
+                                "flowtype"=>$param['flowtype'],
+                                "direction"=>2,
+                                "amount"=>abs($amount),
+                                "remark"=>$param['remark'],
+                                "amounttype"=>7, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
+                                "role"=>$role,
+                                "profit_role"=>$profit_role,
+                                "parent_userid"=>$parent_userid,
+                                "fromuserid"=>$param['fromuserid'],
+                            ],
+                    ]);
+
+                return ['code'=>"200"];
+            }else{
+                return ["code"=>"30002"];
+            }
+        //}else{
+            //return ["code"=>"30001"];
+        //}
+    }
+
+
+    public function check_pay_recamount($param){
+        if($param['orderno']!=''){
+            $row = Model::ins("AmoFlowRec")->getRow([
+                    "userid"=>$param['userid'],
+                    "orderno"=>$param['orderno'],
+                    "flowtype"=>$param['flowtype'],
+                    "direction"=>2,
+                    "amount"=>abs($param['amount']),
+                ],"count(*) as count");
+
+            if($row['count']>0)
+                return ["code"=>"30005"];
+            else
+                return ['code'=>"200"];
+        }else{
+            return ['code'=>"200"];
+        }
     }
 
     /**
@@ -608,6 +677,8 @@ class AmountModel{
         return ["code" => "200"];
     }
 
+
+
     // 判断是否支付
     public function check_pay_intamount($param){
         if($param['orderno']!=''){
@@ -627,6 +698,49 @@ class AmountModel{
             return ['code'=>"200"];
         }
     }
+
+    // 判断是否支付
+    public function check_pay_mallamount($param){
+        if($param['orderno']!=''){
+            $row = Model::ins("AmoFlowMall")->getRow([
+                    "userid"=>$param['userid'],
+                    "orderno"=>$param['orderno'],
+                    "flowtype"=>$param['flowtype'],
+                    "direction"=>2,
+                    "amount"=>abs($param['amount']),
+                ],"count(*) as count");
+
+            if($row['count']>0)
+                return ["code"=>"30005"];
+            else
+                return ['code'=>"200"];
+        }else{
+            return ['code'=>"200"];
+        }
+    }
+
+    // 判断是否支付
+    public function check_pay_stoamount($param){
+        if($param['orderno']!=''){
+            $row = Model::ins("AmoFlowSto")->getRow([
+                    "userid"=>$param['userid'],
+                    "orderno"=>$param['orderno'],
+                    "flowtype"=>$param['flowtype'],
+                    "direction"=>2,
+                    "amount"=>abs($param['amount']),
+                ],"count(*) as count");
+
+            if($row['count']>0)
+                return ["code"=>"30005"];
+            else
+                return ['code'=>"200"];
+        }else{
+            return ['code'=>"200"];
+        }
+    }
+
+
+
 
     /*
         消费余额 --收入
@@ -650,6 +764,7 @@ class AmountModel{
                 //生成收入流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>$tablename,
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -659,7 +774,7 @@ class AmountModel{
                                 "direction"=>1,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>1, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+                                "amounttype"=>1, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -723,6 +838,7 @@ class AmountModel{
     			//生成收入流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>$tablename,
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -732,7 +848,7 @@ class AmountModel{
     							"direction"=>1,
     							"amount"=>abs($amount),
     							"remark"=>$param['remark'],
-    							"amounttype"=>2, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+    							"amounttype"=>2, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -797,6 +913,7 @@ class AmountModel{
     			//生成收入流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>$tablename,
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -806,7 +923,7 @@ class AmountModel{
     							"direction"=>1,
     							"amount"=>abs($amount),
     							"remark"=>$param['remark'],
-    							"amounttype"=>3, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+    							"amounttype"=>3, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -871,6 +988,7 @@ class AmountModel{
     			//生成收入流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>$tablename,
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -880,7 +998,7 @@ class AmountModel{
     							"direction"=>1,
     							"amount"=>abs($amount),
     							"remark"=>$param['remark'],
-    							"amounttype"=>4, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+    							"amounttype"=>4, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -922,6 +1040,7 @@ class AmountModel{
                 //生成收入流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>$tablename,
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -931,7 +1050,7 @@ class AmountModel{
                                 "direction"=>1,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>5, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+                                "amounttype"=>5, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -973,6 +1092,7 @@ class AmountModel{
                 //生成收入流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>$tablename,
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -982,7 +1102,7 @@ class AmountModel{
                                 "direction"=>1,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>6, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+                                "amounttype"=>6, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -998,6 +1118,78 @@ class AmountModel{
         }
 
         return ['code'=>"200"];
+    }
+
+    public function add_recamount($param){
+
+        $userid         = $param['userid'];
+        $amount         = $param['amount'];
+        $usertype       = $param['usertype'];
+        $tablename      = $param['tablename'];
+        $flowid         = $param['flowid'];
+        $role           = $param['role'];
+        $profit_role    = $param['profit_role'];
+        $parent_userid  = $param['parent_userid'];
+        $flowtime       = $param['flowtime'];
+
+        if($amount>0){
+            //$AmoAmountObj = Model::ins("AmoAmount");
+            //收入
+            if(Model::ins("AmoAmount")->AddRecAmount($userid,$amount)){
+
+                //生成收入流水
+                Model::new("Amount.Flow")->flowpush([
+                            "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
+                            "tablename"=>$tablename,
+                            "data"=>[
+                                //"usertype"=>$usertype,
+                                "userid"=>$userid,
+                                "orderno"=>$param['orderno'],
+                                "flowtype"=>$param['flowtype'],
+                                "direction"=>1,
+                                "amount"=>abs($amount),
+                                "remark"=>$param['remark'],
+                                "amounttype"=>7, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
+                                "fromuserid"=>$param['fromuserid'],
+                                "role"=>$role,
+                                "profit_role"=>$profit_role,
+                                "parent_userid"=>$parent_userid,
+                                "flowtime"=>$flowtime,
+                            ],
+                    ]);
+
+                return ['code'=>"200"];
+            }else{
+                return ["code"=>"30003"];
+            }
+        }
+
+        return ['code'=>"200"];
+    }
+
+
+    public function check_add_recamount($param){
+
+        if($param['orderno']!=''){
+            $tablename      = $param['tablename']!=''?$param['tablename']:"AmoFlowRec";
+
+            $row = Model::ins($tablename)->getRow([
+                    "userid"=>$param['userid'],
+                    "orderno"=>$param['orderno'],
+                    "flowtype"=>$param['flowtype'],
+                    "direction"=>1,
+                    "amount"=>abs($param['amount']),
+                ],"count(*) as count");
+
+            if($row['count']>0)
+                return ["code"=>"30005"];
+            else
+                return ['code'=>"200"];
+
+        }else{
+            return ['code'=>"200"];
+        }
     }
 
     // 判断是否添加
@@ -1037,7 +1229,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
         if($amount>0){
             //$AmoAmountObj = Model::ins("AmoAmount");
             //收入
@@ -1045,6 +1237,7 @@ class AmountModel{
                 //生成收入流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>$tablename,
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -1109,7 +1302,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
         if($amount>0){
             //$AmoAmountObj = Model::ins("AmoAmount");
             //收入
@@ -1117,6 +1310,7 @@ class AmountModel{
                 //生成收入流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>"AmoFlowCusComCash",
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -1176,7 +1370,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
     	if($amount>0){
     		//$AmoAmountObj = Model::ins("AmoAmount");
     		//收入
@@ -1185,6 +1379,7 @@ class AmountModel{
     			//生成收入流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>$tablename,
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -1193,7 +1388,7 @@ class AmountModel{
     							"direction"=>1,
     							"amount"=>abs($amount),
     							"remark"=>$param['remark'],
-    							"amounttype"=>2, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+    							"amounttype"=>2, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -1223,7 +1418,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
         if($amount>0){
             //$AmoAmountObj = Model::ins("AmoAmount");
             //收入
@@ -1232,6 +1427,7 @@ class AmountModel{
                 //生成收入流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>$tablename,
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -1269,7 +1465,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
     	if($amount>0){
     		//$AmoAmountObj = Model::ins("AmoAmount");
     		//收入
@@ -1277,6 +1473,7 @@ class AmountModel{
     			//生成收入流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>$tablename,
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -1285,7 +1482,7 @@ class AmountModel{
     							"direction"=>1,
     							"amount"=>abs($amount),
     							"remark"=>$param['remark'],
-    							"amounttype"=>3, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+    							"amounttype"=>3, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -1312,7 +1509,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
     	if($amount>0){
     		//$AmoAmountObj = Model::ins("AmoAmount");
     		//收入
@@ -1321,6 +1518,7 @@ class AmountModel{
     			//生成收入流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>$tablename,
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -1329,7 +1527,7 @@ class AmountModel{
     							"direction"=>1,
     							"amount"=>abs($amount),
     							"remark"=>$param['remark'],
-    							"amounttype"=>3, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+    							"amounttype"=>3, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -1357,7 +1555,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
         if($amount>0){
             //$AmoAmountObj = Model::ins("AmoAmount");
             //收入
@@ -1366,6 +1564,7 @@ class AmountModel{
                 //生成收入流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>$tablename,
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -1374,7 +1573,7 @@ class AmountModel{
                                 "direction"=>1,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>4, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费
+                                "amounttype"=>4, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "fromuserid"=>$param['fromuserid'],
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
@@ -1402,7 +1601,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
     	if($amount>0){
     		//$AmoAmountObj = Model::ins("AmoAmount");
     		//收入
@@ -1411,6 +1610,7 @@ class AmountModel{
     			//生成收入流水
     			Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
     						"tablename"=>$tablename,
     						"data"=>[
     							//"usertype"=>$usertype,
@@ -1447,7 +1647,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
     	if($amount>0){
     		//$AmoAmountObj = Model::ins("AmoAmount");
     		//收入
@@ -1498,7 +1698,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
         //$cashamount = $this->getUserAmount($userid,"cashamount");
 
         //if($cashamount>=$amount){
@@ -1509,6 +1709,7 @@ class AmountModel{
                 //生成扣减流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>"AmoFlowComCash",
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -1518,7 +1719,7 @@ class AmountModel{
                                 "direction"=>2,
                                 "amount"=>abs($amount),
                                 "remark"=>$param['remark'],
-                                "amounttype"=>1, // amounttype  1现金 2收益现金 3牛币
+                                "amounttype"=>2, // amounttype  1消费 2现金 3商家 4积分 5商城消费 6线下消费 7充值钱包
                                 "role"=>$role,
                                 "profit_role"=>$profit_role,
                                 "parent_userid"=>$parent_userid,
@@ -1546,7 +1747,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
         //$profitamount = $this->getUserAmount($userid,"profitamount");
 
         //if($profitamount>=$amount){
@@ -1557,6 +1758,7 @@ class AmountModel{
                 //生成扣减流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>"AmoFlowComProfit",
                             "data"=>[
                                 //"usertype"=>$usertype,
@@ -1594,7 +1796,7 @@ class AmountModel{
         $role           = $param['role'];
         $profit_role    = $param['profit_role'];
         $parent_userid    = $param['parent_userid'];
-
+        $flowtime       = $param['flowtime'];
         //$bullamount = $this->getUserAmount($userid,"bullamount");
 
         //if($bullamount>=$amount){
@@ -1604,6 +1806,7 @@ class AmountModel{
                 //生成扣减流水
                 Model::new("Amount.Flow")->flowpush([
                             "flowid"=>$flowid,
+                            "flowtime"=>$flowtime,
                             "tablename"=>"AmoFlowComBull",
                             "data"=>[
                                 //"usertype"=>$usertype,

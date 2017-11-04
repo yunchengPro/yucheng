@@ -51,13 +51,13 @@ class ApplyModel{
 		if(empty($param['join_type']))
 			return ['code'=>30009,'msg'=>'请选择加盟方式'];
 
-		$mobile_row = Model::ins('CusCustomer')->getRow(['id'=>$param['customerid']],'mobile');
+		$mobile_row = Model::ins('CusCustomer')->getRow(['id'=>$param['customerid']],'id,mobile');
 		$mobile = $mobile_row['mobile'];
 		if(empty($mobile))
 			return ['code'=>30010,'msg'=>'开通商家手机号码不能为空'];
 
-		$bus_row = Model::ins('RoleApplyBus')->getRow(['mobile'=>$mobile],'id,orderno');
-
+		$bus_row = Model::ins('RoleApplyBus')->getRow(['customerid'=>$mobile_row['id'],'status'=>['<>',3]],'id,orderno');
+		
 		if(!empty($bus_row))
 			return ['code'=>30011,'msg'=>'你已经申请过成为商家，不能重复申请','data'=>['orderno'=>$bus_row['orderno']]];
 
@@ -90,7 +90,7 @@ class ApplyModel{
 	 * @return   [type]                   [description]
 	 */
 	public static function getABusOrderNo(){
-		return "ABUS".date("YmdHis").rand(100000,999999);
+		return "ABUS".date("YmdHis").rand(1000,9999);
 	}
 
 	/**
@@ -135,12 +135,12 @@ class ApplyModel{
 		if(empty($param['join_type']))
 			return ['code'=>30009,'msg'=>'请选择加盟方式'];
 
-		$mobile_row = Model::ins('CusCustomer')->getRow(['id'=>$param['customerid']],'mobile');
+		$mobile_row = Model::ins('CusCustomer')->getRow(['id'=>$param['customerid']],'id,mobile');
 		$mobile = $mobile_row['mobile'];
 		if(empty($mobile))
 			return ['code'=>30017,'msg'=>'区代理手机号码不能为空'];
 
-		$manager_row = Model::ins('RoleApplyManager')->getRow(['mobile'=>$mobile],'id,orderno');
+		$manager_row = Model::ins('RoleApplyManager')->getRow(['customerid'=>$mobile_row['id'],'status'=>['<>',3]],'id,orderno');
 
 		if(!empty($manager_row))
 			return ['code'=>30018,'msg'=>'你已经申请过成为区代理，不能重复申请','data'=>['orderno'=>$manager_row['orderno']]];
@@ -173,7 +173,7 @@ class ApplyModel{
 	 * @return   [type]                   [description]
 	 */
 	public static function getAMANOrderNo(){
-		return "AMAN".date("YmdHis").rand(100000,999999);
+		return "AMAN".date("YmdHis").rand(1000,9999);
 	}
 
 	/**

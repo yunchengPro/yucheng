@@ -39,8 +39,8 @@ class OpenRequestLogModel {
 	    return $this->_modelObj->getRow($where,$field,$order,$otherstr);
 	}
 
-	public function pageList($where,$field='*',$order='',$flag=1){
-	    return $this->_modelObj->pageList($where,$field,$order,$flag);
+	public function pageList($where,$field='*',$order='',$flag=1,$page='',$pagesize=''){
+	    return $this->_modelObj->pageList($where,$field,$order,$flag,$page,$pagesize);
 	}
 
 }

@@ -73,7 +73,7 @@ class RoleOrderModel {
 	 * @return   [type]                   [description]
 	 */
 	public function getOrderNo(){
-		return "NNHLP".date("YmdHis").rand(100000,999999);
+		return "NNHLP".date("YmdHis").rand(1000,9999);
 	}
 
 	/**

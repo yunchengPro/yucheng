@@ -138,19 +138,14 @@ class OrderModel
 
                 $productinfo = $proOBJ->getRow(["id"=>$productid],"businessid,enable,spu,categoryid,categoryname,weight,weight_gross,volume,isabroad,transportid");
 
-                if($productinfo['enable']==0)
-                    return ['code'=>"5006"];
-
-                if($productinfo['isabroad']==1 && $param['version'] < "2.1.0" ) {
-                    return ["code"=>"7008"];
-                }
+             
 
                 /**
                  * 新人专享商品只能购买一次
                  * zhuangqm
                  * 2017-09-04
                  */
-                $newuserproductstorage = ProductModel::getNewUserProductStorage([
+                /*$newuserproductstorage = ProductModel::getNewUserProductStorage([
                         "productid"=>$productid,
                         "categoryid"=>$productinfo['categoryid'],
                         "customerid"=>$customerid,
@@ -162,7 +157,7 @@ class OrderModel
                     
                     if(!empty($cartitemids))
                         $cartitem['productnum'] = $newuserproductstorage['productstorage'];
-                }
+                }*/
 
 
                 
@@ -172,7 +167,7 @@ class OrderModel
 
                         if($productnum>0){
 
-                            if($param['version'] >= "2.2.0") {
+                            /*if($param['version'] >= "2.2.0") {
                                 // 判断是否有抢购活动
                                 $productbuy = [];
                                 if(!$newuserproductstorage["product_storage_flag"]){
@@ -202,7 +197,7 @@ class OrderModel
                                     }
 
                                 }
-                            }
+                            }*/
 
                             $skuitem['productimage'] = Img::url($skuitem['productimage']);
                             
@@ -408,6 +403,10 @@ class OrderModel
         $qianggou = $param['qianggou'];
         unset($param['qianggou']);
 
+        // h5页面才有的参赛
+        if(isset($param['addorderkey']) && empty($param['addorderkey']))
+            unset($param['addorderkey']);
+
         if($qianggou!='')
             $qianggou = explode(",",$qianggou);
         
@@ -498,7 +497,7 @@ class OrderModel
 
                             if($orderitem['productnum']>0){
 
-                                if($version >= "2.2.0") {
+                                /*if($version >= "2.2.0") {
                                     // 判断是否有抢购活动
                                     $productbuy = Model::new("Product.ProductBuy")->ProductBuy(["productid"=>$skuitem['productid'],"userid"=>$userid]);
                                     
@@ -531,37 +530,23 @@ class OrderModel
                                             $qianggou_flag = true;
                                         }
                                         
-                                        // 抢购活动重新计算价格
-                                        /*if($productbuy['product_buy']['limitbuy']>=$orderitem['productnum']){
-                                            $skuitem['prouctprice'] = $productbuy['product_buy']['prouctprice'];
-                                            $orderitem['bullamount'] = $skuitem['bullamount'] = $productbuy['product_buy']['bullamount'];
-
-                                            //加入抢购记录
-                                            $product_buy_arr[$skuitem['productid']] = [
-                                                "product_buy_id"=>$productbuy['product_buy']['id'],
-                                            ];
-
-                                            $qianggou_flag = true;
-                                            
-                                        }else{
-                                            return ["code"=>"6012"];
-                                        }*/
+                                        
                                         
                                         
                                     }
 
                                     if(!empty($qianggou) && in_array($skuitem['productid'], $qianggou) && $qianggou_flag==false)
                                         return ["code"=>"6013"];
-                                }
+                                }*/
                                 
                                 //获取商品信息
                                 $proitem = $proOBJ->getRow(["id"=>$orderitem['productid']],"spu,businessid,categoryid,categoryname,weight,weight_gross,volume,isabroad,transportid");
                                 $orderitem = array_merge($orderitem,$proitem);
 
                                 // 20170911
-                                if($proitem['isabroad']==1 && $version < "2.1.0" ) {
-                                    return ["code"=>"7008"];
-                                }
+                                // if($proitem['isabroad']==1 && $version < "2.1.0" ) {
+                                //     return ["code"=>"7008"];
+                                // }
 
                                 //获取商家信息
                                 $businessitem = $businessOBJ->getById($orderitem['businessid'],"businessname");
@@ -758,20 +743,20 @@ class OrderModel
                             $orderitemOBJ->insert($data);
 
                             // 加入抢购记录 2.2.0版本后才有抢购功能
-                            if(!empty($product_buy_arr[$value['productid']])){
-                                $orderbuy_result = Model::ins("Product.ProductBuy")->addOrderBuy([
-                                    "product_buy_id"=>$product_buy_arr[$value['productid']]['product_buy_id'],
-                                    "productid"=>$value['productid'],
-                                    "orderno"=>$orderno,
-                                    "customerid"=>$userid,
-                                    "productcount"=>$value['productnum'],
-                                ]);
+                            // if(!empty($product_buy_arr[$value['productid']])){
+                            //     $orderbuy_result = Model::ins("Product.ProductBuy")->addOrderBuy([
+                            //         "product_buy_id"=>$product_buy_arr[$value['productid']]['product_buy_id'],
+                            //         "productid"=>$value['productid'],
+                            //         "orderno"=>$orderno,
+                            //         "customerid"=>$userid,
+                            //         "productcount"=>$value['productnum'],
+                            //     ]);
 
-                                if($orderbuy_result['code']!='200'){
-                                    $orderOBJ->rollback(); // 事务回滚
-                                    return ["code"=>$orderbuy_result['code']];
-                                }
-                            }
+                            //     if($orderbuy_result['code']!='200'){
+                            //         $orderOBJ->rollback(); // 事务回滚
+                            //         return ["code"=>$orderbuy_result['code']];
+                            //     }
+                            // }
 
                             
                             $skuitem_productstorage[$value['skuid']] = $value['productnum'];
@@ -872,7 +857,7 @@ class OrderModel
             
         }else{
             return [
-                "code"=>404,
+                "code"=>4043,
             ];
         }
 
@@ -887,7 +872,24 @@ class OrderModel
      * @return   [type]                          [true|false]
      */
     protected function chec_addorder_sign($sign,$param){
-        //按业务字段排序
+        // print_r($param);
+        // echo $sign."---";
+        // echo $this->getSign($param)."---";
+        // exit;
+        if(strtoupper($this->getSign($param))==strtoupper($sign))
+            return true;
+        else
+            return false;
+    }
+
+    /**
+     * 生产sign
+     * @Author   zhuangqm
+     * @DateTime 2017-10-23T17:24:13+0800
+     * @param    [type]                   $param [description]
+     * @return   [type]                          [description]
+     */
+    public function getSign($param){
         ksort($param);
 
         //签名=md5(按业务字段排序(address_id+items)+私钥)
@@ -897,14 +899,8 @@ class OrderModel
         }
         $key = Config::get("key.app_key");
         // echo $str.$key."----";
-        $check = md5($str.$key);
-        // echo $sign."---";
-        // echo $check."---";
-        // exit;
-        if(strtoupper($check)==$sign)
-            return true;
-        else
-            return false;
+
+        return md5($str.$key);
     }
 
     /**
@@ -978,20 +974,25 @@ class OrderModel
 
                         $orderitem_list[$k]['orderact'] = [];
 
-                        if($order['orderstatus']==1 || $order['orderstatus']==2 || ($order['orderstatus']==3 && $delivery_time>=date("Y-m-d H:i:s",strtotime("-7 day")))){
-                            //申请退款
-                            $orderact = $orderreturnOBJ->getOrderReturnAct([
-                                "orderstatus"=>$order['orderstatus'],
-                                "orderid"=>$order['id'],
-                                "skuid"=>$v['skuid'],
-                                "productnum"=>$v['productnum'],
-                                ]);
-                            $orderitem_list[$k]['orderact'][] = $orderact;
-                        }
+                        // if($order['orderstatus']==1 || $order['orderstatus']==2 || ($order['orderstatus']==3 && $delivery_time>=date("Y-m-d H:i:s",strtotime("-7 day")))){
+                        //     //申请退款
+                        //     $orderact = $orderreturnOBJ->getOrderReturnAct([
+                        //         "orderstatus"=>$order['orderstatus'],
+                        //         "orderid"=>$order['id'],
+                        //         "skuid"=>$v['skuid'],
+                        //         "productnum"=>$v['productnum'],
+                        //         ]);
+                        //     $orderitem_list[$k]['orderact'][] = $orderact;
+                        // }
 
-                        //评价操作
-                        if($order['orderstatus']==3 || $order['orderstatus']==4)
-                            $orderitem_list[$k]['orderact'][] = $orderOBJ->getEvaluateAct($v['evaluate']);
+                        // //评价操作
+                        // if($order['orderstatus']==3 || $order['orderstatus']==4)
+                        //     $orderitem_list[$k]['orderact'][] = $orderOBJ->getEvaluateAct($v['evaluate']);
+
+                        // // 因为功能还未开发，暂时处理掉评价和退款按钮 2017-11-02 15:45:28
+                        // if($order['orderstatus'] == 3 || $order['orderstatus'] == 4) {
+                        //     $orderitem_list[$k]['orderact'] = [];
+                        // }
                     }
                     $order['orderitem'] = $orderitem_list;
 
@@ -1036,9 +1037,9 @@ class OrderModel
                     $orderpay = Model::ins("OrdOrderPay")->getRow(["orderno"=>$order['orderno']],"paytime");
                     $order['paytime'] = $orderpay['paytime'];
 
-                    if($param['version']=='1.0.0'){
-                        $order['totalamount'] = $order['totalamount']-$order['actualfreight'];
-                    }
+                    // if($param['version']=='1.0.0'){
+                    //     $order['totalamount'] = $order['totalamount']-$order['actualfreight'];
+                    // }
 
                     return [
                         "code"=>"200",
@@ -1217,10 +1218,10 @@ class OrderModel
                             }
 
                             //取消抢购订单
-                            Model::new("Product.ProductBuy")->cancelOrderBuy([
-                                "customerid"=>$customerid,
-                                "orderno"=>$orderno,
-                            ]);
+                            // Model::new("Product.ProductBuy")->cancelOrderBuy([
+                            //     "customerid"=>$customerid,
+                            //     "orderno"=>$orderno,
+                            // ]);
 
 
                             return ["code"=>"200"];

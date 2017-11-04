@@ -25,7 +25,7 @@ class CusRechargeBullModel {
 	 * @return   [type]                   [description]
 	 */
 	public function getOrderNo(){
-		return "NNHREB".date("YmdHis").rand(100000,999999);
+		return "NNHREB".date("YmdHis").rand(1000,9999);
 	}
 
 
