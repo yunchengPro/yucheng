@@ -36,17 +36,23 @@ class IndexController extends ActionController {
     * @date 2017年10月10日下午2:54:54
     */
     public function getIndexDataAction() {
-        $customerid = $this->params['customerid'];
+//         $customerid = $this->params['customerid'];
+
+        $customerid = !empty($this->params['customerid']) ? $this->params['customerid'] : $this->userid;
         
         // 用户基本信息
-        $UserInfoModel = Model::new("User.UserInfo");
-        $userInfo = $UserInfoModel->userBaseInfo(["customerid"=>$customerid]);
+//         $UserInfoModel = Model::new("User.UserInfo");
+//         $userInfo = $UserInfoModel->userBaseInfo(["customerid"=>$customerid]);
         
-        if($userInfo["code"] != "200") {
-            return $this->json($userInfo["code"]);
-        }
+//         if($userInfo["code"] != "200") {
+//             return $this->json($userInfo["code"]);
+//         }
         
-        $role = $userInfo['data']['role'];
+//         $role = $userInfo['data']['role'];
+
+        $UserModel = Model::new("User.User");
+        $userInfo = $UserModel->userInfo($this->userid);
+        $role = $userInfo['role'];
         
         // 用户余额
         $AmoAmountModel = Model::new("Amount.AmoAmount");
@@ -64,8 +70,12 @@ class IndexController extends ActionController {
         $incomeConAmount = $AmoAmountModel->getConTypeAmount(["customerid"=>$customerid,"direction"=>1,"begintime"=>$yestoday]);
         $expendConAmount = $AmoAmountModel->getConTypeAmount(["customerid"=>$customerid,"direction"=>2,"begintime"=>$yestoday]);
         
+        // 获取销售额/营业额
+        $childYesCashAmount = $AmoAmountModel->getChildCashTypeAmount(["customerid"=>$customerid,"direction"=>1,"begintime"=>$yestoday,"role"=>$role]);
+//         $childTotalCashAmount = $AmoAmountModel->getChildCashTypeAmount(["customerid"=>$customerid,"direction"=>1,"flowtype"=>["in",14,15]]);
+        
         // 返回商家业绩流水统计
-        $busFlowAmount = $AmoAmountModel->getBusFlowAmount(["customerid"=>$customerid]);
+//         $busFlowAmount = $AmoAmountModel->getBusFlowAmount(["customerid"=>$customerid]);
         
         // 获取中部关联数据
         $childRelation = Model::new("User.UserRelation")->getChildRelation(["customerid"=>$customerid]);
@@ -100,16 +110,18 @@ class IndexController extends ActionController {
 //             $result['shareStatus'] = 1;
 //         }
         
-        $result['userInfo'] = $userInfo['data'];
+        $result['userInfo'] = $userInfo;
         $result['userAmount'] = $userAmount['data'];
         $result['incomeConAmount'] = $incomeConAmount['data'];
         $result['expendConAmount'] = $expendConAmount['data'];
+        $result['childYesCashAmount'] = $childYesCashAmount['data'];
 //         $result['conFlowAmount'] = $conFlowAmount['data'];
 //         $result['cashFlowAmount'] = $cashFlowAmount['data'];
-        $result['busFlowAmount'] = $busFlowAmount['data'];
+//         $result['busFlowAmount'] = $busFlowAmount['data'];
         $result['childRelation'] = $childRelation["data"];
-        $result['bonus'] = ForMatPrice($bonus*100);
+        $result['bonus'] = ForMatPrice($bonus*1000)."‰";
         $result['companyMobile'] = $companyMobile[0];
+        $result['checkcode'] = md5($customerid.getConfigKey());
         
         return $this->json("200", $result);
     }
@@ -142,6 +154,7 @@ class IndexController extends ActionController {
         // 删除缓存
         Cookie::set('customerid',"",time());
         Cookie::set('mtoken',"",time());
+        Cookie::set('openid',"",time());
 
         $result["code"] = "200";
         return json_encode($result);
@@ -156,9 +169,23 @@ class IndexController extends ActionController {
     public function pushAction() {
         $title = "分享二维码";
         
+        $customerid = $this->params['customerid'];
+        $checkcode = $this->params['checkcode'];
+        
+        if(empty($customerid) || empty($checkcode)) {
+            echo "<script>alert('请正确操作')</script>";
+            exit;
+        }
+        
+        if(md5($customerid.getConfigKey()) != $checkcode) {
+            echo "<script>alert('链接信息有误')</script>";
+            exit;
+        }
+        
         $viewData = [
             'title' => $title,
-            'customerid' => $this->userid
+//             'customerid' => $this->userid
+            'customerid' => $customerid
         ];
         
         return $this->view($viewData);

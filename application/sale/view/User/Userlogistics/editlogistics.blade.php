@@ -68,7 +68,7 @@
                   	city:"<?=$logistic['city']?>",
                     address:"<?=$logistic['address']?>",
                     isdefault:'<?=$isdefault?>',
-                    checkcode:"<?=$checkcode?>"
+                    checktoken:"<?=$checktoken?>"
                 },
               	 mounted: function() {
 						var selectArea = new MobileSelectArea();
@@ -98,15 +98,15 @@
                         	address:_this.address,
                         	isdefault:_this.isdefault,
                         	hd_area:$('#hd_area').val(),
-                        	checkcode:_this.checkcode
+                        	checktoken:_this.checktoken
                         }).then(
                             function (res) {
                                 loadtip({
                                     close:true
                                 });
                                	var _this=this;
-                                data = eval("("+res.body+")");
-                               	//data = cl(res);
+                                //data = eval("("+res.body+")");
+                               	data = cl(res);
                                 if(data.code=='200'){
                                 	layer.open({
                                         content: '<?=$success?>',

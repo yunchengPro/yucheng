@@ -17,16 +17,23 @@
 	
 	<section class="taurus-deal">
 		<div class="deal-item" style="-webkit-box-pack: justify;">
-			<span class="item-tip">金牛数量</span>
-			<div>
-				<img src="/mobile/img/icon/taurus.png" class="taurus" />
-			 	<span>x</span><span v-html="orderdetail.count" ></span><span></span>
-			</div>
+			<span class="item-tip">消费券金额</span>
+			<div ><span v-html="orderdetail.comamount"></span></div>
 		</div>
-			<div class="deal-item" style="-webkit-box-pack: justify;">
-			<span class="item-tip">购买金额</span>
-			<div ><span v-html="orderdetail.totalamount"></span>元</div>
+		<div class="deal-item" style="-webkit-box-pack: justify;">
+			<span class="item-tip">购买数量</span>
+			<div ><span v-html="orderdetail.num"></span></div>
 		</div>
+
+		<div class="deal-item" style="-webkit-box-pack: justify;">
+			<span class="item-tip">支付金额</span>
+			<div ><span v-html="orderdetail.totalamount"></span></div>
+		</div>
+		<div class="deal-item" style="-webkit-box-pack: justify;">
+			<span class="item-tip">消费券总面值</span>
+			<div ><span v-html="orderdetail.count"></span></div>
+		</div>
+
 		<div class="deal-item" style="-webkit-box-pack: justify;">
 			<span class="item-tip">订单编号</span>
 			<div><span  v-html="orderdetail.orderno"></span> </div>
@@ -49,7 +56,7 @@
 	</div>
 	
 	
-	<div class="tl-select-mask" v-show="maskShow" @click="closeMask"></div>
+	<!-- <div class="tl-select-mask" v-show="maskShow" @click="closeMask"></div>
 	<div class="sure-info" v-show="maskShow">
 		<div class="info-item-list">
 			<div class="info-item">
@@ -57,16 +64,16 @@
 			</div>
 			<div class="info-item">
 			<span>收款人：</span><span><?=$con_config['payee']?><!-- talon --></span>
-			</div>
+		<!-- 	</div>
 			<div class="info-item">
 				<span>收款账号：</span><span><?=$con_config['pay_account']?><!-- 621483655711xxxx --></span>
-			</div>
+		<!--	</div>
 			<div class="info-item">
 				<span>收款银行：</span><span><?=$con_config['pay_bank']?><!-- 招商银行 --></span>
-			</div>
+		<!--	</div>
 			<div class="info-item">
 				<span>支行名称：</span><span><?=$con_config['pay_bank_son']?><!-- 深圳翠竹支行 --></span>
-			</div>
+		<!--	</div>
 		</div>
 		<div class="remark">
 			<div class="c-999" style="font-size: 12px;">请按此账号打款，打款时在备注输入订单号</div>
@@ -75,7 +82,7 @@
 		<div class="info-oper">
 			<a href="#" @click="closeMask">请截图保存</a>
 		</div>
-	</div>
+	</div> -->
 				
 {include file="Pub/tail" /}
 
@@ -162,8 +169,8 @@
                     }).then(
                         function (res) {
                            	var _this=this;
-                            data = eval("("+res.body+")");
-                           	//data = cl(res);
+                            //data = eval("("+res.body+")");
+                           	data = cl(res);
                             if(data.code=='200'){
                             	
                                _this.orderdetail = data.data;

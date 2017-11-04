@@ -18,7 +18,7 @@
 				</section>
 				
 				<section class="buy-coupons">
-					<div class="bar">购物券金额</div>
+					<div class="bar">消费券金额</div>
 					<div class="face-values">
 						<div class="tl-grid">
 							
@@ -93,8 +93,11 @@
 				</section>
 				
 				
-				<div class="tl-select-mask" v-show="maskShow" @click="closeMask"></div>
+				<div class="tl-select-mask" v-show="maskShow" ></div>
 					<div class="sure-info sure-info2" v-show="maskShow">
+						<div class="info-oper" style="text-align: center;">
+							<a href="#" >请截图保存</a>
+						</div>
 						<div class="info-item-list">
 							<div class="info-item">
 							<span><strong>账号信息</strong></span>
@@ -227,7 +230,7 @@
 	.taurus-deal-oper a{background: #cd9951;color: #FFFFFF;width: 48%;height: 44px;line-height: 44px;border-radius: 4px;font-size: 16px;display: -webkit-box;-webkit-box-pack: center;text-align: center;}
 	.sure-info{background: #FFFFFF;position: fixed;z-index: 100;width: 250px;margin-left: -125px;left: 50%;border-radius: 4px;top:200px;}
 			.sure-info .info-item-list{padding:10px 15px;font-size: 14px;border-bottom: 1px solid #E5E5E5;}
-			.sure-info .info-item-list .info-item{height: 30px;line-height: 30px;}
+			.sure-info .info-item-list .info-item{line-height: 30px;}
 			.sure-info .info-oper{height: 40px;line-height: 40px;}
 			.sure-info .info-oper a{color: #0296ff;font-size: 15px;}
 			.sure-info2{background: #FFFFFF;position: fixed;z-index: 100;width: 300px;margin-left: -150px;left: 50%;border-radius: 4px;top:150px;}
@@ -264,7 +267,6 @@
 			   	payDefault:true,
 			   	money:'',
 			   	taurus:0,
-			   	maskShow:false,
 			   	amount:'',
 			   	mobile:'<?=$mobile?>',
 			   	pay_voucher:1,
@@ -273,7 +275,9 @@
 		   		con_maxamout:'<?=$con_maxamout?>',
 		   		con_minamout:'<?=$con_minamout?>',
 		   		maskShow:false,
-		   		orderno:''
+		   		orderno:'',
+		   		concount:0,
+		   		confacecount:0,
 			},
 		 
 		    methods:{
@@ -293,6 +297,9 @@
 		  		buyConOline:function(){
 		  			var _this=this;
 		  			if(confirm("确定购买?")) {
+		  				
+		  				_this.confacecount = parseFloat($("input[name='face']:checked").val());
+		  				_this.concount = parseInt($(".number").html());
 			  			_this.amount = $("#amount").val();
 			  			// if(_this.amount < _this.con_minamout || _this.amount > _this.con_maxamout){
 			  			// 	toast('购买金额范围在1000~50000');
@@ -305,15 +312,21 @@
 	                    	amount:_this.amount,
 	                    	//mobile:_this.mobile,
 	                    	pay_voucher:1,
-	                    	businessid:_this.businessid
+	                    	businessid:_this.businessid,
+	                    	checktoken:'<?=$checktoken?>',
+	                    	confacecount:_this.confacecount,
+                    		concount:_this.concount
 	                    }).then(
 	                        function (res) {
 	                        	loadtip({
 	                                close:true
 	                            });
 	                           	var _this=this;
-	                            data = eval("("+res.body+")");
-	                           	//data = cl(res);
+	                            // data  = res.body 
+	                           	// if(data.code != 408){
+	                            // 	data = eval("("+res.body+")");
+	                           	// }
+	                           	data = cl(res);
 	                            if(data.code=='200'){
 	                            	
 	                                toast('提交成功');
@@ -336,6 +349,8 @@
 		  		buyConReturn:function(){
 		  			var _this=this;
 		  			if(confirm("确定购买?")) {
+		  			_this.confacecount = parseFloat($("input[name='face']:checked").val());
+		  			_this.concount = parseInt($(".number").html());
 		  			_this.amount = $("#amount").val();
 		  			loadtip({
                         content:'加载中..'
@@ -349,15 +364,21 @@
                     	amount:_this.amount,
                     	mobile:_this.mobile,
                     	pay_voucher:2,
-                    	businessid:_this.businessid
+                    	businessid:_this.businessid,
+                    	checktoken:'<?=$checktoken?>',
+                    	confacecount:_this.confacecount,
+                    	concount:_this.concount
                     }).then(
                         function (res) {
                         	loadtip({
                                 close:true
                             });
                            	var _this=this;
-                            data = eval("("+res.body+")");
-                           	//data = cl(res);
+                            // data  = res.body 
+                           	// if(data.code != 408){
+                            // 	data = eval("("+res.body+")");
+                           	// }
+                           	data = cl(res);
                             if(data.code=='200'){
                             	
                                 toast('提交成功');
@@ -407,23 +428,16 @@
 					  	 		con_price = con_more_price;
 					  	 	}
 					  	 	num++;
-					  	 	$.get("/Conn/Conn/ajaxcanbuycon?customerid=<?=$customerid?>&amount="+num*price, function(result){
-							    console.log(result);
-								result = eval("("+result+")");
-								
-								if(result.code == "200"){
-									$(".number").html(num);
+					  	 
+							$(".number").html(num);
 
-									if(num*price >= 10000)
-										con_price = con_more_price;
+							if(num*price >= 10000)
+								con_price = con_more_price;
 
-							  	 	$(".total").html(num*price*con_price);
-							  	 	$("#amount").val(num*price);
-							  	 	$(".total_amount").html(num*price);
-								}else{
-									toast(result.msg);
-								}
-							});
+					  	 	$(".total").html(num*price*con_price);
+					  	 	$("#amount").val(num*price);
+					  	 	$(".total_amount").html(num*price);
+							
 					  	 	
 					  	});
 					  	 
@@ -437,21 +451,14 @@
 					  	 	}
 					  	 	if(num>1){
 					  	 		num--;
-					  	 		$.get("/Conn/Conn/ajaxcanbuycon?customerid=<?=$customerid?>&amount="+num*price, function(result){
-								    console.log(result);
-								    result = eval("("+result+")");
-								    
-								    if(result.code == "200"){
-										$(".number").html(num);
-										if(num*price >= 10000)
-											con_price = con_more_price;
-								  	 	$(".total").html(num*price*con_price);
-								  	 	$("#amount").val(num*price);
-								  	 	$(".total_amount").html(num*price);
-									}else{
-										toast(result.msg);
-									}
-								});
+					  	 		
+								$(".number").html(num);
+								if(num*price >= 10000)
+									con_price = con_more_price;
+						  	 	$(".total").html(num*price*con_price);
+						  	 	$("#amount").val(num*price);
+						  	 	$(".total_amount").html(num*price);
+									
 					  	 		
 					  	 	}
 					  	 	
@@ -465,21 +472,14 @@
 						  	 	if(price >= 10000){
 						  	 		con_price = con_more_price;
 						  	 	}
-						  	 	$.get("/Conn/Conn/ajaxcanbuycon?customerid=<?=$customerid?>&amount="+num*price, function(result){
-								    console.log(result);
-									result = eval("("+result+")");
-									
-									if(result.code == "200"){
-										$(".number").html(num);
-										if(num*price >= 10000)
-											con_price = con_more_price;
-								  	 	$(".total").html(num*price*con_price);
-								  	 	$("#amount").val(num*price);
-								  	 	$(".total_amount").html(num*price);
-									}else{
-										toast(result.msg);
-									}
-								});
+						  	 
+								$(".number").html(num);
+								if(num*price >= 10000)
+									con_price = con_more_price;
+						  	 	$(".total").html(num*price*con_price);
+						  	 	$("#amount").val(num*price);
+						  	 	$(".total_amount").html(num*price);
+								
 						  	 
 					  	});
 	  		},

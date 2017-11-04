@@ -29,7 +29,7 @@
 	var vm=new Vue({
 		el:"#app",
 		data:{
-			checkcode:"<?=$checkcode?>",
+			checktoken:"<?=$checktoken?>",
 			dis:true,
 			inputNumber:"",
 			payNumber:"",
@@ -48,10 +48,10 @@
 			},
 			submitSet:function(){
 				var _this = this;
-				var setUrl = "/user/setting/updateSubmitPay";
+				var setUrl = "/user/setting/updatesubmitpay";
 				loadtip({content:'校验中'});
 				_this.$http.post(setUrl,{
-					paypwd:_this.payNumber,checkcode:_this.checkcode
+					paypwd:_this.payNumber,checktoken:_this.checktoken
 				}).then(
 					function(res) {
 						data = cl(res);

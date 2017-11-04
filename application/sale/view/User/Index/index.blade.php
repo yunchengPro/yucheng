@@ -5,7 +5,7 @@
 		<a href="/user/index/config"><img src="<?=$publicDomain?>/mobile/img/icon/ic_center_setting.png" class="config"></a>
 		<a :href="'tel:'+companyMobile" ><img src="<?=$publicDomain?>/mobile/img/icon/ic_service@2x.png" class="call-kf"/></a>
 		<div class="info">
-			<a href="#"><img src="<?=$publicDomain?>/mobile/img/icon/default_head.png" class="avatar"></a>
+			<a href="#"><img :src="headerpic" class="avatar"></a>
 			<div class="base">
 				<div class="name" v-html="nickname"></div>
 				<div class="phone" v-html="phone"></div>
@@ -16,7 +16,7 @@
 	<div v-if="role==1">
 		<section class="ucenter-block">
 			<div class="bar-box">
-				<div class="title">购物劵</div>
+				<div class="title">消费劵</div>
 				<div><a href="/user/flow/flowCusList?type=3"><span class="number" v-html="conamount"></span><i></i></a></div>
 			</div>
 			<div class="block-body">
@@ -45,7 +45,7 @@
 				<div class="b-center">
 					<a href="javascript:void(0)">
 						<div class="num" v-html="yesincomecon"></div>
-						<div class="txt">昨日购物劵</div>
+						<div class="txt">昨日消费劵</div>
 					</a>
 				</div>
 				<div class="b-center">
@@ -195,7 +195,8 @@
 						</a>
 					</div>
 					<div class="b-center">
-						<a href="/user/index/push">
+						<!-- <a href="/user/index/push"> -->
+						<a :href="pushUrl">
 							<div><img src="<?=$publicDomain?>/mobile/img/icon/ic_share_code.png"></div>
 							<div class="txt">分享二维码</div>
 						</a>
@@ -342,7 +343,7 @@
 		-->
 		<section class="ucenter-block">
 			<div class="bar-box">
-				<div class="title">购物劵</div>
+				<div class="title">消费券</div>
 				<div><a href="/user/flow/flowCusList?type=3"><span class="number" v-html="conamount"></span><i></i></a></div>
 			</div>
 		</section>
@@ -351,7 +352,7 @@
 				<div class="b-center">
 					<a href="javascript:void(0)">
 						<div class="num" v-html="yesincomecon"></div>
-						<div class="txt">昨日购物券</div>
+						<div class="txt">昨日消费券</div>
 					</a>
 				</div>
 				<div class="b-center">
@@ -398,7 +399,8 @@
 						</a>
 					</div>
 					<div class="b-center">
-						<a href="/user/index/push">
+						<!-- <a href="/user/index/push"> -->
+						<a :href="pushUrl">
 							<div><img src="<?=$publicDomain?>/mobile/img/icon/ic_share_code.png"></div>
 							<div class="txt">分享二维码</div>
 						</a>
@@ -422,14 +424,14 @@
 						</a>
 					</div>
 					<div class="b-center">
-						<a href="javascript:void(0)">
+						<a href="/user/flow/flowbuslist">
 							<div class="val" v-html="busamount"></div>
 							<div class="txt">营业额</div>
 						</a>
 					</div>
 					<div class="b-center">
 						<a href="javascript:void(0)">
-							<div class="val" v-html="yesbusamount"></div>
+							<div class="val" v-html="yesconamount"></div>
 							<div class="txt">昨日营业额</div>
 						</a>
 					</div>
@@ -494,7 +496,7 @@
 		-->
 		<section class="ucenter-block">
 			<div class="bar-box">
-				<div class="title">购物券</div>
+				<div class="title">消费券</div>
 				<div><a href="/user/flow/flowCusList?type=3"><span class="number" v-html="conamount"></span><i></i></a></div>
 			</div>
 			<div class="block-body">
@@ -502,7 +504,7 @@
 					<div class="b-center">
 						<a href="javascript:void(0)">
 							<div class="num" v-html="yesincomecon"></div>
-							<div class="txt">昨日购物券</div>
+							<div class="txt">昨日消费券</div>
 						</a>
 					</div>
 					<div class="b-center">
@@ -543,7 +545,7 @@
 		<section class="ucenter-block">
 			<div class="bar-box">
 				<div class="title">昨日销售额</div>
-				<div><a href="javascript:void(0)"><span class="number" v-html="conamount"></span></a></div>
+				<div><a href="javascript:void(0)"><span class="number" v-html="yesconamount"></span></a></div>
 				<!-- <div><a href="/user/flow/flowCusList?type=2&begintime=<?=date("Y-m-d", strtotime("-1 days"))?>&endtime=<?=date("Y-m-d", time())?>"><span class="number" v-html="conamount"></span><i></i></a></div> -->
 				<!-- <div><a href="/user/flow/flowCusList?type=2&begintime="><span class="number" v-html="conamount"></span><i></i></a></div> -->
 			</div>
@@ -558,7 +560,8 @@
 						</a>
 					</div>
 					<div class="b-center">
-						<a href="/user/index/push">
+						<!-- <a href="/user/index/push"> -->
+						<a :href="pushUrl">
 							<div><img src="<?=$publicDomain?>/mobile/img/icon/ic_share_code.png"></div>
 							<div class="txt">分享二维码</div>
 						</a>
@@ -630,7 +633,7 @@
 		-->
 		<section class="ucenter-block">
 			<div class="bar-box">
-				<div class="title">购物券</div>
+				<div class="title">消费券</div>
 				<div><a href="/user/flow/flowCusList?type=3"><span class="number" v-html="conamount"></span><i></i></a></div>
 			</div>
 			<div class="block-body">
@@ -638,7 +641,7 @@
 					<div class="b-center">
 						<a href="javascript:void(0)">
 							<div class="num" v-html="yesincomecon"></div>
-							<div class="txt">昨日购物券</div>
+							<div class="txt">昨日消费券</div>
 						</a>
 					</div>
 					<div class="b-center">
@@ -679,7 +682,7 @@
 		<section class="ucenter-block">
 			<div class="bar-box">
 				<div class="title">昨日销售额</div>
-				<div><a href="javascript:void(0)"><span class="number" v-html="conamount"></span></a></div>
+				<div><a href="javascript:void(0)"><span class="number" v-html="yesconamount"></span></a></div>
 				<!-- <div><a href="/user/flow/flowCusList?type=2&begintime=<?=date("Y-m-d", strtotime("-1 days"))?>&endtime=<?=date("Y-m-d", time())?>"><span class="number" v-html="conamount"></span><i></i></a></div> -->
 				<!-- <div><a href="/user/flow/flowCusList?type=3"><span class="number" v-html="conamount"></span><i></i></a></div> -->
 			</div>
@@ -694,7 +697,8 @@
 						</a>
 					</div>
 					<div class="b-center">
-						<a href="/user/index/push">
+						<!-- <a href="/user/index/push"> -->
+						<a :href="pushUrl">
 							<div><img src="<?=$publicDomain?>/mobile/img/icon/ic_share_code.png"></div>
 							<div class="txt">分享二维码</div>
 						</a>
@@ -714,7 +718,7 @@
 			<div class="tl-flex">
 				<div class="b-center">
 					<a href="">
-						<div class="pos-r"><img src="<?=$publicDomain?>/mobile/img/icon/ic_order_center.png"><em>20</em></div>
+						<div class="pos-r"><img src="<?=$publicDomain?>/mobile/img/icon/ic_order_center.png"><!--<em>20</em>--></div>
 						<div class="txt">商城订单</div>
 					</a>
 				</div>
@@ -725,7 +729,7 @@
 					</a>
 				</div>
 				<div class="b-center">
-					<a href="#">
+					<a href="/index/index/download">
 						<div><img src="<?=$publicDomain?>/mobile/img/icon/ic_consume_center.png"></div>
 						<div class="txt">实体店消费</div>
 					</a>
@@ -816,9 +820,11 @@
 		el:'#app',
 		data:{
 			apiUrl:"/user/index/getIndexData",
+			push:"/user/index/push",
 			title:'<?=$title?>',
 			customerid:'<?=$customerid?>',
 			role:'<?=$role?>',
+			headerpic:'<?=$publicDomain?>/mobile/img/icon/default_head.png',
 			nickname:"",
 			phone:"",
 			roleName:"",
@@ -831,26 +837,10 @@
 			stoamount:"0.00",
 			direct:"0",
 			totaldirect:"0",
-			busamount:"",
-			yesbusamount:"",
+			busamount:"0.00",
+			yesconamount:"0.00",
 			companyMobile:"",
-			// cashamount:"0.00",
-			// intamount:"0.00",
-			// busamount:"",
-			// yesconamount:"0.00",
-			// todayconamount:"0.00",
-			// totalconamount:"0.00",
-			// yesBonus:"0.00",
-			// todayBonus:"0.00",
-			// totalBonus:"0.00",
-			// yesCommiss:"0.00",
-			// todayCommiss:"0.00",
-			// totalCommiss:"0.00",
-			// yesbusamount:"0.00",
-			// todaybusamount:"0.00",
-			// totalbusamount:"0.00",
-			// childRelation:"0",
-			// shareStatus:"0",
+			pushUrl:"",
 		},
 		mounted:function(){
 			this.getIndexData();
@@ -865,6 +855,7 @@
 						data = cl(res);
 						if(data.code == "200") {
 							// console.log(data);
+							_this.headerpic = data.data.userInfo.headerpic != '' ? data.data.userInfo.headerpic : _this.headerpic;
 							_this.nickname = data.data.userInfo.nickname;
 							_this.phone = data.data.userInfo.phone;
 							_this.roleName = data.data.userInfo.roleName;
@@ -873,30 +864,15 @@
 							_this.yesincomecon = data.data.incomeConAmount.amount;
 							_this.yesexpendcon = data.data.expendConAmount.amount;
 							_this.bonus = data.data.bonus;
+							_this.pushUrl = _this.push+"?customerid="+_this.customerid+"&checkcode="+data.data.checkcode;
 							_this.mallamount = data.data.userAmount.mallamount;
 							_this.stoamount = data.data.userAmount.stoamount;
 							_this.direct = data.data.childRelation.direct;
 							_this.totaldirect = data.data.childRelation.total;
-							_this.busamount = data.data.busFlowAmount.totalAmount;
-							_this.yesbusamount = data.data.busFlowAmount.yesAmount;
+							_this.busamount = data.data.userAmount.busamount;
+							_this.yesconamount = data.data.childYesCashAmount.amount;
+							_this.busamount = data.data.userAmount.busamount;
 							_this.companyMobile = data.data.companyMobile;
-							// _this.cashamount = data.data.userAmount.cashamount;
-							// _this.intamount = data.data.userAmount.intamount;
-							// _this.busamount = data.data.userAmount.busamount;
-							// _this.yesconamount = data.data.conFlowAmount.yesAmount;
-							// _this.todayconamount = data.data.conFlowAmount.todayAmount;
-							// _this.totalconamount = data.data.conFlowAmount.totalAmount;
-							// _this.yesBonus = data.data.cashFlowAmount.yesBonus;
-							// _this.todayBonus = data.data.cashFlowAmount.todayBonus;
-							// _this.totalBonus = data.data.cashFlowAmount.totalBonus;
-							// _this.yesCommiss = data.data.cashFlowAmount.yesCommiss;
-							// _this.todayCommiss = data.data.cashFlowAmount.todayCommiss;
-							// _this.totalCommiss = data.data.cashFlowAmount.totalCommiss;
-							// _this.yesbusamount = data.data.busFlowAmount.yesAmount;
-							// _this.todaybusamount = data.data.busFlowAmount.todayAmount;
-							// _this.totalbusamount = data.data.busFlowAmount.totalAmount;
-							// _this.childRelation = data.data.childRelation;
-							// _this.shareStatus = data.data.shareStatus;
 						} else {
 							toast(data.msg);
 						}

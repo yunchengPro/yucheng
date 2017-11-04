@@ -181,14 +181,26 @@
                         <a href="##" class="am-list-item-hd ">
                             <img src="<?=$publicDomain?>/mobile/img/icon/weixin.png" /> 微信支付
                         </a>
-                        <span class="am-list-date"><i class="icon icon-choose-pay"></i></span>
+                        <span class="am-list-date"><i class="icon icon-choose-pay" pay_type="weixin"></i></span>
+                    </li>
+                    <li class="am-g am-list-item-dated">
+                        <a href="##" class="am-list-item-hd ">
+                            <img src="<?=$publicDomain?>/mobile/img/icon/union.png" class="vertical-middle" /> 快捷支付
+                        </a>
+                        <span class="am-list-date"><i class="icon icon-choose-pay" style="display: none;" pay_type="union"></i></span>
                     </li>
                     <?php }else{?>
                     <li class="am-g am-list-item-dated">
                         <a href="##" class="am-list-item-hd ">
                             <img src="<?=$publicDomain?>/mobile/img/icon/ali.png" /> 支付宝支付
                         </a>
-                        <span class="am-list-date"><i class="icon icon-choose-pay"></i></span>
+                        <span class="am-list-date"><i class="icon icon-choose-pay" pay_type="ali"></i></span>
+                    </li>
+                    <li class="am-g am-list-item-dated">
+                        <a href="##" class="am-list-item-hd ">
+                            <img src="<?=$publicDomain?>/mobile/img/icon/union.png" class="vertical-middle" /> 快捷支付
+                        </a>
+                        <span class="am-list-date"><i class="icon icon-choose-pay" style="display: none;" pay_type="union"></i></span>
                     </li>
                     <?php }?>
                 </ul>
@@ -236,9 +248,16 @@
         $(this).siblings().find(".am-list-date").html('');
     });*/
     var orderno = '<?=$orderno?>';
+
+    var pay_type = "<?php echo $is_weixin?"weixin":"ali"; ?>"; // weixin ali  union
+
     // 阿里支付
     function alipay(){
         window.location.href="/Sys/Pay/aliwappayorder?orderno="+orderno;
+    }
+
+    function quickpay(){
+        window.location.href="/Sys/Pay/quickpay?orderno="+orderno;
     }
 
     //调用微信JS api 支付
@@ -312,7 +331,19 @@
         });
 
     }
-        
+
+    $(function(){
+
+        $(".pay-type li").on("click",function(){
+
+            $(".icon-choose-pay").hide();
+            $(this).find(".icon-choose-pay").show();
+
+            pay_type = $(this).find(".icon-choose-pay").attr("pay_type");
+
+        });
+
+    });
                 
      //页面层
     var content='<div class=" text-center">'+ 
@@ -333,12 +364,16 @@
                 '</div>';
                 
     function topay(){
-        <?php if($is_weixin){?>
+        if(pay_type=='weixin'){
             callpay();
-        <?php }else{?>
+        }else if(pay_type=='ali'){
             //alert("暂时仅支持微信支付");
             alipay();
-        <?php }?>
+        }else if(pay_type=='union'){
+            quickpay();
+        }else{
+            alert("请选择一种支付方式");
+        }
     }
   
 </script>

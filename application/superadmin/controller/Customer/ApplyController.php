@@ -110,6 +110,14 @@ class ApplyController extends ActionController{
         $remark = $this->getParam('remark');
         $apply_bus = Model::ins('RoleApplyBus')->getRow(['id'=>$id]);
         
+        $is_pay = $this->getParam('is_pay');
+      
+        if($is_pay == 1){
+            $remark = $remark.'，已支付佣金';
+        }else{
+            $remark = $remark.'，未支付佣金';
+        }
+
         if(empty($apply_bus))
             $this->showError('申请信息不存在！');
 
@@ -160,13 +168,13 @@ class ApplyController extends ActionController{
                            
                             Model::new("Amount.Arrears")->arrears($area_param);
                         }*/
-
-                        // 计算佣金
-                        Model::new("Amount.Role")->pay_bus([
-                            "customerid"=>$apply_bus['customerid'],
-                            "orderno"=>$apply_bus['orderno'],
-                        ]);
-
+                        if($is_pay == 1){
+                            // 计算佣金
+                            Model::new("Amount.Role")->pay_bus([
+                                "customerid"=>$apply_bus['customerid'],
+                                "orderno"=>$apply_bus['orderno'],
+                            ]);
+                        }
                         // 提交事务
                         $AmoAmount->commit(); 
                         
@@ -237,9 +245,13 @@ class ApplyController extends ActionController{
             $this->showError('请选择需要申请的申请！');
         $remark = $this->getParam('remark');
         $apply_manager = Model::ins('RoleApplyManager')->getRow(['id'=>$id]);
-        
+        $is_pay = $this->getParam('is_pay');
       
-
+        if($is_pay == 1){
+            $remark = $remark.'，已支付佣金';
+        }else{
+            $remark = $remark.'，未支付佣金';
+        }
         if(empty($apply_manager))
             $this->showError('申请信息不存在！');
 
@@ -290,12 +302,13 @@ class ApplyController extends ActionController{
                           
                             Model::new("Amount.Arrears")->arrears($area_param);
                         }*/
-
-                        // 计算佣金
-                        Model::new("Amount.Role")->pay_manager([
-                            "customerid"=>$apply_manager['customerid'],
-                            "orderno"=>$apply_manager['orderno'],
-                        ]);
+                        if($is_pay == 1){
+                            // 计算佣金
+                            Model::new("Amount.Role")->pay_manager([
+                                "customerid"=>$apply_manager['customerid'],
+                                "orderno"=>$apply_manager['orderno'],
+                            ]);
+                        }
 
                         // 提交事务
                         $AmoAmount->commit(); 

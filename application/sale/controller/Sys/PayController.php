@@ -20,6 +20,8 @@ use \think\Cookie;
 use app\lib\Pay\WeixinWeb\WeixinWeb;
 use app\lib\Pay\AliWap\AliWap;
 
+use app\lib\Pay\Allinpay\Allinpay;
+
 class PayController extends ActionController{
 
     /**
@@ -55,6 +57,15 @@ class PayController extends ActionController{
 
             $amount = DePrice($orderItem['totalamount']);
 
+        } else if(substr($orderno,0,3)=='REC') {
+            
+            $orderItem = Model::ins("CusRecharge")->getRow(["orderno"=>$orderno],"*");
+            if(empty($orderItem)) {
+                header('Content-type:application/json;charset=utf-8');
+                exit($this->json("408",[],"请求无效，无效订单"));
+            }
+            
+            $amount = DePrice($orderItem['amount']);
         }
        
         return $this->view([
@@ -78,7 +89,7 @@ class PayController extends ActionController{
         $openid = $this->openid;
 
         //$openid = "o22U3wA-WoGJu7Qva0lkGEApLRVM";
-
+        
         //$amount =0.01;
         if(empty($orderno)){
             //echo "参数有误";
@@ -111,11 +122,39 @@ class PayController extends ActionController{
             $order_amount = $order_row['totalamount'];
 
             $customerid = $order_row['customerid'];
-        }
+        } else if(substr($orderno,0,3)=='REC') {
 
+            $order_row = Model::ins("CusRecharge")->getRow(["orderno"=>$orderno],"*");
+            if(empty($order_row)) {
+                return $this->json("408");
+                exit;
+            }
+            
+            if($order_row['pay_status'] == 1) {
+                //echo "订单已支付";
+                return $this->json("4001");
+                exit;
+            }
+            
+            if($order_row['pay_status'] > 0) {
+                return $this->json("4003");
+                exit;
+            }
+            
+            $order_amount = $order_row['amount'];
+            
+            $customerid = $order_row['customerid'];
+        }
+  
         if(empty($order_row)){
             //echo "参数有误";
             return $this->json("404");
+            exit;
+        }
+
+        // 检测订单是否是当前操作用户下的订单
+        if($order_row['customerid'] != $this->userid) {
+            echo "无操作权限";
             exit;
         }
         
@@ -187,10 +226,38 @@ class PayController extends ActionController{
             $order_amount = $order_row['totalamount'];
 
             $customerid = $order_row['customerid'];
+        } else if(substr($orderno,0,3)=='REC') {
+
+            $order_row = Model::ins("CusRecharge")->getRow(["orderno"=>$orderno],"*");
+            if(empty($order_row)) {
+                return $this->json("408");
+                exit;
+            }
+            
+            if($order_row['pay_status'] == 1) {
+                //echo "订单已支付";
+                return $this->json("4001");
+                exit;
+            }
+            
+            if($order_row['pay_status'] > 0) {
+                return $this->json("4003");
+                exit;
+            }
+            
+            $order_amount = $order_row['amount'];
+            
+            $customerid = $order_row['customerid'];
         }
 
         if(empty($order_row)){
             echo "参数有误";
+            exit;
+        }
+
+        // 检测订单是否是当前操作用户下的订单
+        if($order_row['customerid'] != $this->userid) {
+            echo "无操作权限";
             exit;
         }
 
@@ -221,6 +288,78 @@ class PayController extends ActionController{
         exit;
     }
 
+    public function quickpayAction() {
+        $orderno = $this->params['orderno'];
+        
+        if(empty($orderno)) {
+            echo "参数有误";
+            exit;
+        }
+
+        $order_amount = 0;
+
+        //判断订单是否存在
+
+        if(substr($orderno,0,3)=='CON'){
+
+            $order_row = Model::ins("ConOrder")->getRow(["orderno"=>$orderno],"*");
+
+            if($order_row['orderstatus']>0){
+                //echo "订单已支付";
+                echo "订单已支付";
+                exit;
+            }
+
+            $order_row['amount'] = $order_row['totalamount'];
+
+            $order_amount = $order_row['totalamount'];
+
+            $customerid = $order_row['customerid'];
+        } else if(substr($orderno,0,3)=='REC') {
+
+            $order_row = Model::ins("CusRecharge")->getRow(["orderno"=>$orderno],"*");
+            if(empty($order_row)) {
+                return $this->json("408");
+                exit;
+            }
+            
+            if($order_row['pay_status'] == 1) {
+                //echo "订单已支付";
+                return $this->json("4001");
+                exit;
+            }
+            
+            if($order_row['pay_status'] > 0) {
+                return $this->json("4003");
+                exit;
+            }
+            
+            $order_amount = $order_row['amount'];
+            
+            $customerid = $order_row['customerid'];
+        }
+
+        if(empty($order_row)){
+            echo "参数有误";
+            exit;
+        }
+
+        $payamount = $order_amount;
+        
+        
+        // 检测订单是否是当前操作用户下的订单
+        if($order_row['customerid'] != $this->userid) {
+            echo "无操作权限";
+            exit;
+        }
+        
+       
+        $result = Allinpay::QuickWeb(["orderno"=>$orderno,"pay_price"=>$payamount,"userid"=>$customerid,"order_time"=>$order_row['addtime'],"actiontype"=>1]);
+        
+        echo $result;
+        exit;
+    }
+
 
     /**
      * 支付结果
@@ -243,29 +382,24 @@ class PayController extends ActionController{
 
             $order_row = Model::ins("ConOrder")->getRow(["orderno"=>$orderno],"*");
 
+            if($order_row['customerid'] != $this->userid)
+                return $this->json("1001",'','无权操作');
+            
             $busItem = Model::ins("CusCustomer")->getRow(["id"=>$order_row['businessid']],"mobile");
-
-            $item[] = [
-                "key"=>"金牛数量",
-                "value"=>DePrice($order_row['count']),
-            ];
-            $item[] = [
-                "key"=>"购买金额",
-                "value"=>DePrice($order_row['totalamount'])."元",
-            ];
-            $item[] = [
-                "key"=>"订单编号",
-                "value"=>$order_row['orderno'],
-            ];
-            $item[] = [
-                "key"=>"购买时间",
-                "value"=>$order_row['paytime'],
-            ];
+            $order_row['payamount'] = DePrice($order_row['payamount']);
+          
+        } else if(substr($orderno,0,3)=='REC') {
+            
+            $order_row = Model::ins("CusRecharge")->getRow(["orderno"=>$orderno],"*");
+            
+            if($order_row['customerid'] != $this->userid)
+                return $this->json("1001",'','无权操作');
+            
+            $busItem = Model::ins("CusCustomer")->getRow(["id"=>$this->userid],"mobile");
+            $order_row['payamount'] = DePrice($order_row['payamount']);
         }
 
-        return $this->json("200",[
-            "item"=>$item,
-        ]);
+        return $this->json("200",$order_row);
     }
     
 }

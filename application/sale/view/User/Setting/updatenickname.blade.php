@@ -26,7 +26,7 @@
     var Vm = new Vue({
         el:'#app',
         data:{
-            checkcode:"<?=$checkcode?>",
+            checktoken:"<?=$checktoken?>",
         	nickName:"",
             holderName:"",
         	dis:true,
@@ -39,13 +39,13 @@
         		var _this = this;
         		var apiUrl = "/user/index/getIndexData";
         		_this.$http.post(apiUrl,{
-        			role:_this.role
+        			// customerid:_this.customerid
         		}).then(
         			function(res) {
         				// 处理成功的结果
         				data = cl(res);
         				if(data.code == "200") {
-                            _this.holderName = data.data.userinfo.nickname;
+                            _this.holderName = data.data.userInfo.nickname;
         				} else {
         					toast(data.msg);
                         }
@@ -56,11 +56,12 @@
         	},
             updateNickName:function() {
             	var _this = this;
-            	var apiUrl = "/user/setting/updateInfo";
+            	var apiUrl = "/user/setting/updateinfo";
 
                 loadtip({content:'提交中'});
             	_this.$http.post(apiUrl,{
-            		nickname:_this.nickName,checkcode:_this.checkcode
+            		// nickname:_this.nickName,checkcode:_this.checkcode
+            		nickname:_this.nickName
             	}).then(
             		function(res) {
             			// 处理成功的结果

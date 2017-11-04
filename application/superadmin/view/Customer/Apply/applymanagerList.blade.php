@@ -13,6 +13,8 @@
 	    "addtime"  => array("name"=>"申请时间"), 
 	    "join_type" => array("name"=>"加盟方式","data_arr"=>['1'=>'业绩扣除','2'=>'5折现金支付']),
 	    "status" => array("name"=>"审核状态","data_arr"=>['1'=>'待审核','2'=>'审核通过','3'=>'审核失败']),
+	    "remark" => array("name"=>"审核说明"),
+	    "examinetime" => array("name"=>"审核时间"),
 	    "act" => array("name" => "操作"),
 	);
 	

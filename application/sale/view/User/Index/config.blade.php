@@ -3,13 +3,27 @@
 <!-- content -->
 	<header class="page-header">	
 		<div class="page-bar">	
-			<a href="javascript:history.go(-1)">
+			<a href="/user/index/index">
 				<span class="back-ico"></span>
 			</a>
 			<span class="bar-title" v-html="title"></span>
 		</div>
 	</header>
-	<div class="sign-out-wrap" style="margin-top: 80px;">
+	<section class="config-wrap">
+		<a href="/user/setting/myinfo">
+			<div class="config-item">
+				<div class="config-tip">个人设置</div>
+				<i></i>
+			</div>
+		</a>
+		<a href="/user/setting/safeindex">
+			<div class="config-item">
+				<div class="config-tip">账户安全</div>
+				<i></i>
+			</div>
+		</a>
+	</section>
+	<div class="sign-out-wrap">
 		<button type="button" class="sign-out" @click="logout">退出登录</button>
 	</div>
 <!-- end content -->
@@ -37,7 +51,7 @@
 								loadtip({
 	                                close:true,
 	                                alert:'退出成功',
-	                                urlto:'/'
+	                                urlto:'/Index/Index/login'
 	                            });
 							} else {
 								loadtip({

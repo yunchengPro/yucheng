@@ -48,14 +48,18 @@
 		<div class="wd-item money" style="padding: 0;">
 			<div class="input-money">
 				<div class="input-txt">提现金额</div>
-				<div><input type="text" placeholder="单笔金额不得低于100元" v-model.trim="withdrawMoney" maxlength="10"></div>
+				<div><input type="text" placeholder="单笔金额不得低于100的倍数" v-model.trim="withdrawMoney" maxlength="10"></div>
+				<!-- <div><input type="text" placeholder="单笔金额不得低于100元，100整数倍提现" v-model.trim="withdrawMoney" maxlength="10"></div> -->
 			</div>
+			<!--
 			<div class="fee-wrap">
 				手续费 <span id="fee" v-html="poundage"></span>
 			</div>
+			-->
 			<div class="account-money">可提现金额<span class="red" v-html="accountMoney"></span>元  <span class="withdraw-all" v-on:click="withdrawAll">全部提现</span></div>
 		</div>
 	</section>
+	<!--
 	<div class="withdraw-desc">
 		<div class="tip">提现说明</div>
 		<!-- 
@@ -64,13 +68,33 @@
 		<div>3、手续费从提现金额中扣除；</div>
 		<div>4、企业账户提现免手续费。</div>
 		 -->
+		 <!--
 		 <div>1、提现资金流向10%商城,10%线下,70%提现,手续费10%</div>
 		 <div>2、100整数倍提现</div>
 		 <div>3、每周一提现一次</div>
 		 <div>4、T+1到账</div>
 	</div>
+	-->
 	<div class="withdraw-oper">
-		<button class="withdraw-btn" v-bind:disabled="dis" @click="addRecord">确认</button>
+		<button class="withdraw-btn" v-bind:disabled="dis" @click="payPwd">确认</button>
+	</div>
+
+	<div class="pay-pwd-wrap" v-show="payShop==1">
+		<div class=" text-center" style="position:relative">
+			<div class="pay-pwd-title">输入支付密码</div>
+			<div class="pwd-colse" @click="closeWrap"></div>
+		</div>
+		<div class="pwd-box">
+			<input type="tel" maxlength="6" class="pwd-input" id="pwd-input">
+			<div class="fake-box">
+				<input type="password" readonly="">
+				<input type="password" readonly="">
+				<input type="password" readonly="">
+				<input type="password" readonly="">
+				<input type="password" readonly="">
+				<input type="password" readonly="">
+			</div>
+		</div>
 	</div>
 
 	<!--
@@ -219,6 +243,9 @@
 	var vm = new Vue({
 		el:'#app',
 		data:{
+			checkUserUrl:"/user/setting/checkauth",
+			checkPwdUrl:"/user/setting/checkpaypwd",
+			validPayPwdUrl:"/user/setting/validpaypwd",
 			apiUrl:"/user/withdrawals/getBankAmount",
 			addUrl:"/user/withdrawals/add",
 			customerid:'<?=$customerid?>',
@@ -235,9 +262,11 @@
 			bankName:"",
 			bankType:0,
 			accountNumber:"",
-			accountType:["","个人账户","企业账户"]
+			accountType:["","个人账户","企业账户"],
+			payShop:0
 		},
 		mounted:function() {
+			this.checkAuth();
 			this.getBankAmount();
 		},
 		methods:{
@@ -250,6 +279,55 @@
 			// hideSexSelect:function() {
 			// 	this.isShowSex = false;
 			// },
+			checkAuth:function() {
+				var _this = this;
+				// loadtip({content:'检测实名'});
+				_this.$http.post(_this.checkUserUrl,{
+				}).then(
+					function(res) {
+						data = cl(res);
+						if(data.code == "200") {
+							var isnameauth = data.data.isnameauth;
+							if(isnameauth == 1) {
+
+								// loadtip({
+	       //                          close:true,
+	       //                          alert:'已实名',
+	                                // urlto:"/user/amount/myCashAmount"
+	                            // });
+							} else if(isnameauth == 0) {
+								toast("请先实名");
+								// loadtip({
+	       //                          close:true,
+	       //                          alert:'请先实名',
+	       //                          urlto:"/user/setting/authentica"
+	       //                      });
+							} else {
+								toast("请先实名");
+								// loadtip({
+	       //                          close:true,
+	       //                          alert:'状态异常',
+	       //                          urlto:"/user/index/index"
+	       //                      });
+							}
+						} else {
+							toast(data.msg);
+							// loadtip({
+       //                          close:true,
+       //                          alert:data.msg,
+       //                          urlto:"/user/amount/myCashAmount"
+       //                      });
+						}
+					}, function(res) {
+						toast('查询有异')
+						// loadtip({
+						// 	close:true,
+						// 	alert:'查询有异',
+						// 	urlto:"/user/amount/myCashAmount"
+						// });
+					}
+				);
+			},
 			getBankAmount:function() {
 				var _this = this;
 				_this.$http.post(_this.apiUrl,{
@@ -277,7 +355,12 @@
 					}
 				);
 			},
-			addRecord:function(){
+			closeWrap:function() {
+				if(confirm("您确定要放弃提现嘛?")) {
+					this.payShop = 0;
+				}
+			},
+			payPwd:function() {
 				var _this = this;
 				if(_this.bankId == "") {
 					toast("银行卡不能为空");
@@ -288,40 +371,144 @@
 					return false;
 				}
 				if(_this.withdrawMoney > parseInt(_this.accountMoney)) {
-					// toast(_this.withdrawMoney);
-
 					toast("提现金额不能大于可提现金额");
 					return false;
 				}
+				_this.$http.post(_this.checkPwdUrl,{
 
-				if(confirm("确定提交提现申请")) {
-					loadtip({content:'提交数据'});
-					_this.$http.post(_this.addUrl,{
-						customerid:_this.customerid,bankId:_this.bankId,accountNumber:_this.withdrawMoney
-					}).then(
-						function(res) {
-							data = cl(res);
-							if(data.code == "200") {
-								loadtip({
-									close:true,
-									alert:"提现申请提交成功",
-									// urlto:""
-								});
-							} else {
-								loadtip({
-	                                close:true,
-	                                alert:data.msg
-	                            });
-							}
-						}, function(res) {
+				}).then(
+					function(res) {
+						data = cl(res);
+						if(data.code == "200") {
+							_this.payShop = 1;
+							var $input = $(".fake-box input");  
+				            $("#pwd-input").on("input", function() {  
+				                var pwd = $(this).val().trim();  
+				                for (var i = 0, len = pwd.length; i < len; i++) {  
+				                    $input.eq("" + i + "").val(pwd[i]);  
+				                }  
+				                $input.each(function() {  
+				                    var index = $(this).index();  
+				                    if (index >= len) {  
+				                        $(this).val("");  
+				                    }  
+				                });  
+				                if (len == 6) {  
+				                    //执行其他操作  
+				                    _this.addRecord(pwd);
+				                }
+				            });
+						} else {
+							toast('请先设置支付密码');
+							// loadtip({
+							// 	close:true,
+							// 	alert:'请先设置支付密码',
+							// 	urlto:'/user/setting/setpay'
+							// });
+						}
+					}, function(res) {
+						toast('查询有异');
+						// loadtip({
+						// 	close:true,
+						// 	alert:'查询有异',
+						// });
+					}
+				);
+			},
+			// validpaypwd:function(pwd) {
+			// 	var _this = this;
+			// 	_this.$http.post(_this.validPayPwdUrl,{
+			// 		paypwd:pwd
+			// 	}).then(
+			// 		function(res) {
+			// 			data = cl(res);
+			// 			if(data.code == "200") {
+			// 				_this.addRecord();
+			// 			} else {
+			// 				toast(data.msg);
+			// 			}
+			// 		}, function(res) {
+			// 			toast("操作有异");
+			// 			return false;
+			// 		}
+			// 	);
+			// },
+			addRecord:function(pwd) {
+				var _this = this;
+				_this.checktoken = '<?=$checktoken?>';
+				loadtip({content:'提交数据'});
+				_this.$http.post(_this.addUrl,{
+					customerid:_this.customerid,bankId:_this.bankId,accountNumber:_this.withdrawMoney,checktoken:_this.checktoken,paypwd:pwd
+				}).then(
+					function(res) {
+						data = cl(res);
+						if(data.code == "200") {
 							loadtip({
 								close:true,
-								alert:'操作有异'
+								alert:"提现申请提交成功",
+								urlto:"/user/withdrawals/withdrawalsIndex"
 							});
+						} else {
+							loadtip({
+                                close:true,
+                                alert:data.msg
+                            });
 						}
-					);
-				}
+					}, function(res) {
+						loadtip({
+							close:true,
+							alert:'操作有异'
+						});
+					}
+				);
 			}
+			// addRecord:function(){
+			// 	var _this = this;
+			// 	if(_this.bankId == "") {
+			// 		toast("银行卡不能为空");
+			// 		return false;
+			// 	}
+			// 	if(_this.withdrawMoney == "" || _this.withdrawMoney == 0) {
+			// 		toast("提现金额不能为空");
+			// 		return false;
+			// 	}
+			// 	if(_this.withdrawMoney > parseInt(_this.accountMoney)) {
+			// 		// toast(_this.withdrawMoney);
+
+			// 		toast("提现金额不能大于可提现金额");
+			// 		return false;
+			// 	}
+
+			// 	_this.checktoken = '<?=$checktoken?>';
+
+			// 	if(confirm("确定提交提现申请")) {
+			// 		loadtip({content:'提交数据'});
+			// 		_this.$http.post(_this.addUrl,{
+			// 			customerid:_this.customerid,bankId:_this.bankId,accountNumber:_this.withdrawMoney,checktoken:_this.checktoken
+			// 		}).then(
+			// 			function(res) {
+			// 				data = cl(res);
+						// 	if(data.code == "200") {
+						// 		loadtip({
+						// 			close:true,
+						// 			alert:"提现申请提交成功",
+						// 			// urlto:""
+						// 		});
+						// 	} else {
+						// 		loadtip({
+	     //                            close:true,
+	     //                            alert:data.msg
+	     //                        });
+						// 	}
+						// }, function(res) {
+						// 	loadtip({
+						// 		close:true,
+						// 		alert:'操作有异'
+						// 	});
+						// }
+			// 		);
+			// 	}
+			// }
 		},
 		watch:{
 			withdrawMoney:{

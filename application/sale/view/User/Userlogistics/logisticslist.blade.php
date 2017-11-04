@@ -67,7 +67,7 @@
                     apiDefaultlogistic:"/User/Userlogistics/setDefaultlogistic",
                     apidelCustomerLogistic:"/User/Userlogistics/apidelCustomerLogistic",
                   	logisticsList:[],
-                    checkcode:"<?=$checkcode?>"
+                    checktoken:"<?=$checktoken?>"
                 },
                 mounted: function() {
                     var _this=this;
@@ -81,7 +81,7 @@
 
                         _this.$http.post(_this.apiDefaultlogistic,{
                         	logisticid:address_id,
-                            checkcode:_this.checkcode
+                            checktoken:_this.checktoken
                         }).then(
                             function (res) {
                                	var _this=this;

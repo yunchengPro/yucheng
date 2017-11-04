@@ -7,8 +7,8 @@
 // | @Author ISir<673638498@qq.com>
 // | @DateTime 2016-04-05
 // +----------------------------------------------------------------------
-namespace app\mobile\controller\Introduction;
-use app\mobile\ActionController;
+namespace app\sale\controller\Introduction;
+use app\sale\ActionController;
 use think\Config;
 
 class IndexController extends ActionController{
@@ -31,6 +31,7 @@ class IndexController extends ActionController{
     public function registDealAction(){
 
         $webviewUrl = Config::get('webview.webviewUrl'); 
+        $type = $this->getParam('type');
         $_v = $this->getParam('_v');
         $v = 0;
         if(substr($_v,0,1) == 'I' || substr($_v,0,1) == 'i'){
@@ -41,7 +42,9 @@ class IndexController extends ActionController{
             'userDeal' =>$userDeal,
             'webviewUrl' => $webviewUrl,
             'title' => $title,
-            'v' => $v
+            'v' => $v,
+            'type'=>$type,
+            '_v' => $_v
         ];
         return $this->view($viewData);
     }
