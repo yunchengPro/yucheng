@@ -73,7 +73,7 @@
 			合计：<span class="red">{{totalPrice}}</span>元
 		</div>
 		<div class="settlement">
-			<a href="#">
+			<a href="/order/index/showorder?cartitemids=1691,1690">
 				<div>结算(<span id="settleNum">{{checkNum}}</span>)</div>
 				<div class="fee">不含邮费</div>
 			</a>

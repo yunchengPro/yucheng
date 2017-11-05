@@ -14,9 +14,7 @@ class IndexController extends ActionController {
     }
     
     public function indexAction() {
-        
-//         echo md5(uniqid(rand(),TRUE));
-//         exit;
+   
         $role = Model::new("User.User")->getUserRoleID(["customerid"=>$this->userid]);
         
         $title = "个人中心";
@@ -37,7 +35,7 @@ class IndexController extends ActionController {
     */
     public function getIndexDataAction() {
 //         $customerid = $this->params['customerid'];
-
+        $this->userid =1;
         $customerid = !empty($this->params['customerid']) ? $this->params['customerid'] : $this->userid;
         
         // 用户基本信息

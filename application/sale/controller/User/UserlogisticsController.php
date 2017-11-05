@@ -40,7 +40,7 @@ class UserlogisticsController extends ActionController{
             'mtoken'=>$mtoken,
 
         ];
-        $this->addcheck();
+       
         return $this->view($viewData);
         
     }

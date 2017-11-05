@@ -38,30 +38,18 @@
             </section>
             <!--/end mall-banner-->
             
-          <!--   <section class="mall-sort">
+            <section class="mall-sort">
                 <div class="mall-bar">推荐分类</div>
                 <div class="tl-grid sort-list">
                     <div class="tl-grid-1-3" v-for="category in categoryList">
-                        <a href="#">
+                        <a href="/product/category/index">
                             <img :src="category.category_icon" class="sort-img"/>
                             <p class="sort-name"  v-html="category.name"></p>
                         </a>
                     </div>
-                    <div class="tl-grid-1-3">
-                        <a href="#">
-                            <img src="/mobile/img/food2.png" class="sort-img"/>
-                            
-                            <p class="sort-name">美肤</p>
-                        </a>
-                    </div>
-                    <div class="tl-grid-1-3">
-                        <a href="#">
-                            <img src="/mobile/img/food3.png" class="sort-img"/>
-                            <p class="sort-name">数码</p>
-                        </a>
-                    </div>
+                  
                 </div>
-            </section> -->
+            </section>
             
             <div class="mall-recom">
                 

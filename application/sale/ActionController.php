@@ -654,23 +654,23 @@ class ActionController extends ComController
 
         if($this->isPost()){
 
-            $ApiRequestRedis = Model::Redis("ApiRequest");
+          //  $ApiRequestRedis = Model::Redis("ApiRequest");
             
             // 判断重复提交
             if(strpos($path,"policy")===false){
                 
-                $check_key = $this->returnKey($path);
-                if($ApiRequestRedis->exists($check_key)){
-                    // 已存在
-                    $lasttime = $ApiRequestRedis->get($check_key);
-                    if((microtime(true)-$lasttime)<1){
-                        // 1秒内的请求 都视为重复提交
-                        //$this->showError("不能重复操作");
-                        exit("不能重复操作");
-                    }
-                }
+                // $check_key = $this->returnKey($path);
+                // if($ApiRequestRedis->exists($check_key)){
+                //     // 已存在
+                //     $lasttime = $ApiRequestRedis->get($check_key);
+                //     if((microtime(true)-$lasttime)<1){
+                //         // 1秒内的请求 都视为重复提交
+                //         //$this->showError("不能重复操作");
+                //         exit("不能重复操作");
+                //     }
+                // }
 
-                $ApiRequestRedis->set($check_key,microtime(true),10);
+                // $ApiRequestRedis->set($check_key,microtime(true),10);
                 
             }
 
