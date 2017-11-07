@@ -42,6 +42,16 @@
 	background-size: 100%;
 }
 
+.nav-wrap .nav-item .news {
+	background: url(../img/icon/tab_classification_02@2x.png) no-repeat;
+	background-size: 100%;
+}
+
+.nav-wrap .nav-item.active .news {
+	background: url(../img/icon/tab_classification_01@2x.png) no-repeat;
+	background-size: 100%;
+}
+
 .nav-wrap .nav-item .cart {
 	background: url(../img/icon/ic_cart_tab@2x.png) no-repeat;
 	background-size: 100%;

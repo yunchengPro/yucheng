@@ -1,6 +1,23 @@
 {include file="Pub/header" /}
+
+
 	<link rel="stylesheet" href="<?=$publicDomain?>/mobile/css/information.css" />
-	<header class="information-type">
+
+
+
+
+	<header class="information-type page-header">
+        
+         <div class="page-bar">
+        
+            <a href="/index/index/index">
+                <img src="/mobile/img/icon/back@2x.png" class="back-ico">
+            </a>
+            
+            <div class="bar-title">新闻资讯</div>
+            
+        </div>
+        
    		<div class="type-list">
    			<div class="one-type" v-for="cate in category">
    				<a href="javascript:;" v-on:click="getCateArticle(cate.id)" v-if="cate.id == categoryid" class="active" v-html="cate.categoryname"></a>
@@ -29,6 +46,34 @@
    		<p class="no-data">亲！没有数据了哦~</p>
 		
 	 </section>
+             <!--导航-->
+        <nav class="nav-wrap">
+            <div class="nav-item ">
+                <a href="/">
+                    <span class="mall"></span>
+                    <p>商城</p>
+                </a>
+            </div>
+            <div class="nav-item active">
+                <a href="/Article/Index/articleList?newstype=1">
+                    <span class="news"></span>
+                    <p>资讯</p>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="/user/shopcart/index">
+                    <span class="cart"></span>
+                    <p>购物车</p>
+                </a>
+            </div>
+                
+            <div class="nav-item ">
+                <a href="/user/index/index">
+                    <span class="niu"></span>
+                    <p>我的</p>
+                </a>
+            </div>  
+        </nav>
     <script type="text/javascript" src="http://webapi.amap.com/maps?v=1.3&key=dcc7a8bcf5dd15a02336fa3fa263d724"></script>
 	<script>
             
@@ -52,12 +97,12 @@
                 },
                 mounted: function() {
                     var _this=this;
-                    // 页面初始化时执行的方法
-                    if(_this.city_id==''){
-                        _this.maps();
-                    }else{
+                    // // 页面初始化时执行的方法
+                    // if(_this.city_id==''){
+                    //     _this.maps();
+                    // }else{
                        _this.getArticleList(_this.page); 
-                    }
+                    // }
                    
                    
                 },
@@ -171,7 +216,6 @@
                             categoryid:_this.categoryid,
                             page:_this.page,
                             newstype:_this.newstype,
-                            city_id:_this.city_id
                         }).then(
                             function (res) {
                                 // 处理成功的结果

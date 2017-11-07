@@ -5,6 +5,12 @@
                         <p>商城</p>
                     </a>
                 </div>
+                <div class="nav-item <?php echo strtolower($UrlPath)=='article/index/articleList'?'active':''; ?>">
+                    <a href="/Article/Index/articleList?newstype=1">
+                        <span class="news"></span>
+                        <p>资讯</p>
+                    </a>
+                </div>
                 <div class="nav-item <?php echo strtolower($UrlPath)=='user/shopcart/index'?'active':''; ?>">
                     <a href="/user/shopcart/index">
                         <span class="cart"></span>

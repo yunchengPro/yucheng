@@ -115,18 +115,15 @@
                     
                <!--  </div> -->
                 <div class="niuren-niuyu">
-                    <a href=""><img src="/mobile/img/icon/niurenniuyu@2x.png"/></a>
+                    <a href="/Article/Index/articleList?newstype=1"><img src="/mobile/img/icon/niurenniuyu@2x.png"/></a>
                     <div class="hot-news" >
                         
                         <div class="swiper-container news-swiper" >
                             <div class="swiper-wrapper">
-                                <div class="swiper-slide"><a href="../shop/informationList.html"><label>时尚</label><p class="tl-ellipsis">服装春季上新，服装春季上新，大牌低至7折服装春季上新，大牌低至7折服装春季上新，大牌低至7折大牌低至7折</p></a></div>
-                                <div class="swiper-slide"><a href="../shop/informationList.html"><label>美搭</label><p class="tl-ellipsis">美妆大促销，满199减100</p></a></div>
+                                <div class="swiper-slide"><a href="/Article/Index/articleList?newstype=1"><label>美搭</label><p class="tl-ellipsis">服装春季上新，服装春季上新，大牌低至7折服装春季上新，大牌低至7折服装春季上新，大牌低至7折大牌低至7折</p></a></div>
+                                <div class="swiper-slide"><a href="/Article/Index/articleList?newstype=1"><label>美搭</label><p class="tl-ellipsis">美妆大促销，满199减100</p></a></div>
                                
-                                <div class="swiper-slide"><a href="../shop/informationList.html"><label>呵呵</label><p class="tl-ellipsis">服装春季上新，大牌低至7折大牌低至7折</p></a></div>
-                                <div class="swiper-slide"><a href="../shop/informationList.html"><label>无语</label><p class="tl-ellipsis">美妆大促销，满199减100</p></a></div>
-                                <div class="swiper-slide"><a href="../shop/informationList.html"><label>呵xx</label><p class="tl-ellipsis">服装春季上新，大牌低至7折22至7折</p></a></div>
-                                <div class="swiper-slide"><a href="../shop/informationList.html"><label>bb</label><p class="tl-ellipsis">大促销，满199sss减100</p></a></div>
+                               
                             </div>
                    
                         </div>
@@ -488,6 +485,12 @@
                 <a href="/">
                     <span class="mall"></span>
                     <p>商城</p>
+                </a>
+            </div>
+            <div class="nav-item ">
+                <a href="/Article/Index/articleList?newstype=1">
+                    <span class="news"></span>
+                    <p>资讯</p>
                 </a>
             </div>
             <div class="nav-item">
