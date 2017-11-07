@@ -76,8 +76,8 @@
     padding: 0;
 }
 .pay-for-money .pay-btn a{
-    background: #cd9951;
-    border-color: #cd9951;
+   /* background: #cd9951;
+    border-color: #cd9951;*/
     height: 44px;
 }
 .pay-type i.icon {

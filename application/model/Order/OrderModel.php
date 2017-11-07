@@ -140,24 +140,6 @@ class OrderModel
 
              
 
-                /**
-                 * 新人专享商品只能购买一次
-                 * zhuangqm
-                 * 2017-09-04
-                 */
-                /*$newuserproductstorage = ProductModel::getNewUserProductStorage([
-                        "productid"=>$productid,
-                        "categoryid"=>$productinfo['categoryid'],
-                        "customerid"=>$customerid,
-                        "cartitemids"=>$cartitemids,
-                    ]);
-                if($newuserproductstorage['product_storage_flag']==true){
-                    if($newuserproductstorage['productstorage']==0)
-                        return ["code"=>6004];
-                    
-                    if(!empty($cartitemids))
-                        $cartitem['productnum'] = $newuserproductstorage['productstorage'];
-                }*/
 
 
                 
@@ -167,38 +149,7 @@ class OrderModel
 
                         if($productnum>0){
 
-                            /*if($param['version'] >= "2.2.0") {
-                                // 判断是否有抢购活动
-                                $productbuy = [];
-                                if(!$newuserproductstorage["product_storage_flag"]){
-                                    $productbuy = Model::new("Product.ProductBuy")->ProductBuy(["productid"=>$productid,"userid"=>$customerid]);
-                                }
-                               
-                                if(!empty($productbuy) && $productbuy['product_storage_flag']==true && $productbuy['product_buy_status']==2){
-                                    // 用户已经超过的购买限购额度就不能再买了
-                                    if($productbuy['product_buy']['limitbuy']==0)
-                                        return ["code"=>"6010"];
-                                    
-                                    if($productbuy['product_buy']['limitbuy']>=0 && $productbuy['product_buy']['limitbuy']<$cartitem['productnum']){
-                                        return ["code"=>"6012"];
-                                    }
-
-                                    if($productbuy['product_buy']['limitbuy']==-1 && $productbuy['product_buy']['productstorage_buy']<$cartitem['productnum']){
-                                        return ["code"=>"6012"];
-                                    }
-
-                                    // 抢购活动重新计算价格
-                                    if($productbuy['product_buy']['limitbuy']==-1 || $productbuy['product_buy']['limitbuy']>=$cartitem['productnum']){
-
-                                        $skuitem['prouctprice'] = DePrice($productbuy['product_buy']['prouctprice']);
-                                        $cartitem['bullamount'] = $skuitem['bullamount'] = DePrice($productbuy['product_buy']['bullamount']);
-
-                                        $qianggou.=$productid.",";
-                                    }
-
-                                }
-                            }*/
-
+                          
                             $skuitem['productimage'] = Img::url($skuitem['productimage']);
                             
                             if($productinfo['isabroad'] == 1) {
@@ -230,28 +181,7 @@ class OrderModel
             }
         }
         
-        if($param['version'] >= "2.1.0") {
-            $abroad = array("titleStr"=>"","status"=>"","idnumber"=>"");
-            if($isabrod == 1) {
-                // 海外购订单(事实得查询商品)
-                if(empty($loginstics)) {
-                    $abroad['titleStr'] = '海关提示：订单中有海外商品，请补充收货人的清关信息，否则商品无法清关';
-                    $abroad['status'] = -1;
-                } else {
-                    // 有收货人信息（查询是否有信息）
-                    $info = Model::ins("OrdUserLogisticsInfo")->getLogisticsInfo($loginstics['address_id']);
-                    if(!empty($info['id'])) {
-                        $abroad['status'] = 1;
-                        $abroad['idnumber'] = CommonModel::identity_format($info['idnumber']);
-                    } else {
-                        $abroad['status'] = -1;
-                        $abroad['idnumber'] = '';
-                        $abroad['titleStr'] = "海关提示：订单中有海外商品，请补充收货人【".$loginstics['realname']."】的清关信息，否则商品无法清关";
-                    }
-                }
-            }
-        }
-
+       
         
         $businessorder = [];
         if(!empty($orderlist)){
@@ -275,6 +205,7 @@ class OrderModel
                 $actualfreight  = 0; //商品运费，一个订单有多个商品时，以最大值为准
 
                 foreach($businessvalue['productlist'] as $key=>$value){
+                   
                     $productnum+=$value['productnum'];
                     $productamount+=$value['prouctprice']*$value['productnum'];
                     $bullamount+=$value['bullamount']*$value['productnum'];
@@ -300,6 +231,7 @@ class OrderModel
                         }
                     }
                     $businessvalue['productlist'][$key]['skudetail'] = $skudetail;
+                    $businessvalue['productlist'][$key]['productimage'] = Img::url($value['productimage']);
 
                     // 计算商品运费
                     $actualfreight_tmp  =   $transportOBJ->getProductFreight([
@@ -350,7 +282,7 @@ class OrderModel
             }
                 
         }
-
+      
         $totalamount            = ForMatPrice($totalamount);
         $totalbull              = ForMatPrice($totalbull);
         $totalactualfreight     = ForMatPrice($totalactualfreight);
@@ -359,14 +291,12 @@ class OrderModel
             "code"=>"200",
             "data"=>[
                 "loginstics"=>$loginstics,
-                "abroad"=>$abroad,
                 "totalamount"=>$totalamount,
                 "totalbull"=>$totalbull,
                 "totalcount"=>$totalcount,
                 "totalactualfreight"=>$totalactualfreight,
                 "total"=>$total,
-                "orderlist"=>$businessorder,
-                "qianggouid"=>($qianggou!=''?substr($qianggou,0,-1):""),
+                "orderlist"=>$businessorder
             ],
         ];
     }
