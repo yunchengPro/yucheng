@@ -171,7 +171,7 @@
     display: -webkit-box;
     -webkit-box-pack: center;
     -webkit-box-align: center;
-    background: #f13437;
+    background: #34aedd;
     color: #fff;
     font-size: 14px;
 	}
