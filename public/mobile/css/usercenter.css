@@ -38,7 +38,7 @@
 
 .info-wrap {
 	height: 150px;
-	background: url(../img/icon/center_bg.png)#F0C674 no-repeat;
+	background: url(../img/icon/center_bg.jpg)#F0C674 no-repeat;
 	background-size: cover;
 	position: relative;
 }
@@ -93,7 +93,7 @@
 	/* -webkit-box-pack: center; */
 	position: absolute;
 	right: 0;
-	background: #D4A456;
+	background: #34aedd;
 	font-size: 12px;
 	color: #fff;
 	line-height: 30px;
