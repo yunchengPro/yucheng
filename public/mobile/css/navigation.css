@@ -23,7 +23,7 @@
 }
 
 .nav-wrap .nav-item.active p {
-	color: #cd9951;
+	color: #34aedd;
 }
 
 .nav-wrap .nav-item span {
@@ -33,12 +33,12 @@
 }
 
 .nav-wrap .nav-item .mall {
-	background: url(../img/icon/ic_store_tab@2x.png) no-repeat;
+	background: url(../img/icon/tab_home_02@2x.png) no-repeat;
 	background-size: 100%;
 }
 
 .nav-wrap .nav-item.active .mall {
-	background: url(../img/icon/ic_store_pressed_tab@2x.png) no-repeat;
+	background: url(../img/icon/tab_home_01@2x.png) no-repeat;
 	background-size: 100%;
 }
 
@@ -53,12 +53,12 @@
 }
 
 .nav-wrap .nav-item .niu {
-	background: url(../img/icon/ic_mine_tab@2x.png) no-repeat;
+	background: url(../img/icon/tab_mine_02@2x.png) no-repeat;
 	background-size: 100%;
 }
 
 .nav-wrap .nav-item.active .niu {
-	background: url(../img/icon/ic_mine_pressed_tab@2x.png) no-repeat;
+	background: url(../img/icon/tab_mine_01@2x.png) no-repeat;
 	background-size: 100%;
 }
 

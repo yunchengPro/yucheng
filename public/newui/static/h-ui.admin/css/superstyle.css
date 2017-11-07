@@ -369,8 +369,8 @@ ul, ol {
 }
 
 .navbar {
-     /*background: #d22d31;*/
-    background: url(../images/nnh/super_bg.png) no-repeat;
+    background: #34aedd;
+    /*background: url(../images/nnh/super_bg.png) no-repeat;*/
     height: 65px;
     
 }

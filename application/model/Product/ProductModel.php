@@ -1118,7 +1118,7 @@ class ProductModel{
         $where['enable'] = 1;
         $where['checksatus'] = 1;
         $where['thumb'] = ['<>',''];
-        $product_row = Model::ins('ProProduct')->getList($where,'id,productname,thumb,prouctprice,productstorage','id desc',10);
+        $product_row = Model::ins('ProProduct')->getList($where,'id,productname,thumb,prouctprice,productstorage','id desc');
 
         foreach ($product_row as $key => $value) {
             $productinfo_row = Model::ins('ProProductInfo')->getRow(['id'=>$value['id']],'salecount');

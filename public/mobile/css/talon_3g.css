@@ -75,7 +75,7 @@ img{width: 100%;border: 0;}
 .c-333{color: #333333;}
 .c-666{color: #666666;}
 .c-999{color: #999999;}
-.red{color: #F13437;}
+.red {color: #34aedd;}
 
 /*input iPhone 上边框阴影  修复代码 */
 input {
@@ -553,4 +553,9 @@ input {
 	font-size: 16px;
 	color: #1f84ce;
 	text-align: center;
+}
+.am-btn-danger{
+    color: #fff;
+    background-color: #34aedd;
+    border-color: #34aedd;
 }

@@ -143,7 +143,7 @@
 	.cart-footer .settlement{
 		width: 80px;
 	    text-align: center;
-	    background: #f13437;
+	    background: #34aedd;
 	    color: #fff;
 	    font-size: 14px;
 	    line-height: 18px;
