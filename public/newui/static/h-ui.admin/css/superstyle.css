@@ -377,7 +377,7 @@ ul, ol {
 .menu-nav ul >li a:hover,
 .menu-nav ul > li.active a{
     background-color: #fff;
-    color: #c79668;
+    color: #34aedd;
     border-radius: 25px;
 }
 .menu-nav ul > li.active{
