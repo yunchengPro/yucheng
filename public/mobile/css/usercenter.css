@@ -174,7 +174,7 @@ background: url(../img/icon/ic_arrow.png) 50% no-repeat;
 }
 
 .block-body em{
-	    border: 1px solid #dea34a;
+	border: 1px solid #034aed;
     border-radius: 50%;
     position: absolute;
     display: -webkit-box;
@@ -187,7 +187,7 @@ background: url(../img/icon/ic_arrow.png) 50% no-repeat;
     -webkit-box-align: center;
     -webkit-box-pack: center;
     font-style: normal;
-    color: #dea34a;
+    color: #034aed;
     font-size: 10px;
     background: #fff;
 }
