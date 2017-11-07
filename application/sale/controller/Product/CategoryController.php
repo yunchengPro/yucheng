@@ -11,7 +11,7 @@ class CategoryController extends ActionController{
      * 固定不变
      */
     public function __construct(){
-        //parent::__construct();
+        parent::__construct();
         
     }
     
@@ -19,7 +19,7 @@ class CategoryController extends ActionController{
     public function indexAction(){
 
         $viewData = [
-            
+            'title' => '分类列表'
         ];
         return $this->view($viewData);
 
@@ -31,7 +31,7 @@ class CategoryController extends ActionController{
      * @DateTime 2017-10-10T10:15:16+0800
      * @return   [type]                   [description]
      */
-    public function getCategoryAction(){
+    public function getcategoryAction(){
         $category = ProductModel::formartCategory();
         return $this->json($category['code'],$category['data']);
     }

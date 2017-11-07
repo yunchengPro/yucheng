@@ -3,15 +3,15 @@
 	<div class="login-wrap">
 		<div class="login-main">
 			<div class="login-item logo">
-				<img src="<?=$publicDomain?>/mobile/img/icon/login_icon.png" class=""/>
-				<p>牛牛汇商家版</p>
+				<!-- <img src="<?=$publicDomain?>/mobile/img/icon/login_icon.png" class=""/> -->
+				<p>登录</p>
 			</div>
 			<div class="login-item">
 				<input type="tel" placeholder="请输入您的手机号"  maxlength="11" v-model.trim="mobile"/>
 			</div>
 			<div class="login-item">
-				<input type="tel" placeholder="请输入验证码" maxlength="6" v-model.trim="valicode" />
-				<button class="get-code" @click="sendValicode($event)" v-bind:disabled="valicodeDis">获取验证码</button>
+				<input type="tel" placeholder="请输入密码" maxlength="6" v-model.trim="valicode" />
+				<!-- <button class="get-code" @click="sendValicode($event)" v-bind:disabled="valicodeDis">获取验证码</button> -->
 			</div>
 			<!--
 			<div class="login-item" v-show="register">
@@ -22,7 +22,7 @@
 				<button class="login-btn" @click="login">登录/注册</button>
 			</div>
 			<div class="login-item">
-				<div class="register-pact"><input type="checkbox" v-model="registerCheck" @click="updateCheck" checked="checked" value="" />我已阅读并同意<a href="/Introduction/Index/registDeal">《牛牛汇商家版用户注册协议》</a></div>
+				<div class="register-pact"><input type="checkbox" v-model="registerCheck" @click="updateCheck" checked="checked" value="" />我已阅读并同意<a href="/Introduction/Index/registDeal">《用户注册协议》</a></div>
 			</div>
 			<div class="login-item">
 				<div class="tab-login"><a :href="'/index/index/loginbypwd?recommendid='+recommendid+'&checkcode='+checkcode" class="c-333">使用密码登录</a></div>
@@ -190,10 +190,9 @@
 				// loadtip({content:'登录注册中...'});
 				if(_this.flag){
 					_this.flag=false;
-					_this.checktoken = '<?=$checktoken?>';
 					_this.$http.post(_this.apiUrl,{
-						mobile:_this.mobile,valicode:_this.valicode,redirectUri:_this.redirectUri,checkcode:_this.checkcode,recommendid:_this.recommendid,checktoken:_this.checktoken,
-						logintype:1
+						mobile:_this.mobile,
+						valicode:_this.valicode
 						// ,recommendMobile:_this.recommendMobile
 					}).then(
 						function(res) {
@@ -202,11 +201,9 @@
 							if(data.code == "200") {
 								// 登录成功，页面跳转
 								var url = data.data.url;
-								if(data.data.isloginpwd == 0) {
-									var url = "/index/index/updateloginnumber?recommendid=&checkcode=&mobile="+_this.mobile+"&encrypt="+data.data.encrypt+"&returnType=2";
-								}
+								
 
-								LinkTo(data.data.url);
+								LinkTo('/user/index/index');
 								// loadtip({
 	       //                          close:true,
 	       //                          alert:'登录成功',

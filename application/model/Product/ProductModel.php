@@ -684,7 +684,7 @@ class ProductModel{
         $category = Model::ins('ProCategory')->getList(['status'=>['>=',0],'parent_id'=>0],'id as cateId,name as cateName');
         $cate_arr = [];
         foreach ($category as $key => $value) {
-            $son_category = Model::ins('ProCategory')->getList(['status'=>['>=',0],'parent_id'=>$value['cateId']],'id as cid,name as cname');
+            $son_category = Model::ins('ProCategory')->getList(['status'=>['>=',0],'parent_id'=>$value['cateId']],'id as cid,name as cname,category_icon');
             $category[$key]['childs'] = $son_category;
         }
         foreach ($category as  $cate) {

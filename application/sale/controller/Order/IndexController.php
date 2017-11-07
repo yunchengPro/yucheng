@@ -32,7 +32,7 @@ class IndexController extends ActionController {
      */
     public function showorderAction(){
         
-        $this->addcheck();
+       // $this->addcheck();
 
         return $this->view([
             "cartitemids"=>$this->params['cartitemids'],
@@ -78,7 +78,7 @@ class IndexController extends ActionController {
      */
     public function addorderAction(){
 
-        $this->checktokenHandle();
+        //$this->checktokenHandle();
 
         $sign           = $this->params['sign']; //md5(按业务字段排序(address_id+items))
         $sign           = strtoupper($sign);

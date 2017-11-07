@@ -287,19 +287,7 @@ class CartModel{
 			return ["code"=>5008,"msg"=>"你不能修改该购物车信息"];
 		}
 
-		// 抢购活动，判断是否可以修改购物车商品数量
-		$productbuy = Model::new("Product.ProductBuy")->ProductBuy(["productid"=>$data['data']['productid'],"userid"=>$customerid]);
-		if(!empty($productbuy) && $productbuy['product_storage_flag']==true && $productbuy['product_buy_status']==2){
-
-			if($productbuy['product_buy']['limitbuy']>=0 && $productbuy['product_buy']['limitbuy']<$num){
-
-				return ["code"=>"6012"];
-			}
-
-			if($productbuy['product_buy']['limitbuy']==-1 && $productbuy['product_buy']['productstorage_buy']<$num){
-				return ["code"=>"6012"];
-			}
-		}
+	
 
 		$OrdShoppingcartItem = Db::Model('OrdShoppingcartItem');
 		//修改该购物车数量
@@ -452,18 +440,7 @@ class CartModel{
 							}
 							$carGoodsCount++;
 							
-							// 抢购活动，重新计算价格
-							$productbuy = Model::new("Product.ProductBuy")->ProductBuy(["productid"=>$v['productid'],"userid"=>$customerid]);
-							if(!empty($productbuy) && $productbuy['product_storage_flag']==true && $productbuy['product_buy_status']==2){
-								//重新计算商品价格
-								$itemData[$k]['prouctprice'] = DePrice($productbuy['product_buy']['prouctprice']);
-								$itemData[$k]['bullamount'] = DePrice($productbuy['product_buy']['bullamount']);
-
-								if($productbuy['product_buy']['limitbuy']>=0 && $productbuy['product_buy']['limitbuy']<$v['productnum']){
-
-									$itemData[$k]['productnum'] = $productbuy['product_buy']['limitbuy'];
-								}
-							}
+						
 
 						}else{
 						 	

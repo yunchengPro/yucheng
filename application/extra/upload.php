@@ -3,7 +3,7 @@ return [
 
     "url"=>"/uploadfile/jqueryfileupload.php", //上传的接收路径 --以后独立使用 目前用阿里oss代替
     
-    "domain"=>"//nnhtest.oss-cn-shenzhen.aliyuncs.com/", //图片访问域名
+    "domain"=>"http://superadmin.yuncheng.com/", //图片访问域名
     //"domain"=>"//spakeys.img-cn-shenzhen.aliyuncs.com/", //图片访问域名
 
     "maxFileSize"=>2097152,//文件最大大小2048000

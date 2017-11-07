@@ -26,58 +26,19 @@ class IndexController extends ActionController
     */
     public function loginAction() {
         
-        if(!empty($this->openid) && !empty($this->userid)){
+        if(!empty($this->userid)){
             header('Location:/User/Index/index');
         }
         $title = "登录/注册";
-        $redirect_uri = $this->params['redirect_uri'];
-        $checkcode = '';
-        $recommendid = '';
-        
-        if(!empty($redirect_uri)) {
-            $parameter = explode('&',end(explode('?',$redirect_uri)));
-            
-            foreach ($parameter as $val) {
-                $tmp = explode('=',$val);
-                if(!empty($tmp[1])) {
-                    $pardata[$tmp[0]] = $tmp[1];
-                }
-            }
-            
-            if(!empty($pardata['checkcode'])) {
-                $checkcode = $pardata['checkcode'];
-                unset($pardata['checkcode']);
-            }
-            
-            if(!empty($pardata['recommendid'])) {
-                $recommendid = $pardata['recommendid'];
-                unset($pardata['recommendid']);
-            }
-            
-            $url = explode('?',$redirect_uri);
 
-            $redirect_uri = $url[0]."?";
-            
-            if(!empty($pardata)) {
-                foreach ($pardata as $k => $v) {
-                    $redirect_uri .= "$k=$v&";
-                }
-            }
-            
-//             $checkcode = !empty(($pardata['checkcode'])) ? $pardata['checkcode'] : '';
-//             $recommendid = !empty(($pardata['recommendid'])) ? $pardata['recommendid'] : '';
-        }
-        
-//         $sendType = 'login_register_';
         $viewData = [
             "title" => $title,
             "redirect_uri" => $redirect_uri,
 //             "sendType" => $sendType,
-            "checkcode" => $checkcode,
             "recommendid" => $recommendid
         ];
         
-        $this->addcheck();
+        //$this->addcheck();
         
         return $this->view($viewData);
     }
@@ -111,55 +72,18 @@ class IndexController extends ActionController
     */
     public function dologinAction() {
         
-        $this->checktokenHandle();
+        
 
         $param['mobile'] = $this->params['mobile'];
-        $param['redirectUri'] = $this->params['redirectUri'];
-        $param['valicode'] = strtoupper(md5($this->params['valicode'].getConfigKey()));
-        $param['sendType'] = "login_register_";
-        $param['recommendMobile'] = $this->params['recommendMobile'];
-        $checkcode = $this->params['checkcode'];
-        $recommendid = $this->params['recommendid'];
-        $param['logintype'] = $this->params['logintype'] ? $this->params['logintype'] : 1;
-        $param['loginpwd'] = strtoupper(md5($this->params['loginpwd']));
+       
+        // $param['valicode']  = $this->params['valicode'];
+        $param['valicode'] = $this->params['valicode'];
         
-        if(empty($param["mobile"]) || empty($param['logintype'])) {
+        if(empty($param["mobile"]) || empty($param['valicode'])) {
             return $this->json("404");
         }
         
-        if(!in_array($param['logintype'], $this->loginType)) {
-            return $this->json("10004");
-        }
-        
-        if($param['logintype'] == 1) {
-            if(empty($param['valicode'])) {
-                return $this->json("404");
-            }
-        } else {
-            if(empty($param['loginpwd'])) {
-                return $this->json("404");
-            }
-        }
-        
-//         $param['businessid'] = '';
-        $param['recommendid'] = '';
-        $param['recommendrole'] = '';
-        if(!empty($checkcode) || !empty($recommendid)) {
-            // 检验
-            if($checkcode != md5($recommendid.getConfigKey())) {
-                return $this->json("20015");
-            }
-            
-            // 查询引荐人角色
-            $recommendrole = Model::new("User.User")->getUserRoleID(["customerid"=>$recommendid]);
-            
-            $param['recommendid'] = $recommendid;
-
-            $param['recommendrole'] = $recommendrole;
-        }
-        
-        $param['openid'] = $this->openid;
-        $param['isMobile'] = 1;
+  
         
         // 执行登录/注册
         $result = Model::new("User.User")->login($param);

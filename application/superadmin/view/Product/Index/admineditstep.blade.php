@@ -80,7 +80,12 @@ body, th, td, button, input, select, textarea { font-family: "dongqingheiti", se
     float: left;
     margin-right: 10px;
 }
-
+#uploadfiles_images img {
+    width: 100px;
+}
+#uploadfiles_photos img {
+    width: 100px;
+}
 </style>
 <link rel="stylesheet" type="text/css" href="/pinture/css/jquery.editable-select.min.css" />
 
