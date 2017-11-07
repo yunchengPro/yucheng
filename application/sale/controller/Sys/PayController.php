@@ -40,7 +40,7 @@ class PayController extends ActionController{
      */
     public function paymethodAction(){
         
-        $orderno = $this->params['orderno'];
+         $orderno = $this->params['orderno'];
 
 
         if(empty($orderno))
@@ -66,11 +66,21 @@ class PayController extends ActionController{
             }
             
             $amount = DePrice($orderItem['amount']);
+        } else if(substr($orderno,0,4)=='MALL') {
+            
+            $orderItem = Model::ins("OrdOrder")->getRow(["orderno"=>$orderno],"*");
+            if(empty($orderItem)) {
+                header('Content-type:application/json;charset=utf-8');
+                exit($this->json("408",[],"请求无效，无效订单"));
+            }
+            
+            $amount = DePrice($orderItem['totalamount']);
         }
        
         return $this->view([
             "amount"=>$amount,
             "orderno"=>$orderno,
+            "pay_test"=>$this->params['pay_test'],
         ]);
     }
 

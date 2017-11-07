@@ -73,7 +73,7 @@
 			合计：<span class="red">{{totalPrice}}</span>元
 		</div>
 		<div class="settlement">
-			<a href="/order/index/showorder?cartitemids=1691,1690">
+			<a href="#" @click="addorder()">
 				<div>结算(<span id="settleNum">{{checkNum}}</span>)</div>
 				<div class="fee">不含邮费</div>
 			</a>
@@ -232,6 +232,7 @@
 			normMaks:false,
 			oldcartid:0,
 			productnum:1,
+			buyIds:[]
 		},
 		mounted: function() {
 			var _this = this;
@@ -243,8 +244,9 @@
 		computed:{
 			//合计总价
 			totalPrice:function(){
-				
+				var _this=this;
 				var total = 0;//_this.carts.cardata.pricecount;
+				
 				if(this.carts.goodsList){
 
 					this.carts.goodsList.forEach(function(shop){
@@ -252,6 +254,7 @@
 						shop.goodsData.forEach(function(good){
 							if(good.isChecked){
 								total += parseFloat(good.prouctprice) * parseInt(good.productnum);
+								_this.buyIds.push(good.skuid);
 							}	
 						});
 
@@ -553,6 +556,20 @@
 	                }
 	            );
         	},
+        	addorder:function(){
+
+        		var _this = this;
+        		if(_this.buyIds == ''){
+        			layer.open({
+	                        content: '请选择需要购买的商品',
+	                        skin: 'msg',
+	                        time: 2 
+	                    });
+        			return false;
+        		}
+        		//alert(_this.buyIds);
+        		window.location.href = '/order/index/showorder?skuid='+_this.buyIds+"&productnum="+ _this.productnum;
+        	}
 
 		}
 	});
