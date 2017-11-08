@@ -567,7 +567,7 @@ background: url(../img/icon/ic_arrow.png) 50% no-repeat;
 }
 .order-list .one-order .shop-stuas .order-stuas{
 	font-size: 13px;
-	color: #F13437;
+	color: #3bb4f2;
 	
 }
 .order-list .one-order  .shop-stuas i{
@@ -1121,8 +1121,8 @@ background: url(../img/icon/ic_arrow.png) 50% no-repeat;
     z-index: 1;
 }
 .goods-order .order-head .head-item.active a {
-    color: #F13437;
-    border-bottom: 2px solid #F13437;
+    color: #3bb4f2;
+    border-bottom: 2px solid #3bb4f2;
     padding: 11px 5px;
 }
 

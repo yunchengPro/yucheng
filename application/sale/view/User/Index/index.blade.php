@@ -22,19 +22,19 @@
 	 
 			<div class="tl-flex">
 				<div class="b-center">
-					<a href="#">
-						<div class="pos-r"><img src="<?=$publicDomain?>/mobile/img/icon/ic_store_order_center.png"> <em>20</em></div>
+					<a href="/order/index/orderlist">
+						<div class="pos-r"><img src="<?=$publicDomain?>/mobile/img/icon/ic_store_order_center.png"><!--  <em>20</em> --></div>
 						<div class="txt">待付款订单</div>
 					</a>
 				</div>
 				<div class="b-center">
-					<a href="#">
-						<div class="pos-r"><img src="<?=$publicDomain?>/mobile/img/icon/ic_order_center.png"><em>20</em></div>
+					<a href="/order/index/orderlist">
+						<div class="pos-r"><img src="<?=$publicDomain?>/mobile/img/icon/ic_order_center.png"><!-- <em>20</em> --></div>
 						<div class="txt">待发货订单</div>
 					</a>
 				</div>
 				<div class="b-center">
-					<a href="#">
+					<a href="/user/shopcart/index">
 						<div class="pos-r"><img src="<?=$publicDomain?>/mobile/img/icon/ic_shopcart_center.png"><em>2</em></div>
 						<div class="txt">商城购物车</div>
 					</a>
@@ -57,6 +57,26 @@
 					<a href="/user/userlogistics/logisticslist">
 						<div><img src="<?=$publicDomain?>/mobile/img/icon/ic_address_center.png"></div>
 						<div class="txt">收货地址管理</div>
+					</a>
+				</div>
+			</div>
+			<div class="tl-flex" style="margin-top: 10px;">
+				<div class="b-center">
+					<a href="#">
+						<div class="pos-r"><img src="<?=$publicDomain?>/mobile/img/icon/ic_heart_center.png"></div>
+						<div class="txt">我的积分</div>
+					</a>
+				</div>
+				<div class="b-center">
+					<a href="#">
+						<div><img src="<?=$publicDomain?>/mobile/img/icon/ic_heart_center.png"></div>
+						<div class="txt">我的优惠券</div>
+					</a>
+				</div>
+				<div class="b-center">
+					<a href="#">
+						<div><img src="<?=$publicDomain?>/mobile/img/icon/ic_heart_center.png"></div>
+						<div class="txt">我的钱包</div>
 					</a>
 				</div>
 			</div>

@@ -227,7 +227,7 @@
 			float: left;
 		}
 		.address-list .one-address .operator label.active{
-			color: #E64B4B;
+			color: #3bb4f2;
 		}
 	    .address-list .one-address .operator input[type=radio]{
 	    	-webkit-appearance: none;
@@ -262,7 +262,7 @@
 	   
 	    .add-address{
 	    	height: 40px;
-	    	background: #e64b4b;
+	    	background: #3bb4f2;
 	    	line-height: 40px;
 	    	text-align: center;
 	    	color: #FFFFFF;
@@ -341,7 +341,7 @@
 	    		padding:  0 12px;
 	    	}
 	    	.oper-address .save-btn{
-	    		background: #F13437;
+	    		background: #35aedd;
 	    		color: #FFFFFF;
 	    		font-size: 17px;
 	    		height: 44px;

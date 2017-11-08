@@ -34,13 +34,13 @@
 }
 
 .type-list .one-type a.active {
-	color: #F13437;
-	border-bottom: 2px solid #f13437;
+	color: #3bb4f2;
+	border-bottom: 2px solid #3bb4f2;
 	padding-bottom: 11px;
 }
 
 .information-list {
-	margin-top: 44px;
+	margin-top: 84px;
 	overflow: hidden;
 }
 

@@ -10,6 +10,7 @@ use app\model\Order\OrderModel;
 
 class IndexController extends ActionController {
     
+    const pageNum = 20;
     public function __construct() {
         parent::__construct();
     }
@@ -21,7 +22,33 @@ class IndexController extends ActionController {
      * @return   [type]                   [description]
      */
     public function orderlistAction(){
-
+        $title = "我的订单";
+        
+        $viewData = [
+            "title" => $title
+        ];
+        
+        return $this->view($viewData);
+    }
+    
+    public function getorderlistdataAction() {
+        $orderlisttype = $this->params['orderlisttype'];
+        if(!in_array($orderlisttype, [1,2,3,4,5])) //订单列表类型1全部2待付款3待发货4待收货5待评价
+            return $this->json("404");
+        
+        $OrdOrderModel = Model::ins("OrdOrder");
+        $param['customerid'] = $this->userid;
+        $param['orderlisttype'] = $orderlisttype;
+        $param['isAndroid'] = '';
+    
+        $orderlist = $OrdOrderModel->getOrderList($param);
+        
+        $orderlist['maxPage'] = 0;
+        if($orderlist['total']>0) {
+            $orderlist['maxPage'] = ceil($orderlist['total']/self::pageNum);
+        }
+    
+        return $this->json("200", $orderlist);
     }
         
     /**
@@ -32,7 +59,7 @@ class IndexController extends ActionController {
      */
     public function showorderAction(){
         
-       // $this->addcheck();
+        $this->addcheck();
 
         return $this->view([
             "cartitemids"=>$this->params['cartitemids'],
@@ -78,7 +105,7 @@ class IndexController extends ActionController {
      */
     public function addorderAction(){
 
-        //$this->checktokenHandle();
+        $this->checktokenHandle();
 
         $sign           = $this->params['sign']; //md5(按业务字段排序(address_id+items))
         $sign           = strtoupper($sign);
@@ -173,9 +200,140 @@ class IndexController extends ActionController {
                 "orderno"=>$orderno,
                 "version"=>$this->getVersion(),
             ]);
-
+        print_r($result['orderdetail']);
         return $this->json($result['code'],[
                 "orderdetail"=>$result['orderdetail'],
             ]);
+    }
+    
+    /**
+    * @user 延长收货
+    * @param 
+    * @author jeeluo
+    * @date 2017年11月6日下午6:14:19
+    */
+    public function extendedreceiptAction() {
+        $orderno = $this->params['orderno'];
+        
+        if(empty($orderno))
+            return $this->json("404");
+        
+        $result = Model::new("Order.Order")->extendedreceipt([
+            "customerid"=>$this->userid,
+            "orderno"=>$orderno,
+        ]);
+        
+        return $this->json($result['code']);
+    }
+    
+    /**
+    * @user 提醒发货
+    * @param 
+    * @author jeeluo
+    * @date 2017年11月7日上午10:41:56
+    */
+    public function remindshippingAction() {
+        $orderno = $this->params['orderno'];
+        
+        if(empty($orderno))
+            return $this->json("404");
+        
+        $remindshipping_limit = 3;
+        $ActLimitOBJ = Model::new("Sys.ActLimit");
+        //一天只提醒3次，就提示给用户
+        $check_actlimit = $ActLimitOBJ->check("remindshipping".$orderno,$remindshipping_limit);
+        if(!$check_actlimit['check']){
+            return $this->json("7006");
+        }
+    
+//         $orderModelOBJ = new OrderModel();
+        $result = Model::new("Order.Order")->remindshipping($orderno, $this->userid);
+    
+        $ActLimitOBJ->update("remindshipping".$orderno,86400); //冻结一天
+    
+        return $this->json(200);
+    }
+    
+    /**
+    * @user 确认收货
+    * @param 
+    * @author jeeluo
+    * @date 2017年11月7日上午11:20:48
+    */
+    public function confirmorderAction() {
+        $orderno = $this->params['orderno'];
+        
+        if(empty($orderno))
+            return $this->json("404");
+        
+        $result = Model::new("Order.Order")->confirmOrder([
+            "customerid" => $this->userid,
+            "orderno" => $orderno
+        ]);
+        
+        return $this->json($result["code"]);
+    }
+    
+    /**
+    * @user 订单交易完成页面
+    * @param 
+    * @author jeeluo
+    * @date 2017年11月7日上午11:38:22
+    */
+    public function goodsdealsuccessAction() {
+        $title = "交易成功";
+        
+        $orderno = $this->params['orderno'];
+        $viewData = [
+            "title" => $title,
+            "orderno" => $orderno
+        ];
+        
+        return $this->view($viewData);
+    }
+    
+    /**
+    * @user 跳转到去评价页面
+    * @param 
+    * @author jeeluo
+    * @date 2017年11月7日下午2:12:12
+    */
+    public function gogoodscommentAction() {
+        $title = "发表评价";
+        
+        $orderno = $this->params['orderno'];
+        $customerid = $this->userid;
+        
+        $viewData = [
+            "title" => $title,
+            "orderno" => $orderno,
+            "customerid" => $customerid
+        ];
+        
+        $this->addcheck();
+        
+        return $this->view($viewData);
+    }
+    
+    /**
+    * @user 删除订单操作
+    * @param 
+    * @author jeeluo
+    * @date 2017年11月7日下午5:32:41
+    */
+    public function deleteorderAction() {
+        $orderno = $this->params['orderno'];
+        
+        if(empty($orderno))
+            return $this->json("404");
+        
+        $orderModel = Model::new("Order.Order");
+        
+        $result = $orderModel->deleteorder([
+            "customerid" => $this->userid,
+            "orderno" => $orderno 
+        ]);
+        
+        return $this->json($result["code"]);
     }
 }
