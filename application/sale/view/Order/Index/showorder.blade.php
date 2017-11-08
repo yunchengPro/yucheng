@@ -54,13 +54,13 @@
                 <div class="order-body">
                     <div class="order-list">
                         <!--已付款-->
-                        <div class="one-order" v-for="item in orderlist">
+                        <div class="one-order" v-for="(item,index) in orderlist">
                             <div class="shop-stuas">
-                                <a href="" class="pos-r"><!-- <img src="../../img/icon/shop@2x.png" style="width: 25px;margin-right: 10px;"/> --><span v-html="item.businessname"></span><i></i></a><div id="1691" class="c-999 sepcifi">尺寸:255x200x315mm;</div>
+                                <a href="" class="pos-r"><!-- <img src="../../img/icon/shop@2x.png" style="width: 25px;margin-right: 10px;"/> --><span v-html="item.businessname"></span><i></i></a>
                                 <!--<div class="order-stuas">已付款</div>-->
                             </div>
                             
-                              <div v-for="product in item.productlist">
+                            <div v-for="product in item.productlist">
                                 <div class="order-info-box">
                                     <div class="order-img">
                                         <img :src="product.productimage" />
@@ -77,17 +77,16 @@
                                     <div class="sure-item" style="-webkit-box-pack: justify;border-bottom: 1px solid #DDDDDD;">
                                         <div>购买数量</div>
                                         <div class="">
-                                            <span class="minus">-</span>
-                                            <span class="number" v-html="product.productnum"></span><span class="plus">+</span>
+                                            <span class="minus" @click="minus(index,product.skuid)">-</span>
+                                            <span class="number" v-html="product.productnum"></span>
+                                            <span class="plus" @click="plus(index,item.skuid)">+</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>  
-
-                        
+                          
                             
                             <div>
-                              
                                 <div class="sure-item" style="-webkit-box-pack: justify;">
                                     <div>店铺邮费</div>
                                     <div><span v-html="item.actualfreight">0.00</span>元</div>
@@ -103,7 +102,7 @@
                             
                             <div class="goods-order-total" style="-webkit-box-pack: end;">
                                 
-                                <div>共<span v-html="item.productnum">0</span>件商品&nbsp;&nbsp;小计： <span class="red" v-html="item.productamount">0</span>元</div>
+                                <div>共<span v-html="item.productnum">0</span>件商品&nbsp;&nbsp;小计： <span class="red" v-html="totalPrice">0</span>元</div>
                             </div>
                         </div>
                         
@@ -114,7 +113,7 @@
             </section>
             
             <footer class="goods-order-oper" style="-webkit-box-pack: end;padding: 0;">
-                            合计：<span class="red" v-html="total">0</span>元
+                            合计：<span class="red" v-html="totalPrice">0</span>元
                             <a href="#" class="sub-btn" @click="suborder">提交订单</a>
             </footer>
             
@@ -144,12 +143,84 @@
                     addres_detail:"",
                     addorderkey:"<?=$addorderkey?>",
                     sign:"",
-                    items:""
+                    items:"",
+                    cho_index:0
                 },
                 mounted:function(){
+                    
+                    $(".plus").click(function(){
+                        var num=parseInt($(".number").html());
+                        num++;
+                        $(".number").html(num);
+                        
+                    });
+                    $(".minus").click(function(){
+                        var num=parseInt($(".number").html());
+                        if(num>1){
+                            num--;
+                            $(".number").html(num);
+
+                        }
+                        
+                        
+                    });
+
                     this.getshoworder();
                 },
+                computed:{
+                    //合计总价
+                    totalPrice:function(){
+                        var _this=this;
+                        var total = 0;
+                        
+                        this.orderlist[_this.cho_index].productlist.forEach(function(good){
+                            
+                    
+                            total += good.prouctprice * good.productnum;
+
+
+                        });
+                        return total;
+                    },
+                    //结算商品数量
+                    checkNum:function(){
+                        var num = 0;
+                        
+                        this.orderlist[_this.cho_index].productlist.forEach(function(good){
+                            
+                            
+                            num+=good.productnum;
+                            
+
+                        });
+                        return num;
+                    }
+                
+                },
                 methods:{
+                    minus:function(idx,skuid){
+                        this.cho_index = idx;
+                        if(this.orderlist[idx].productlist){
+                            //判断是否是1
+                            if(this.orderlist[idx].productlist[idx].productnum>1){
+                                this.orderlist[idx].productlist[idx].productnum--;
+                               
+                            }
+                            
+                        }
+                    },
+                    plus:function(idx,skuid){
+
+                        this.cho_index = idx;
+                        if(this.orderlist[idx].productlist){
+                            //判断库存
+                            if(this.orderlist[idx].productlist[idx].productnum<this.orderlist[0].productlist[idx].productstorage){
+                                this.orderlist[idx].productlist[idx].productnum++;
+
+                            }
+                            
+                        }
+                    },
                     getshoworder:function() {
                         var _this = this;
                         //loadtip({content:'提交中'});
