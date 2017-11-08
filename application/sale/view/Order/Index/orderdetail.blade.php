@@ -47,9 +47,10 @@
 									<img :src="goods.thumb" />
 								</div>
 								<div class="order-info">
-									<div class="name tl-ellipsis-2" v-html="goods.productnum"></div>
+									<div class="name tl-ellipsis-2" v-html="goods.productname"></div>
+									<div :id="goods.skuid" class="c-999 sepcifi" v-html="goods.skudetail"></div>
 									<div class="text-r">X<span v-html="goods.productnum"></span></div>
-									<div class="order-time"><span v-html="goods.prouctprice">198.00</span>元</div>
+									<div class="order-time"><span v-html="goods.prouctprice"></span>元</div>
 								</div>
 								
 							</div>

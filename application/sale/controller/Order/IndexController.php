@@ -200,7 +200,7 @@ class IndexController extends ActionController {
                 "orderno"=>$orderno,
                 "version"=>$this->getVersion(),
             ]);
-        print_r($result['orderdetail']);
+        //print_r($result['orderdetail']);
         return $this->json($result['code'],[
                 "orderdetail"=>$result['orderdetail'],
             ]);
