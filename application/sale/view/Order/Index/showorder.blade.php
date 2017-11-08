@@ -56,27 +56,38 @@
                         <!--已付款-->
                         <div class="one-order" v-for="item in orderlist">
                             <div class="shop-stuas">
-                                <a href="" class="pos-r"><!-- <img src="../../img/icon/shop@2x.png" style="width: 25px;margin-right: 10px;"/> --><span v-html="item.businessname"></span><i></i></a>
+                                <a href="" class="pos-r"><!-- <img src="../../img/icon/shop@2x.png" style="width: 25px;margin-right: 10px;"/> --><span v-html="item.businessname"></span><i></i></a><div id="1691" class="c-999 sepcifi">尺寸:255x200x315mm;</div>
                                 <!--<div class="order-stuas">已付款</div>-->
                             </div>
                             
-                            <div class="order-info-box" v-for="product in item.productlist">
-                                <div class="order-img">
-                                    <img :src="product.productimage" />
+                              <div v-for="product in item.productlist">
+                                <div class="order-info-box">
+                                    <div class="order-img">
+                                        <img :src="product.productimage" />
+                                    </div>
+                                    <div class="order-info">
+                                        <div class="name tl-ellipsis-2" v-html="product.productname"></div>
+                                        <div :id="product.skuid" class="c-999 sepcifi" v-html="product.skudetail"></div>
+                                        <div class="text-r">X<span v-html="product.productnum">0</span></div>
+                                        <div class="order-time"><span v-html="product.prouctprice">0.00</span>元</div>
+                                    </div>
+                                    
                                 </div>
-                                <div class="order-info">
-                                    <div class="name tl-ellipsis-2" v-html="product.productname"></div>
-                                    <div class="text-r">X<span v-html="product.productnum">0</span></div>
-                                    <div class="order-time"><span v-html="product.prouctprice">0.00</span>元</div>
+                                <div>
+                                    <div class="sure-item" style="-webkit-box-pack: justify;border-bottom: 1px solid #DDDDDD;">
+                                        <div>购买数量</div>
+                                        <div class="">
+                                            <span class="minus">-</span>
+                                            <span class="number" v-html="product.productnum"></span><span class="plus">+</span>
+                                        </div>
+                                    </div>
                                 </div>
-                                
-                            </div>
+                            </div>  
+
+                        
                             
                             <div>
-                                <div class="sure-item" style="-webkit-box-pack: justify;">
-                                    <div>购买数量<span class="c-999"></span></div>
-                                    <div class=""><span class="minus">-</span><span class="number" v-html="item.productnum"></span><span class="plus">+</span></sp></div>
-                                </div>
+                              
                                 <div class="sure-item" style="-webkit-box-pack: justify;">
                                     <div>店铺邮费</div>
                                     <div><span v-html="item.actualfreight">0.00</span>元</div>

@@ -19,86 +19,86 @@
 <style>
 
         
-	.pro-detail-bar{
-		position: fixed;
-		top: 0;
-		width: 100%;
-    	z-index: 200;
-		height: 40px;
-		/*line-height: 35px;*/
-		background: transparent;
-		display: -webkit-box;
-		padding: 0 10px;
-		-webkit-box-pack: justify;
-		-webkit-box-align: center;
-	}
-	.pro-detail-bar .back{
-		background: url(/mobile/img/icon/back_bg@2x.png) no-repeat;
-		background-size:100% ;
-		width: 29px;
-		height: 29px;
-		display: block;
-	}
-	.pro-detail-bar .buycard{
-		background: url(/mobile/img/icon/buycar_bg@2x.png) no-repeat;
-		background-size:100% ;
-		width: 29px;
-		height: 29px;
-		display: block;
-	}
-	
-	
-	.reward-bar{
-		position: absolute;
-		bottom: 0;
-		background: url(/mobile/img/icon/rewrad-2.png) no-repeat;
-		background-size:100% ;
-		height: 40px;
-		width: 100%;
-		z-index: 20;
-		display: -webkit-box;
-		-webkit-box-align: center;
-		padding-left: 10px;
-		color: #FFFFFF;
-		
-	}
-	.reward-bar .sp-val{font-size: 16px;margin-left: 10px;}
-	.detail-footer{
-		    position: fixed;
-		    width: 100%;
-		    bottom: 0;
-		    z-index: 100;
-		    height: 44px;
-		   
-		    display: -webkit-box;
-		    -webkit-box-pack: center;
-		    -webkit-box-align: center;
-		     text-align: center;
-		    background: #FFFFFF;
-		    border-top: 0.5px solid #DDDDDD;
-	}
-	.detail-footer img{width: 20px;margin-top: 5px;}
-	.detail-footer p{font-size: 10px;}
-	.detail-footer .join-btn{
-		background: #F09533;color: #FFFFFF;height: 44px;line-height: 44px;
-	}
-	.detail-footer .buy-btn{
-		background: #F13437;color: #FFFFFF;height: 44px;line-height: 44px;
-	}
-	.detail-footer .collect{
-		width: 20px;
-		height: 20px;
-		display: inline-block;
-		background: url(/mobile/img/icon/star@2x.png) no-repeat;
-		background-size:100% ;
-	}
-	
-	.detail-footer .left{height: 44px;}
-	.detail-footer .left .tl-flex-1{
-		border-right: 0.5px solid #DDDDDD;
-	}
-	.am-slider-default{margin: 0;}
-	.flex-column {
+    .pro-detail-bar{
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 200;
+        height: 40px;
+        /*line-height: 35px;*/
+        background: transparent;
+        display: -webkit-box;
+        padding: 0 10px;
+        -webkit-box-pack: justify;
+        -webkit-box-align: center;
+    }
+    .pro-detail-bar .back{
+        background: url(/mobile/img/icon/back_bg@2x.png) no-repeat;
+        background-size:100% ;
+        width: 29px;
+        height: 29px;
+        display: block;
+    }
+    .pro-detail-bar .buycard{
+        background: url(/mobile/img/icon/buycar_bg@2x.png) no-repeat;
+        background-size:100% ;
+        width: 29px;
+        height: 29px;
+        display: block;
+    }
+    
+    
+    .reward-bar{
+        position: absolute;
+        bottom: 0;
+        background: url(/mobile/img/icon/rewrad-2.png) no-repeat;
+        background-size:100% ;
+        height: 40px;
+        width: 100%;
+        z-index: 20;
+        display: -webkit-box;
+        -webkit-box-align: center;
+        padding-left: 10px;
+        color: #FFFFFF;
+        
+    }
+    .reward-bar .sp-val{font-size: 16px;margin-left: 10px;}
+    .detail-footer{
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+            z-index: 100;
+            height: 44px;
+           
+            display: -webkit-box;
+            -webkit-box-pack: center;
+            -webkit-box-align: center;
+             text-align: center;
+            background: #FFFFFF;
+            border-top: 0.5px solid #DDDDDD;
+    }
+    .detail-footer img{width: 20px;margin-top: 5px;}
+    .detail-footer p{font-size: 10px;}
+    .detail-footer .join-btn{
+        background: #F09533;color: #FFFFFF;height: 44px;line-height: 44px;
+    }
+    .detail-footer .buy-btn{
+        background: #F13437;color: #FFFFFF;height: 44px;line-height: 44px;
+    }
+    .detail-footer .collect{
+        width: 20px;
+        height: 20px;
+        display: inline-block;
+        background: url(/mobile/img/icon/star@2x.png) no-repeat;
+        background-size:100% ;
+    }
+    
+    .detail-footer .left{height: 44px;}
+    .detail-footer .left .tl-flex-1{
+        border-right: 0.5px solid #DDDDDD;
+    }
+    .am-slider-default{margin: 0;}
+    .flex-column {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -111,7 +111,7 @@
 }
 
 
-	     .topnav {
+         .topnav {
             position: relative;
             width: 100%;
             padding-top: 12px;
@@ -180,12 +180,12 @@
     </header>-->
     <div id="app">
     <div class="pro-detail-container">
-    	 <div class="pro-detail-bar">
-        	<a href="/index/index/index" class="back"></a>
-        	<a href="/user/shopcart/index" class="buycard"></a>
+         <div class="pro-detail-bar">
+            <a href="/index/index/index" class="back"></a>
+            <a href="/user/shopcart/index" class="buycard"></a>
         </div>
         <div class="pro-detail-item">
-        	   <div class="swiper-container">
+               <div class="swiper-container">
                     <div class="swiper-wrapper" >
 
                         <div class="swiper-slide" v-for="banner in banners">
@@ -259,8 +259,8 @@
             </div> --> 
         </div>
     </div>
-	
-	<div data-am-widget="tabs" class="am-tabs am-tabs-d2 am-no-layout">
+    
+    <div data-am-widget="tabs" class="am-tabs am-tabs-d2 am-no-layout">
         <ul class="am-tabs-nav am-cf">
             <li class="am-active">
                 <a href="[data-tab-panel-0]">
@@ -299,8 +299,8 @@
                 </div>
         </div>
     </div>
-	</div>
-	
+    </div>
+    
     <div class="am-modal-actions" id="my-actions">
         <div class="am-modal-actions-group">
             <ul class="am-list">
@@ -345,85 +345,85 @@
             <a href="#" class="am-btn am-btn-secondary am-btn-block" v-on:click="addshopcart()">确 定</a>
         </div>
     </div>
-	
-	
-	<footer class="detail-footer tl-flex">
-		<div class="tl-flex-5 tl-flex left">
-			<div href="#" class="tl-flex-1">
-				<a href="#"><img src="/mobile/img/icon/mgs_on@2x.png" /><p>客服</p></a>
-			</div>
-			<div href="#" class="tl-flex-1">
-				<a href="index.html"><img src="/mobile/img/icon/shop@2x.png" /><p>店铺</p></a>
-			</div>
-			<div href="#" class="tl-flex-1">
-				<a id="collect-no" href="javascript:collect(1)" style="display: block;">
-					<img src="/mobile/img/icon/star@2x.png" />
-				
-					<p>收藏</p>
-				</a>
-				<a id="collect-yes" href="javascript:collect(0)" style="display: none;">
-					<img src="/mobile/img/icon/star_on@2x.png" />
-				
-					<p>收藏</p>
-				</a>
-			</div>
-		</div>
-		
-		<div class="tl-flex-3 tl-flex">
-			<div class="tl-flex-1 join-btn" >加入购物车</div>
-			<div class="tl-flex-1 buy-btn">立即购买</div>
-		</div>
-	</footer>
+    
+    
+    <footer class="detail-footer tl-flex">
+        <div class="tl-flex-5 tl-flex left">
+            <div href="#" class="tl-flex-1">
+                <a href="#"><img src="/mobile/img/icon/mgs_on@2x.png" /><p>客服</p></a>
+            </div>
+            <div href="#" class="tl-flex-1">
+                <a href="index.html"><img src="/mobile/img/icon/shop@2x.png" /><p>店铺</p></a>
+            </div>
+            <div href="#" class="tl-flex-1">
+                <a id="collect-no" href="javascript:collect(1)" style="display: block;">
+                    <img src="/mobile/img/icon/star@2x.png" />
+                
+                    <p>收藏</p>
+                </a>
+                <a id="collect-yes" href="javascript:collect(0)" style="display: none;">
+                    <img src="/mobile/img/icon/star_on@2x.png" />
+                
+                    <p>收藏</p>
+                </a>
+            </div>
+        </div>
+        
+        <div class="tl-flex-3 tl-flex">
+            <div class="tl-flex-1 join-btn" >加入购物车</div>
+            <div class="tl-flex-1 buy-btn">立即购买</div>
+        </div>
+    </footer>
     </div>
    <!--<div class="download-bar">
-    	<div class="close-box">
-    		<a href="javascript:void(0)">
-    			<img src="/mobile/img/icon/download_close@2x.png" />
-    		</a>
-    	</div>
-    	<div class="bar-content">
-    		<div class="logo-box"><img src="/mobile/img/icon/LOGO2.png" /></div>
-    		<div class="bar-desc">
-    			<div>
-    				<div>你买单，我送钱</div>
-    				<div>赶快下载<label class="red">牛牛汇</label>手机客户端</div>
-    			</div>
-    			<a href="http://a.app.qq.com/o/simple.jsp?pkgname=com.ynh.nnh.tt">点击下载</a>
-    		</div>
-    		
-    	</div>
+        <div class="close-box">
+            <a href="javascript:void(0)">
+                <img src="/mobile/img/icon/download_close@2x.png" />
+            </a>
+        </div>
+        <div class="bar-content">
+            <div class="logo-box"><img src="/mobile/img/icon/LOGO2.png" /></div>
+            <div class="bar-desc">
+                <div>
+                    <div>你买单，我送钱</div>
+                    <div>赶快下载<label class="red">牛牛汇</label>手机客户端</div>
+                </div>
+                <a href="http://a.app.qq.com/o/simple.jsp?pkgname=com.ynh.nnh.tt">点击下载</a>
+            </div>
+            
+        </div>
     </div>-->
     <script>
-    	function collect(type){
-    		var t=type;
-    		if(t==0){
-    			alert("取消收藏成功");
-    			$("#collect-no").show();
-    			$("#collect-yes").hide();
-    		}else{
-    			alert("收藏成功");
-    			$("#collect-no").hide();
-    			$("#collect-yes").show();
-    		}
-    	}
-    	$(function(){
-//  		$(".download-bar .close-box a").click(function(){
-//  			$(this).parent().parent().fadeOut();
-//  		});
+        function collect(type){
+            var t=type;
+            if(t==0){
+                alert("取消收藏成功");
+                $("#collect-no").show();
+                $("#collect-yes").hide();
+            }else{
+                alert("收藏成功");
+                $("#collect-no").hide();
+                $("#collect-yes").show();
+            }
+        }
+        $(function(){
+//          $(".download-bar .close-box a").click(function(){
+//              $(this).parent().parent().fadeOut();
+//          });
 
 
-			$(window).scroll(function() {
-				
-				if( $(window).scrollTop()>40){
-					$(".pro-detail-bar").css({"background":"#fff","border-bottom":"1px solid #ddd"});
-				}else{
-					$(".pro-detail-bar").css({"background":"transparent","border-bottom":"0"});
-				}
-			});
-			
-			
-			
-    	});
+            $(window).scroll(function() {
+                
+                if( $(window).scrollTop()>40){
+                    $(".pro-detail-bar").css({"background":"#fff","border-bottom":"1px solid #ddd"});
+                }else{
+                    $(".pro-detail-bar").css({"background":"transparent","border-bottom":"0"});
+                }
+            });
+            
+            
+            
+        });
     </script>
     <script type="text/javascript" src="<?=$publicDomain?>/mobile/js/swiper.min.js"></script>
     <script>
@@ -433,7 +433,8 @@
             data:{
                 goods_id:"<?=$goods_id?>",
                 goodsDetail:[],
-                banners:[]
+                banners:[],
+                buygoods:0
             },
             created:function(){
                 
@@ -493,50 +494,56 @@
                     var productnum = parseInt($("#amount").text());
 
                     var _this = this;
-
-                    _this.$http.post('/user/shopcart/addgoods',{
-                        
-                        skuid:skuid,
-                        productid:productid,
-                        productnum:productnum
-                    }).then(
-                        function (res) {
-                            // 处理成功的结果
-                            //console.log(res);
-                            //console.log("=============");
-                            data = eval("("+res.body+")");
+                   
+                    if(_this.buygoods !=1 ){
+                        _this.$http.post('/user/shopcart/addgoods',{
                             
-                            if(data.code=='200'){
-                               
-                               window.location.href = "/user/shopcart/index";
+                            skuid:skuid,
+                            productid:productid,
+                            productnum:productnum
+                        }).then(
+                            function (res) {
+                                // 处理成功的结果
+                                //console.log(res);
+                                //console.log("=============");
+                                data = eval("("+res.body+")");
+                                
+                                if(data.code=='200'){
+                                   
+                                   window.location.href = "/user/shopcart/index";
 
-                            }else{
+                                }else{
+                                     
+                                    layer.open({
+                                        content: data.msg,
+                                        skin: 'msg',
+                                        time: 2 
+                                    });
+                                    return false;
+                                }
+                                //$("#city").val('');
+                            },function (res) {
+                                // 处理失败的结果
                                  
                                 layer.open({
-                                    content: data.msg,
+                                    content: '加载数据错误！请重新请求',
                                     skin: 'msg',
                                     time: 2 
                                 });
-                                return false;
                             }
-                            //$("#city").val('');
-                        },function (res) {
-                            // 处理失败的结果
-                             
-                            layer.open({
-                                content: '加载数据错误！请重新请求',
-                                skin: 'msg',
-                                time: 2 
-                            });
-                        }
-                    );
-
+                        );
+                    }else{
+                      
+                        window.location.href='/order/index/showorder?skuid='+skuid+'&productnum='+productnum;
+                        return false;
+                    }
                 }
                
             },
             mounted:function(){
                 var specs = '';
                 var spec = '';
+                var _this = this;
                 //选择规格
                 $(".sec-items").on("click","span",function(){
                    
@@ -582,10 +589,14 @@
                     $("#amount").html(num);
                 });
 
-                $("#chooseSec,.join-btn,.buy-btn").on("click",function(e){
+                $("#chooseSec,.join-btn").on("click",function(e){
+                    _this.buygoods = 0;
                     $("#my-actions").modal('toggle');
                 });
-
+                $(".buy-btn").on("click",function(e){
+                    _this.buygoods = 1;
+                    $("#my-actions").modal('toggle');
+                });
               
             },
             watch:{
