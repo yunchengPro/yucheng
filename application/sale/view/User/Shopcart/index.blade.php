@@ -52,7 +52,7 @@
 					<div class="num">{{good.productnum}}</div>
 					<div class="plus" @click="plusGoods(good)"></div>
 				</div>
-				<div class="norm"><a href="#" class="tl-ellipsis-2	" >{{good.spec}}</a><i @click="showNorms(good.productid,good.cartid)"></i></div>
+				<div class="norm"><a href="#" class="tl-ellipsis-2	" >{{good.spec}}</a><i @click="showNorms(good.productid,good.cartid,good.productnum)"></i></div>
 				
 				
 			</div>
@@ -73,7 +73,7 @@
 			合计：<span class="red">{{totalPrice}}</span>元
 		</div>
 		<div class="settlement">
-			<a href="#" @click="addorder()">
+			<a href="#" @click="addorder()" >
 				<div>结算(<span id="settleNum">{{checkNum}}</span>)</div>
 				<div class="fee">不含邮费</div>
 			</a>
@@ -107,7 +107,7 @@
 			
 		</div>
 	
-		<button class="norm-btn" @click="sureNrom">确定</button>
+		<button class="norm-btn" @click="sureNrom()">确定</button>
 	</div>
 </div>
 
@@ -208,14 +208,14 @@
     
 	.norm-box{background: #fff;position: fixed;width: 100%;z-index: 200;height: 400px;bottom: 0;}
 	.norm-box img.good-img{width: 100px;position: absolute;top: 20px;left: 25px;}
-	.norm-box .norm-btn{background: #F13437;width: 100%;height: 44px;color: #fff;position: fixed;bottom: 0;}
+	.norm-box .norm-btn{background: #34aedd;width: 100%;height: 44px;color: #fff;position: fixed;bottom: 0;}
 	.norm-box .norm-good-info{margin-left: 150px;margin-top: 20px;line-height: 30px;font-size: 14px;}
 	.norm-list{margin-top: 20px;}
 	.norm-list .norm-item{border-bottom: 1px solid #DDDDDD;padding-left: 25px;padding-top: 5px;}
 	.norm-list .norm-item:last-child{border-bottom: none;}
 	.norm-list .norm-item .norms{line-height:35px;}     
 	.norm-list .norm-item span{background: #EEEEEE;padding: 5px; border-radius: 4px;margin-right:10px ;font-size: 10px;}
-	.norm-list .norm-item span.active{background: #F13437;color: #FFFFFF;} 
+	.norm-list .norm-item span.active{background: #34aedd;color: #FFFFFF;} 
 </style>
 <script type="text/javascript">
 	/*
@@ -231,8 +231,10 @@
 			goodNorm:[],
 			normMaks:false,
 			oldcartid:0,
-			productnum:1,
-			buyIds:[]
+			productnum:[],
+			buyIds:[],
+			cartId:[],
+			product_chos_num:0
 		},
 		mounted: function() {
 			var _this = this;
@@ -246,7 +248,9 @@
 			totalPrice:function(){
 				var _this=this;
 				var total = 0;//_this.carts.cardata.pricecount;
-				
+				_this.buyIds=[];
+				_this.productnum=[];
+				_this.cartId=[];
 				if(this.carts.goodsList){
 
 					this.carts.goodsList.forEach(function(shop){
@@ -254,7 +258,10 @@
 						shop.goodsData.forEach(function(good){
 							if(good.isChecked){
 								total += parseFloat(good.prouctprice) * parseInt(good.productnum);
+								_this.productnum.push(good.productnum);
 								_this.buyIds.push(good.skuid);
+								_this.cartId.push(good.cartid);
+								//console.log("ids",_this.buyIds);
 							}	
 						});
 
@@ -406,11 +413,13 @@
 					this.carts.splice(shop,1);
 				}
 			},
-			showNorms:function(gid,cartid){
+			showNorms:function(gid,cartid,product_chos_num){
 				
 
 				var _this = this;
+				_this.product_chos_num = 0;
 	            	_this.oldcartid =  cartid;
+	            	_this.product_chos_num = product_chos_num;
 	            _this.$http.post('/user/shopcart/chosespec',{
 	            	productid:gid,
 	            	
@@ -457,6 +466,7 @@
 				// }
 			},
 			sureNrom:function(){
+
 				this.normMaks=false;
 				var _this = this;
 				var chosespec = '';
@@ -473,7 +483,7 @@
 	            var chosespecpro = _this.goodNorm.sku[chosespec];
 
 	            _this.$http.post('/user/shopcart/updatespecgoods',{
-	            	productnum:_this.productnum,
+	            	productnum:_this.product_chos_num,
 	            	productid:chosespecpro.productid,
 	            	skuid: chosespecpro.id,
 	            	oldcartid:_this.oldcartid
@@ -489,6 +499,8 @@
 	                        // _this.carts = data.data;
 	                        // _this.goodsSum = data.data.cardata.cargoodsgount;
 	                        // // console.log(_this.carts);
+	                    }else if(data.code=='400'){
+	                    	window.location.href = '/user/shopcart/index';
 	                    }else{
 	                        layer.open({
 	                            content: data.msg,
@@ -568,7 +580,7 @@
         			return false;
         		}
         		//alert(_this.buyIds);
-        		window.location.href = '/order/index/showorder?skuid='+_this.buyIds+"&productnum="+ _this.productnum;
+        		window.location.href = '/order/index/showorder?cartitemids='+_this.cartId;
         	}
 
 		}
