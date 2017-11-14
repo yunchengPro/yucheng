@@ -47,7 +47,8 @@ class IndexController extends ActionController {
         if($orderlist['total']>0) {
             $orderlist['maxPage'] = ceil($orderlist['total']/self::pageNum);
         }
-    
+
+       
         return $this->json("200", $orderlist);
     }
         
@@ -60,6 +61,7 @@ class IndexController extends ActionController {
     public function showorderAction(){
         
         $this->addcheck();
+    
 
         return $this->view([
             "cartitemids"=>$this->params['cartitemids'],
@@ -76,7 +78,7 @@ class IndexController extends ActionController {
         $skuid       = $this->params['skuid'];
         $productnum  = $this->params['productnum'];
         $logisticsid = $this->params['logisticsid'];
-
+       
         if(empty($cartitemids) && empty($skuid))
             return $this->json("404");
 
@@ -93,7 +95,7 @@ class IndexController extends ActionController {
                 "logisticsid"=>$logisticsid,
                 "version"=>$this->getVersion(),
             ]);
-
+        
         return $this->json($result['code'],(!empty($result['data'])?$result['data']:[]));
     }
 
@@ -134,7 +136,7 @@ class IndexController extends ActionController {
                 "qianggou"=>$this->params['qianggouid'],
                 "addorderkey"=>$this->params['addorderkey'],
             ]);
-
+        
         return $this->json($result['code'],[
                 "orderids"=>$result['orderidstr'],
                 "ordercount"=>intval($result['ordercount']),
@@ -201,6 +203,68 @@ class IndexController extends ActionController {
                 "version"=>$this->getVersion(),
             ]);
         //print_r($result['orderdetail']);
+        // 对订单操作按钮做处理
+        /*
+        -----------订单操作说明--------
+        orderact 订单操作按钮字段
+        orderact:act说明：1表示操作按钮2显示文字
+        orderact:actname:按钮值
+        orderact:acttype说明：
+        1 付款
+        2 取消订单
+        3 提醒商家发货
+        4 退款--申请退款
+        5 订单详情-取消退款
+        6 延长收货
+        7 查看物流
+        8 确认收货
+        9 评价
+        10 售后
+        11 删除订单
+        12 退款详情-取消退款
+        13 退款详情-修改申请
+        14 退款详情-撤销申请
+        15 订单详情-退款中
+        16 订单详情-已退款
+        17 退单列表-填写物流单号
+        18 退单列表-查看物流(和7重复了，去除)
+        19 退款详情-提交物流
+         */
+        
+        $acturl = [
+            "1"=>"/Sys/Pay/paymethod?orderno=".$result['orderdetail']['orderno'],
+            "2"=>"ACT:cancelorder",
+            "3"=>"ACT:remindshipping",
+            "4"=>"",
+            "5"=>"",
+            "6"=>"ACT:extendedreceipt",
+            "7"=>"ACT:", // 物流
+            "8"=>"ACT:confirmorder",
+            "9"=>"/Order/Evaluateorder/addEvaluateOrder?orderno=".$result['orderdetail']['orderno'],
+            "10"=>"",
+            "11"=>"ACT:deleteorder",
+            "12"=>"",
+            "13"=>"",
+            "14"=>"",
+            "15"=>"",
+            "16"=>"",
+            "17"=>"",
+            "18"=>"",
+            "19"=>"",
+        ];
+
+        foreach($result['orderdetail']['orderact'] as $key=>$value){
+
+            if($value['act']==1){
+                if(!empty($acturl[$value['acttype']]))
+                    $result['orderdetail']['orderact'][$key]['acturl'] = $acturl[$value['acttype']];
+                else
+                    unset($result['orderdetail']['orderact'][$key]);
+            }else if($value['act']==2){
+                $result['orderdetail']['orderact'][$key]['acturl'] = $acturl[$value['acttype']];
+            }
+        }
+        //print_r($result);
         return $this->json($result['code'],[
                 "orderdetail"=>$result['orderdetail'],
             ]);
@@ -335,5 +399,49 @@ class IndexController extends ActionController {
         ]);
         
         return $this->json($result["code"]);
+    }
+
+    /**
+     * [cancelsOrderAction 取消订单]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-11-09T18:13:41+0800
+     * @return   [type]                   [description]
+     */
+    public function cancelsorderAction(){
+        
+        $orderno = $this->params['orderno'];
+        $cancelreason = $this->params['cancelreason'];
+
+        if(empty($orderno))
+            return $this->json("404");
+        
+        $orderModel = Model::new("Order.Order");
+        
+        $result = $orderModel->cancelsOrder([
+            "customerid" => $this->userid,
+            "orderno" => $orderno,
+            'cancelreason'=>$cancelreason
+        ]);
+        
+        return $this->json($result["code"]);
+    }
+
+    /**
+     * [choselogisticsAction 选择收货地址]
+     * @Author   ISir<673638498@qq.com>
+     * @DateTime 2017-11-10T09:40:55+0800
+     * @return   [type]                   [description]
+     */
+    public function choselogisticsAction(){
+        $productnum = $this->params['productnum'];
+        $skuid = $this->params['skuid'];
+        $cartitemids = $this->params['cartitemids'];
+        $viewData = [
+            'title' => '选择收货地址',
+            'productnum' =>$productnum,
+            'skuid' => $skuid,
+            'cartitemids' => $cartitemids
+        ];
+        return $this->view($viewData);
     }
 }

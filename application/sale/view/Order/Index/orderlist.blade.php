@@ -22,10 +22,10 @@
 			<div class="order-list">
 				<div class="one-order" v-for="list in lists">
 					<div class="shop-stuas">
-						<a href="javascript:void(0)" class="pos-r"><span v-html="list.businessname"></span><i></i></a>
+						<a href="javascript:void(0)" class="pos-r"><span v-html="list.businessname!=''?list.businessname:'&nbsp;'"></span><i></i></a>
 						<div class="order-stuas" v-html="orderstatusType[list.orderstatus]"></div>
 					</div>
-					<a href="" v-for="item in list.orderitem">
+					<a :href="'/order/index/orderdetail?orderno='+list.orderno" v-for="item in list.orderitem">
 						<div class="order-info-box">
 							<div class="order-img">
 								<img :src="item.thumb!=''?item.thumb:defaultsrc">
@@ -55,6 +55,24 @@
             </div>
 		</div>
 	</section>
+
+	<div class="tl-select-mask" v-show="showMual" @click="hideMualBox"></div>
+	<div class="mutual-choice-wrap" v-show="showMual">
+		<div class="mutual-choice-header tl-grid">
+			<div class="tl-grid-1-4 blue" @click="hideMualBox">取消</div>
+			<div class="tl-grid-1-2">请选择</div>
+			<div class="tl-grid-1-4 blue" @click="sureChoice">确定</div>
+			
+		</div>
+		<div class="mutual-choice-body">
+			<div class="mutual-single">
+				<!--<div class="single-item">香蜜湖</div>
+				<div class="single-item">香蜜湖</div>-->
+				<div :class="['single-item',{'active':choiceCur==index}]" @click="chioceMual(index)" v-for="(item,index) in choiceData">{{item.name}}</div>
+			</div>
+		</div>
+	</div>
+
 <!-- end content -->
 {include file="Pub/tail" /}
 <!-- style -->
@@ -115,6 +133,7 @@
 			remindshippingUrl:'/order/index/remindshipping',
 			confirmorderUrl:'/order/index/confirmorder',
 			deleteorderUrl:'/order/index/deleteorder',
+			cancelsorderUrl:'/order/index/cancelsorder',
 			title:"<?=$title?>",
 			type:1,
 			lists:[],
@@ -130,6 +149,16 @@
 				{"tp":"待收货", "num":4},
 				{"tp":"待评价", "num":5}
 			],
+			choiceData:[
+		    	{"name":"我不想买了","id":1},
+		    	{"name":"信息写错误，重新拍","id":2},
+		    	{"name":"卖家缺货","id":3},
+		    	{"name":"同城见面交易","id":4},
+		    	{"name":"其他原因","id":5}
+		    ],
+		    orderIdCur:-1,
+		    showMual:false,
+		    choiceCur:0,
 			acttype:0,
 			switchShow:false,
 			requestFlag:true,
@@ -150,6 +179,27 @@
 			this.getOrderListData();
 		},
 		methods:{
+			//显示
+		  	showMualBox:function(orderId){
+		  		this.showMual=true;
+		  		this.orderIdCur=orderId;
+
+		  	},
+		  	//隐藏
+		  	hideMualBox:function(){
+		  		this.showMual=false;
+		  	},
+		  	chioceMual:function(index){
+		  		this.choiceCur=index;
+		  	},
+		  	sureChoice:function(){
+		  		this.showMual=false;
+		  		//this.orderIdCur=orderId;
+		  		var _this = this;
+		  		
+
+		  		_this.cancelsorder($('.mutual-single .active').text());
+		  	},
 			getOrderListData:function() {
 				var _this = this;
 				_this.requestFlag = false;
@@ -159,7 +209,7 @@
 					function(res) {
 						data = cl(res);
 						if(data.code == "200") {
-							console.log(data);
+							// console.log(data);
 							_this.maxPage = data.data.maxPage;
 							if(_this.page == 1) {
 								_this.lists = data.data.list;
@@ -256,6 +306,35 @@
 					}
 				);
 			},
+			cancelsorder:function(concelmsg){
+				loadtip({content:'取消中...'});
+				this.$http.post(this.cancelsorderUrl,{
+					orderno:this.orderno,
+					cancelreason:concelmsg
+				}).then(
+					function(res) {
+						data = cl(res);
+						if(data.code == "200") {
+							loadtip({
+								close:true,
+                                alert:'取消成功',
+                                urlto:'/order/index/orderlist'
+							});
+							// LinkTo("/order/index/")
+						} else {
+							loadtip({
+                                close:true,
+                                alert:data.msg
+                            });
+						}
+					}, function(res) {
+						loadtip({
+                            close:true,
+                            alert:'操作有异'
+                        });
+					}
+				);
+			},
 			getType:function(type){
 				this.type = type;
 				this.current = type-1;
@@ -279,10 +358,14 @@
 			getActType:function(acttype, orderno) {
 				var _this = this;
 				_this.orderno = orderno;
-				if(acttype == 3) {
+
+
+				 if(acttype == 3) {
+
 					// 提醒发货
 					_this.remindshipping();
 				} else if(acttype == 6) {
+
 					// 延长收货
 					if(confirm("确定延长收货时间?")) {
 						_this.extendedreceipt();
@@ -298,6 +381,13 @@
 				} else if(acttype == 11) {
 					// 删除订单
 					_this.deleteorder();
+				} else if(acttype == 2){
+					_this.showMualBox(1)
+					// 取消订单
+					//
+				} else if(acttype == 1){
+					// 查看物流
+					LinkTo("/sys/pay/paymethod?orderno="+orderno);
 				}
 			}
 		},
