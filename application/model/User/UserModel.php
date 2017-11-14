@@ -24,16 +24,6 @@ class UserModel
     }
     
     /**
-     *生成密码串
-     *
-     */
-    public static function PwdEncode($pwd) {
-        $pwd = strtoupper(md5($pwd));
-        $pwd = str_replace([1,3,5,7,9],'',$pwd);
-        return $pwd;
-    }  
-
-    /**
     * @user 登录 注册
     * @param mobile 手机号码
     * @param sendType 短信类型前缀
@@ -43,11 +33,7 @@ class UserModel
     * @date 2017年10月10日下午4:14:30
     */
     public function login($param) {
-
         if($param['mobile'] == '') {
-            return ["code" => "404"];
-        }
-        if($param['valicode'] == '') {
             return ["code" => "404"];
         }
         
@@ -57,18 +43,129 @@ class UserModel
         
         // 验证手机号码
         $CusCustomer = Model::ins("CusCustomer");
-        $valicode = self::PwdEncode($param['valicode']);
-        
-        $cusData = $CusCustomer->getRow(['mobile'=>$param['mobile']],'id,mobile,userpwd');
-        $result['code'] = '200';
-        if(empty($cusData))
-            $result['code'] = '2001';
 
-        if($cusData['userpwd'] != $valicode)
-            $result['code'] = '2003';
-       
-        $this->cusLogin(['customerid'=>$cusData['id']]);
-        return ["code" => $result['code'],"data" => $cusData];
+        if($param['logintype'] == 1) {
+            // 手机动态验证码
+            $isPass = $CusCustomer->compare($param,$param["sendType"]);
+            if(!$isPass) {
+                return ["code" => "20005"];
+            }
+        } else {
+            // 校验格式
+//             $loginFormat = CommonModel::validate_filter_loginpwd($param['loginpwd']);
+//             if(!$loginFormat) {
+//                 return ["code" => "2002"];
+//             }
+            // 登录密码登录
+            $loginResult = $CusCustomer->userLoginPwd($param);
+            if(!$loginResult) {
+                return ["code" => "2003"];
+            }
+        }
+        
+        $result = array();
+        $checkCus = Model::ins("CusCustomer")->getRow(["mobile"=>$param['mobile']],"id,enable");
+
+        // 执行事务处理
+        $CusCustomer->startTrans();
+        try {
+            $temp = ["code" => "200"];
+            if(empty($checkCus['id'])) {
+                // 执行注册
+                if(!empty($param['recommendrole']) || !empty($param['recommendid'])) {
+                    $result = $this->addUser(["mobile"=>$param['mobile'],"recommendrole"=>$param['recommendrole'],"recommendid"=>$param['recommendid'],"openid"=>$param["openid"]]);
+                    $mtokenResult = $this->cusMtoken(["customerid"=>$result['data']['customerid'],"isMobile"=>$param["isMobile"],"devicetoken"=>$param['devicetoken'],"devtype"=>$param['devtype']]);
+                    if(empty($param['isMobile'])) {
+                        $temp = ["code" => "200", "data" => ["mtoken"=>$mtokenResult["data"], "isbind"=>1]];
+                    }
+                } else {
+                    $result = $this->addBasicUser(["mobile"=>$param['mobile'],"openid"=>$param["openid"]]);
+
+                    if($result["code"] == "200") {
+                        $mtokenResult = $this->cusMtoken(["customerid"=>$result['data']['customerid'],"isMobile"=>$param["isMobile"],"devicetoken"=>$param["devicetoken"],"devtype"=>$param["devtype"]]);
+                        if($param["isMobile"]) {
+                            $temp = ["code" => "305", "data"=>["url"=>"/index/index/bindMobile?customerid=".$result['data']['customerid']]];
+                        } else {
+                            $userLoginPwd = $CusCustomer->checkUserLoginPwd(["customerid"=>$result['data']['customerid']]);
+                            $temp = ["code" => "200", "data" => ["mtoken"=>$mtokenResult["data"], "isbind"=>0, "isloginpwd" => $userLoginPwd ? 1 : 0]];
+                            
+                            $CusCustomer->commit();
+                            return ["code" => $temp["code"], "data"=>$temp["data"]];
+                            // $temp = ["code" => "305", "data"=>["mtoken"=>$mtokenResult["data"]]];
+                        }
+                    } else {
+                        $temp = ["code" => $result["code"]];
+                    }
+                }
+                $CusCustomer->commit();
+                if($temp["code"] != "200") {
+                    return ["code" => $temp["code"], "data"=>$temp["data"]];
+                }
+            } else {
+                if($checkCus['enable'] == 2) {
+                    $temp = ["code" => "10002"];
+                }
+                if($checkCus['enable'] == 0) {
+                    $mtokenResult = $this->cusMtoken(["customerid"=>$checkCus['id'],"isMobile"=>$param["isMobile"],"devicetoken"=>$param["devicetoken"],"devtype"=>$param["devtype"]]);
+                    if($param["isMobile"]) {
+                        $temp = ["code" => "305", "data"=>["url"=>"/index/index/bindMobile?customerid=".$checkCus['id']]];
+                    } else {
+                        $userLoginPwd = $CusCustomer->checkUserLoginPwd(["customerid"=>$result['data']['customerid']]);
+                        
+                        $temp = ["code" => "200", "data" => ["mtoken"=>$mtokenResult["data"], "isbind"=>0, "isloginpwd" => $userLoginPwd ? 1 : 0]];
+
+                        $CusCustomer->commit();
+                        return ["code" => $temp["code"], "data"=>$temp["data"]];
+                    }
+                    // $temp = ["code" => "305", "data" => "/index/index/bindMobile?customerid=".$checkCus['id']];
+                }
+
+                if($temp["code"] == "200") {
+                    // 执行登录
+                    $result = $this->loginUser(["login_type"=>"mobile","login_account"=>$param['mobile'],"openid"=>$param['openid']]);
+                }
+
+                $CusCustomer->commit();
+
+                if($temp["code"] != "200") {
+                    return ["code" => $temp["code"], "data" => $temp["data"]];
+                }
+            }   
+        } catch (\Exception $e) {
+            $CusCustomer->rollback();
+            
+            Log::add($e,__METHOD__);
+            
+            return ["code"=>"400"];
+        }
+        
+        if($result['code'] == "200") {
+            // 写入login记录表
+            $mtokenResult = $this->cusMtoken(["customerid"=>$result['data']['customerid'],"isMobile"=>$param["isMobile"],"devicetoken"=>$param["devicetoken"],"devtype"=>$param["devtype"]]);
+            
+            $loginResult = $this->cusLogin(["customerid"=>$result['data']['customerid'],"mobile"=>$param['mobile'],"redirectUri"=>$param['redirectUri']]);
+            
+            // return ["code"=>"200","data" => urldecode($loginResult['data'])];
+            $returnData = [];
+            if($param["isMobile"]) {
+                // mobile 返回回调地址
+                $returnData["url"] = urldecode($loginResult['data']);
+            } else {
+                // api 返回mtoken
+                $returnData["mtoken"] = $mtokenResult["data"];
+                $returnData['isbind'] = 1;
+            }
+            $userLoginPwd = $CusCustomer->checkUserLoginPwd(["customerid"=>$result['data']['customerid']]);
+            $returnData['isloginpwd'] = 0;
+            if($userLoginPwd) {
+                $returnData['isloginpwd'] = 1;
+            }
+            $returnData['mobile'] = $param['mobile'];
+            $returnData['encrypt'] = md5($param['mobile'].getConfigKey());
+            
+            return ["code"=>"200","data" => $returnData];
+        }
+        return ["code" => $result['code'],"data" => []];
     }
     
     /**
@@ -924,7 +1021,7 @@ class UserModel
         $userPayInfo = Model::ins("CusCustomerPaypwd")->getRow(["id"=>$userId],"paypwd");
         $userInfo['payDec'] = !empty($userPayInfo['paypwd']) ? 1 : 0;
         
-        $userInfo['isexam'] = 0;
+        $userInfo['isexam'] = 1;
 
 //         $userInfo['payDec'] = 0;
         
@@ -935,5 +1032,48 @@ class UserModel
 //             $userInfo['applyStr'] = "";
 //         }
         return $userInfo;
+    }
+
+     /**
+     * 判断银行卡信息和用户信息是否一致
+     * @Author   zhuangqm
+     * @DateTime 2017-09-01T14:45:54+0800
+     * @param    [type]                   $param [
+     *                                              userid
+     *                                              account_name 银行开户名
+     *                                              account_number 银行帐号
+     *                                          ]
+     * @return   [type]                         [description]
+     */
+    public function checkbankInfo($param){
+
+        if(empty($param['account_name']) || empty($param['account_number']))
+            return ["code"=>"20018"];
+
+        $userid = $param['userid'];
+        
+        $checkbank_error_limit = 3;
+        $ActLimitOBJ = Model::new("Sys.ActLimit");
+        // 如果判断错误次数过多，就不再使用api接口进行检测
+        $check_actlimit = $ActLimitOBJ->check("checkbank".$userid,$checkbank_error_limit);
+        if(!$check_actlimit['check']){
+            return ["code"=>"20020"];
+        }
+
+        //使用api接口进行判断
+        $result = Bank::api([
+                "cardNo"=>$param['account_number'],
+                "realName"=>$param['account_name'],
+            ]);
+
+        if($result){
+            return ["code"=>"200"];
+        }else{
+
+            // 更新错误次数
+            $ActLimitOBJ->update("checkbank".$userid,3600); //有效时长
+
+            return ["code"=>"20019"];
+        }
     }
 }

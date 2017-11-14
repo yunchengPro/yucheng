@@ -2,6 +2,7 @@
 namespace app\model\User;
 use app\lib\Model;
 use app\model\Sys\CommonModel;
+use app\model\User\UserModel;
 
 class UserBankModel
 {
@@ -63,6 +64,12 @@ class UserBankModel
         $where['enable'] = 1;
         
         $result = Model::ins("CusBank")->pageList($where,"id,bank_type_name,account_type,account_number","is_default desc, sort desc ,addtime desc");
+
+        foreach ($result['list'] as $k => $v) {
+            // 格式化银行卡号码
+
+            $result['list'][$k]['account_number'] = CommonModel::bank_format($v['account_number']);
+        }
         
         return ["code" => "200", "data" => $result];
     }
@@ -101,11 +108,13 @@ class UserBankModel
             return ['code'=>404,'data'=>[],'msg'=>'银行卡号不能为空'];
 
           // 当是个人帐号时才去校验银行卡号(对公帐号规则 太杂了。没标准)；
-        if($this->params['account_type'] == 1) {
-            if(!CommonModel::account_bank_validate($this->params['account_number'])) {
+        if($param['account_type'] == 1) {
+            if(!CommonModel::account_bank_validate($param['account_number'])) {
                 return  ['code'=>20012,'data'=>[],'msg'=>'银行卡号码不正确']; 
             }
         }
+
+
 
         if(empty($branch))
             return ['code'=>404,'data'=>[],'msg'=>'请填写支行名称'];
@@ -125,9 +134,24 @@ class UserBankModel
         ];
 
 
+
         $bank_row = Model::ins('CusBank')->getRow(['account_number'=>$account_number,'customerid'=>$customerid],'id,customerid,enable');
 
 
+         $userOBJ = new UserModel();
+       
+        if($param['account_type'] == 1) {
+        // 校验银行卡和用户名是否一致--通过api接口进行校验
+            $checkbankresult = $userOBJ->checkbankInfo([
+                    "userid"=>$customerid,
+                    "account_name"=>$insert['account_name'],
+                    "account_number"=>$insert['account_number'],
+                ]);
+         
+            if($checkbankresult["code"]!='200')
+                return ['code'=>$checkbankresult["code"]];
+        }
+        
         if(!empty($bank_row)){
             if($bank_row['enable'] == 1){
                 return ['code'=>404,'data'=>[],'msg'=>'该银行卡已经添加'];
